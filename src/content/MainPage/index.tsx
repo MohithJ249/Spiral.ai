@@ -1,8 +1,12 @@
 import '../../components/selectionPage';
 import MyDocs from '../MyDocs';
 import { Typography } from '@mui/material';
+import { useGetAllUsersQuery } from '../../generated/graphql';
 
 export default function MainPage() {
+    const { data, loading, error } = useGetAllUsersQuery();
+    console.log(data);
+
     return (
         <>
             <div>

@@ -1,0 +1,10 @@
+schema: https://spiral-backend-9793e325e89f.herokuapp.com
+documents: "src/**/*.graphql"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      skipDocumentsValidation: true
