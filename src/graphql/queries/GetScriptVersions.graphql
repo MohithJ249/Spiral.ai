@@ -1,0 +1,8 @@
+query GetScriptVersions($scriptid: ID!) {
+  getScriptVersions(scriptid: $scriptid) {
+    s3link
+    scriptid
+    time_saved
+    versionid
+  }
+}

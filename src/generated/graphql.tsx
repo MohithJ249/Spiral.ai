@@ -131,12 +131,116 @@ export type User = {
   username: Scalars['String']['output'];
 };
 
+export type GetAllSharedScriptsQueryVariables = Exact<{
+  userid: Scalars['ID']['input'];
+}>;
+
+
+export type GetAllSharedScriptsQuery = { __typename?: 'Query', getAllSharedScripts?: Array<{ __typename?: 'Script', s3link: string, scriptid: string, title: string, userid: string } | null> | null };
+
+export type GetAllUserScriptsQueryVariables = Exact<{
+  userid: Scalars['ID']['input'];
+}>;
+
+
+export type GetAllUserScriptsQuery = { __typename?: 'Query', getAllUserScripts?: Array<{ __typename?: 'Script', s3link: string, scriptid: string, title: string } | null> | null };
+
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers?: Array<{ __typename?: 'User', userid: string, email: string, username: string } | null> | null };
 
+export type GetScriptVersionsQueryVariables = Exact<{
+  scriptid: Scalars['ID']['input'];
+}>;
 
+
+export type GetScriptVersionsQuery = { __typename?: 'Query', getScriptVersions?: Array<{ __typename?: 'ScriptVersion', s3link: string, scriptid: string, time_saved: string, versionid: string } | null> | null };
+
+export type LoginQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type LoginQuery = { __typename?: 'Query', login?: { __typename?: 'User', email: string, userid: string, username: string } | null };
+
+
+export const GetAllSharedScriptsDocument = gql`
+    query GetAllSharedScripts($userid: ID!) {
+  getAllSharedScripts(userid: $userid) {
+    s3link
+    scriptid
+    title
+    userid
+  }
+}
+    `;
+
+/**
+ * __useGetAllSharedScriptsQuery__
+ *
+ * To run a query within a React component, call `useGetAllSharedScriptsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllSharedScriptsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllSharedScriptsQuery({
+ *   variables: {
+ *      userid: // value for 'userid'
+ *   },
+ * });
+ */
+export function useGetAllSharedScriptsQuery(baseOptions: Apollo.QueryHookOptions<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>(GetAllSharedScriptsDocument, options);
+      }
+export function useGetAllSharedScriptsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>(GetAllSharedScriptsDocument, options);
+        }
+export type GetAllSharedScriptsQueryHookResult = ReturnType<typeof useGetAllSharedScriptsQuery>;
+export type GetAllSharedScriptsLazyQueryHookResult = ReturnType<typeof useGetAllSharedScriptsLazyQuery>;
+export type GetAllSharedScriptsQueryResult = Apollo.QueryResult<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>;
+export const GetAllUserScriptsDocument = gql`
+    query GetAllUserScripts($userid: ID!) {
+  getAllUserScripts(userid: $userid) {
+    s3link
+    scriptid
+    title
+  }
+}
+    `;
+
+/**
+ * __useGetAllUserScriptsQuery__
+ *
+ * To run a query within a React component, call `useGetAllUserScriptsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUserScriptsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUserScriptsQuery({
+ *   variables: {
+ *      userid: // value for 'userid'
+ *   },
+ * });
+ */
+export function useGetAllUserScriptsQuery(baseOptions: Apollo.QueryHookOptions<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>(GetAllUserScriptsDocument, options);
+      }
+export function useGetAllUserScriptsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>(GetAllUserScriptsDocument, options);
+        }
+export type GetAllUserScriptsQueryHookResult = ReturnType<typeof useGetAllUserScriptsQuery>;
+export type GetAllUserScriptsLazyQueryHookResult = ReturnType<typeof useGetAllUserScriptsLazyQuery>;
+export type GetAllUserScriptsQueryResult = Apollo.QueryResult<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>;
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
   getAllUsers {
@@ -173,3 +277,79 @@ export function useGetAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
 export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
 export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
+export const GetScriptVersionsDocument = gql`
+    query GetScriptVersions($scriptid: ID!) {
+  getScriptVersions(scriptid: $scriptid) {
+    s3link
+    scriptid
+    time_saved
+    versionid
+  }
+}
+    `;
+
+/**
+ * __useGetScriptVersionsQuery__
+ *
+ * To run a query within a React component, call `useGetScriptVersionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScriptVersionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScriptVersionsQuery({
+ *   variables: {
+ *      scriptid: // value for 'scriptid'
+ *   },
+ * });
+ */
+export function useGetScriptVersionsQuery(baseOptions: Apollo.QueryHookOptions<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>(GetScriptVersionsDocument, options);
+      }
+export function useGetScriptVersionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>(GetScriptVersionsDocument, options);
+        }
+export type GetScriptVersionsQueryHookResult = ReturnType<typeof useGetScriptVersionsQuery>;
+export type GetScriptVersionsLazyQueryHookResult = ReturnType<typeof useGetScriptVersionsLazyQuery>;
+export type GetScriptVersionsQueryResult = Apollo.QueryResult<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>;
+export const LoginDocument = gql`
+    query Login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    email
+    userid
+    username
+  }
+}
+    `;
+
+/**
+ * __useLoginQuery__
+ *
+ * To run a query within a React component, call `useLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+      }
+export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
+export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
+export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
