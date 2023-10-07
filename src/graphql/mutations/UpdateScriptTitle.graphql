@@ -1,0 +1,6 @@
+mutation UpdateScriptTitle($scriptid: ID!, $title: String!) {
+  updateScriptTitle(scriptid: $scriptid, title: $title) {
+    title
+    s3link
+  }
+}

@@ -1,0 +1,3 @@
+mutation AddCollaborator($scriptid: ID!, $email: String!) {
+  addCollaborator(scriptid: $scriptid, email: $email)
+}
