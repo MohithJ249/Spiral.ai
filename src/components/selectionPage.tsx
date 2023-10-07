@@ -9,102 +9,95 @@ import {
     alpha,
     Tooltip,
     CardActionArea,
+    Grow,
     styled
   } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 //   import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 
-  
-  
-  const CardAddAction = styled(Card)(
-    ({ theme }) => `
-          border: #252935 dashed 1px;
-          height: 100%;
-          color: #252935;
-          transition: ${theme.transitions.create(['all'])};
-          
-          .MuiCardActionArea-root {
-            height: 100%;
-            justify-content: center;
-            align-items: center;
-            display: flex;
-          }
-          
-          .MuiTouchRipple-root {
-            opacity: .2;
-          }
-          
-          &:hover {
-            border-color: ${alpha(theme.palette.primary.main, 0.8)};
-          }
-  `
+interface CustomCardProps {
+  bigLabel?: string;
+  smallLabel?: string;
+  dollars?: string;
+  BTC?: string;
+}
+
+function CustomCard({bigLabel, smallLabel, dollars, BTC}: CustomCardProps) {
+  // const trial = 'testing passing parameters between pages'
+  const location = useLocation();
+  const currentPath = location.pathname;
+  return (
+    <Card
+      sx={{
+        // px: 1
+      }}
+    >
+      <CardActionArea component={NavLink} to={`/Editing${currentPath + "'s Page:" + bigLabel}`}>
+        <CardContent>
+          <Typography variant="h5" noWrap>
+            {bigLabel}
+          </Typography>
+          <Typography variant="subtitle1" noWrap>
+            {smallLabel}
+          </Typography>
+          <Box
+            sx={{
+              pt: 3
+            }}
+          >
+            <Typography variant="h3" gutterBottom noWrap>
+              {dollars}
+            </Typography>
+            <Typography variant="subtitle2" noWrap>
+              {BTC}
+            </Typography>
+          </Box>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
+}
   
 function Selection() {
+
+
+    const bigLabel = ['Bitcoin', 'Ethereum', 'Dogecoin', 'Tether', 'Litecoin']
+    const smallLabel = ['BTC', 'ETH', 'DOGE', 'T', 'LTC']
+    const dollars = ['$3,586.22', '$2,586.22', '$1,586.22', '$0.58622', '$0.38622']
+    const BTC = ['1.25843 BTC', '.85843 BTC', '0.25843 BTC', '0.05843 BTC', '0.01843 BTC']
+
+    var info = [];
+
+    for(let i = 0; i < bigLabel.length; i++) {
+        info.push([bigLabel[i], smallLabel[i], dollars[i], BTC[i]])
+    }
+
+    const [showCards, setShowCards] = useState<boolean>(false);
+
     return (
       <>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{
-            pb: 3
-          }}
-        >
-          <Typography variant="h3">Scripts</Typography>
-          <Button
-            size="small"
-            variant="outlined"
-            // startIcon={<AddTwoToneIcon fontSize="small" />}
-          >
-            Add new wallet
-          </Button>
+        <Box sx={{ flexWrap: 'wrap', display: 'flex'}}>
+          <Grid 
+            container 
+            spacing={3} 
+            direction='row' 
+            justifyContent='flex-start'
+            alignItems='flex-start'>
+              { info.map((item, index) => (
+                <Grid xs={12} sm={6} md={3} item>
+                  <Grow in key={index} timeout={1000 + index * 150}>
+                    <div>
+                      <CustomCard bigLabel={item[0]} smallLabel={item[1]} dollars={item[2]} BTC={item[3]} />
+                    </div>
+                  </Grow>
+                </Grid>
+              ))
+              }
+              {/* <Button>sdf</Button> */}
+          </Grid>
         </Box>
-        <Grid container spacing={3}>
-          <Grid xs={12} sm={6} md={3} item>
-            <Card
-              sx={{
-                px: 1
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" noWrap>
-                  Bitcoin
-                </Typography>
-                <Typography variant="subtitle1" noWrap>
-                  BTC
-                </Typography>
-                <Box
-                  sx={{
-                    pt: 3
-                  }}
-                >
-                  <Typography variant="h3" gutterBottom noWrap>
-                    $3,586.22
-                  </Typography>
-                  <Typography variant="subtitle2" noWrap>
-                    1.25843 BTC
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid xs={12} sm={6} md={3} item>
-            <Tooltip arrow title="Click to add a new wallet">
-              <CardAddAction>
-                <CardActionArea
-                  sx={{
-                    px: 1
-                  }}
-                >
-                  <CardContent>
-                    <AddIcon />
-                  </CardContent>
-                </CardActionArea>
-              </CardAddAction>
-            </Tooltip>
-          </Grid>
-        </Grid>
       </>
     );
   }
