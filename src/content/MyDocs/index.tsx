@@ -8,6 +8,7 @@ export default function MyDocs() {
             {/* <div>
                 <Typography variant="h3">Test</Typography>            
             </div> */}
+            <Typography variant='h2'>Welcome {localStorage.getItem('username')}</Typography>
             <Typography variant="h3">User's documents page here. Check in content/MyDocs/index.tsx file</Typography>
             <Selection />
         </>

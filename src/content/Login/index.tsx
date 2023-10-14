@@ -23,6 +23,7 @@ export default function LoginPage() {
             localStorage.setItem('userid', data.login.userid);
             localStorage.setItem('username', data.login.username);
             console.log(data.login.userid);
+            window.location.href = '/mydocs';
         }
     }, [data]);
 
