@@ -1,7 +1,7 @@
 import '../../components/selectionPage';
 import React, { useState, useEffect } from 'react';
 import { useLoginLazyQuery } from '../../generated/graphql';
-import { Typography } from '@mui/material';
+import { Button, FormControl, Input, InputLabel, TextField, Typography } from '@mui/material';
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>('');
@@ -37,18 +37,18 @@ export default function LoginPage() {
 
     return (
         <div className='login-container'>
-            {errorText && <p>{errorText}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className='input-group'>
-                    <label htmlFor='username'>Username: </label>
-                    <input type='text' id='username' value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div className='input-group'>
-                    <label htmlFor='password'>Password: </label>
-                    <input type='password' id='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <button type='submit' disabled={loading}>Login</button>
-            </form>
+            {errorText && <Typography variant='h6' color={'red'}>{errorText}</Typography>}
+            {/* <FormControl onSubmit={handleSubmit}> */}
+            <div className='input-group'>
+                <TextField type='text' label='Username' value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <br />
+            <div className='input-group'>
+                <TextField type='password' label='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <br />
+            <Button type='submit' disabled={loading} onClick={handleSubmit}>Login</Button>
+            {/* </FormControl> */}
         </div>
     );
 }
