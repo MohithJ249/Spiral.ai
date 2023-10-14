@@ -7,8 +7,10 @@ export default function LoginPage() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorText, setErrorText] = useState<string | null>(null);
-
     const [login, { loading, error, data }] = useLoginLazyQuery();
+
+    if(localStorage.getItem('userid') && localStorage.getItem('username'))
+        window.location.href = '/mydocs';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
