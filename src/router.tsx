@@ -32,7 +32,7 @@ const Error = Loader(lazy(() => import('./content/Error')));
 
 const Editing = Loader(lazy(() => import('./content/Editing')));
 
-
+const Login = Loader(lazy(() => import('./content/Login')));
 
 const routes: RouteObject[] = [
   {
@@ -40,7 +40,7 @@ const routes: RouteObject[] = [
     element: <Header />,
     children: [
       {
-        path: '/',
+        path: '/MainPage',
         element: <MainPage />
       },
       {
@@ -58,6 +58,10 @@ const routes: RouteObject[] = [
       {
         path: 'Recordings',
         element: <Recordings />
+      },
+      {
+        path: '/',
+        element: <Login />
       },
       {
         path: 'Editing',
