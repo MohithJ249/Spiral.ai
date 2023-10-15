@@ -34,6 +34,8 @@ const Editing = Loader(lazy(() => import('./content/Editing')));
 
 const Login = Loader(lazy(() => import('./content/Login')));
 
+const CreateAccount = Loader(lazy(() => import('./content/CreateAccount')));
+
 const routes: RouteObject[] = [
   {
     path: '',
