@@ -49,6 +49,9 @@ function Header() {
           boxShadow: '0 8px 8px 5px lightblue'
         }}
       >
+        {/* add these two lines to center the menu */}
+        {/* <Stack />
+        <Stack /> */}
         <Stack
           direction="row"
           divider={<Divider orientation="vertical" flexItem />}
@@ -86,16 +89,14 @@ function Header() {
           display: 'block',
           flex: 1,
           pt: '80px',
-          // marginTop: '90px',
-          margin: 'auto',
-          marginLeft: '60px',
-          marginRight: '60px',
+          // marginTop: 'auto',
           // [theme.breakpoints.up('lg')]: {
-          //   ml: '10px'
-          // }
+          //   ml: '100px'
+          // },
+          margin: '0px 100px 0px 200px',
         }}
       >
-        <Box display="block" sx={{ marginTop: '100px' }}>
+        <Box display="block" sx={{ margin: '50px 0px 0px -100px' }}>
           <Outlet />
         </Box>
       </Box>
