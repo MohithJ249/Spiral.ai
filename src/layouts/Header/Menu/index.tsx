@@ -106,7 +106,7 @@ function HeaderMenu() {
             classes={{ root: 'MuiListItem-indicators' }}
             button = {true}
             component={NavLink}
-            to="/NewScriptPage"
+            to="/NewScript"
           >
             {/* don't wrap button text*/}
             <ListItemButton sx={{}}>

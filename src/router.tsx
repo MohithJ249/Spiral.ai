@@ -37,6 +37,16 @@ const Login = Loader(lazy(() => import('./content/Login')));
 const CreateAccount = Loader(lazy(() => import('./content/CreateAccount')));
 
 const routes: RouteObject[] = [
+  // {
+  //   path: '',
+  //   element: <BaseLayout />,
+  //   children: [
+  //     {
+  //       path: '/',
+  //       element: <Login />
+  //     }
+  //   ]
+  // },
   {
     path: '',
     element: <Header />,
@@ -50,7 +60,7 @@ const routes: RouteObject[] = [
         element: <MyScripts />
       },
       {
-        path: 'NewScriptPage',
+        path: 'NewScript',
         element: <NewScript />
       },
       {

@@ -78,8 +78,9 @@ export default function EditingPage() {
                                                         onChange={(e) => setRecordingName(e.target.value)}
                                                     />
 
+                                                    <audio src={mediaBlobUrl?.toString()} controls></audio>
                                                     
-                                                    {   recordings.length > 0 &&
+                                                    {/* {   recordings.length > 0 &&
                                                             recordings.map((eachRecording, index) => (
                                                                 <>
                                                                     <Typography variant='h6'>Title</Typography>
@@ -88,7 +89,7 @@ export default function EditingPage() {
                                                                 </>
                                                             ))
                                                     
-                                                    }
+                                                    } */}
                                                 </div>
                                             )}/>
                                         </Paper>

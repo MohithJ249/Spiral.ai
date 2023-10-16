@@ -52,23 +52,7 @@ function CustomCard({title, lastModified}: CustomCardProps) {
 }
 
 function Selection() {
-
-
-    const bigLabel = ['Bitcoin', 'Ethereum', 'Dogecoin', 'Tether', 'Litecoin']
-    const smallLabel = ['BTC', 'ETH', 'DOGE', 'T', 'LTC']
-    const dollars = ['$3,586.22', '$2,586.22', '$1,586.22', '$0.58622', '$0.38622']
-    const BTC = ['1.25843 BTC', '.85843 BTC', '0.25843 BTC', '0.05843 BTC', '0.01843 BTC']
-
-    var info = [];
-
-    for(let i = 0; i < bigLabel.length; i++) {
-        info.push([bigLabel[i], smallLabel[i], dollars[i], BTC[i]])
-    }
-
-    const [showCards, setShowCards] = useState<boolean>(false);
-    const { data, loading, error } = useGetAllUserScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
-    console.log(data);
-
+    const { data } = useGetAllUserScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
 
     if(data?.getAllUserScripts) {
       return (
@@ -90,7 +74,6 @@ function Selection() {
                   </Grid>
                 ))
                 }
-                {/* <Button>sdf</Button> */}
             </Grid>
           </Box>
         </>
