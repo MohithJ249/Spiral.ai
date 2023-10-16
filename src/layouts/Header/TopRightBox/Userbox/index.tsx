@@ -75,6 +75,12 @@ function HeaderUserbox() {
     setOpen(false);
   };
 
+  const handleSignout = () => { 
+    localStorage.removeItem('userid');
+    localStorage.removeItem('username');
+    window.location.href = '/';
+  }
+
   return (
     <>
       <UserBoxButton color="primary" ref={ref} onClick={handleOpen}>
@@ -131,7 +137,7 @@ function HeaderUserbox() {
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>
-          <Button color="primary" fullWidth>
+          <Button color="primary" fullWidth onClick={handleSignout}>
             <LockOpenTwoToneIcon sx={{ mr: 1 }} />
             Sign out
           </Button>

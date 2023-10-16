@@ -86,6 +86,15 @@ export default function LoginPage() {
             >
               Sign In
             </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading} onClick={() => window.location.href = '/CreateAccount'}
+            >
+              Create Account
+            </Button>
           </Box>
         </Box>
       </Container>

@@ -100,28 +100,17 @@ export default function CreateAccountPage() {
             >
               Create Account
             </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading} onClick={()=> window.location.href = '/'}
+            >
+              Login to Existing Account
+            </Button>
           </Box>
         </Box>
       </Container>
-        // <div className='create-account-container'>
-        //     {errorText && <Alert severity="error">{errorText}</Alert>}
-        //         <br /><br />
-        //         <FormControl>
-        //             <InputLabel>Email</InputLabel>
-        //             <Input type='text' value={email} error={errorText?.includes("Please choose a different email")}  onChange={(e) => setEmail(e.target.value)} />
-        //         </FormControl>
-        //         <br /><br />
-        //         <FormControl>
-        //             <InputLabel>Username</InputLabel>
-        //             <Input type='text' value={username} onChange={(e) => setUsername(e.target.value)} />
-        //         </FormControl>
-        //         <br /><br />
-        //         <FormControl>
-        //             <InputLabel>Password</InputLabel>
-        //             <Input type='text' value={password} onChange={(e) => setPassword(e.target.value)} />
-        //         </FormControl>
-        //         <br /><br />
-        //         <Button type='submit' disabled={loading} onClick={handleSubmit}>Create Account</Button>
-        // </div>
     );
 }
