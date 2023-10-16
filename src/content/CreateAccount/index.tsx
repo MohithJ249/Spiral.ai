@@ -14,7 +14,7 @@ export default function CreateAccountPage() {
     });
 
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
-        window.location.href = '/mydocs';
+        window.location.href = '/MyScripts';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,7 +25,7 @@ export default function CreateAccountPage() {
                 localStorage.setItem('userid', data.createUser.userid);
                 localStorage.setItem('username', data.createUser.username);
                 console.log(data.createUser.userid);
-                window.location.href = '/mydocs';
+                window.location.href = '/MyScripts';
             }
         } 
         catch (error: any) {

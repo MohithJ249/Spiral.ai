@@ -17,6 +17,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 //   import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useGetAllUserScriptsQuery } from '../generated/graphql';
+import CircularLabelWithProgress from './loadingAnimation';
 
 interface CustomCardProps {
   title?: string;
@@ -96,7 +97,7 @@ function Selection() {
       );
     }
     else
-      return (<>Loading</>)
+      return (<>{CircularLabelWithProgress}</>)
   }
 
   

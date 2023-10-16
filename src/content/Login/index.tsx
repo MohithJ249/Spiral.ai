@@ -12,7 +12,7 @@ export default function LoginPage() {
     const [login, { data, loading, error }] = useLoginLazyQuery();
 
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
-        window.location.href = '/mydocs';
+        window.location.href = '/MyScripts';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,7 +26,7 @@ export default function LoginPage() {
             setErrorText(null);
             localStorage.setItem('userid', data.login.userid);
             localStorage.setItem('username', data.login.username);
-            window.location.href = '/mydocs';
+            window.location.href = '/MyScripts';
         }
     }, [data]);
 
@@ -57,10 +57,10 @@ export default function LoginPage() {
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
               autoFocus
               value={email} onChange={(e) => setEmail(e.target.value)}
             />

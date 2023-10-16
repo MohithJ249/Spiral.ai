@@ -2,7 +2,7 @@ import '../../components/selectionPage';
 import Selection from '../../components/selectionPage';
 import { Typography } from '@mui/material';
 
-export default function MyDocs() {
+export default function MyScripts() {
     return (
         <>
             {/* <div>

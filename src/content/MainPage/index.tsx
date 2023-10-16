@@ -1,5 +1,4 @@
 import '../../components/selectionPage';
-import MyDocs from '../MyDocs';
 import { Typography } from '@mui/material';
 
 export default function MainPage() {
