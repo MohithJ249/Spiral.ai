@@ -54,6 +54,7 @@ export default function CreateAccountPage() {
             Create Account
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {errorText && <Alert severity="error">{errorText}</Alert>}
           <TextField
               variant="outlined"
               margin="normal"
