@@ -1,7 +1,7 @@
 import '../../components/selectionPage';
 import React, { useState, useEffect } from 'react';
 import { useLoginLazyQuery } from '../../generated/graphql';
-import { Button, TextField, Container, Typography, Box } from '@mui/material';
+import { Button, TextField, Container, Typography, Box, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
 import { ApolloError } from '@apollo/client';
 
@@ -12,7 +12,7 @@ export default function LoginPage() {
     const [login, { data, loading, error }] = useLoginLazyQuery();
 
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
-        window.location.href = '/mydocs';
+        window.location.href = '/MyScripts';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,7 +26,7 @@ export default function LoginPage() {
             setErrorText(null);
             localStorage.setItem('userid', data.login.userid);
             localStorage.setItem('username', data.login.username);
-            window.location.href = '/mydocs';
+            window.location.href = '/MyScripts';
         }
     }, [data]);
 
@@ -51,15 +51,16 @@ export default function LoginPage() {
             SPIRAL.AI 
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            {errorText && <Alert severity="error">{errorText}</Alert>}
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
               autoFocus
               value={email} onChange={(e) => setEmail(e.target.value)}
             />
@@ -89,20 +90,5 @@ export default function LoginPage() {
           </Box>
         </Box>
       </Container>
-        // <div className='login-container'>
-        //     {errorText && <Alert severity="error">{errorText}</Alert>}
-        //         <br /><br />
-        //         <FormControl>
-        //             <InputLabel>Email</InputLabel>
-        //             <Input type='text' value={email} onChange={(e) => setEmail(e.target.value)} />
-        //         </FormControl>
-        //         <br /><br />
-        //         <FormControl>
-        //             <InputLabel>Password</InputLabel>
-        //             <Input type='text' value={password} onChange={(e) => setPassword(e.target.value)} />
-        //         </FormControl>
-        //         <br /><br />
-        //         <Button type='submit' disabled={loading} onClick={handleSubmit}>Login</Button>
-        // </div>
     );
 }

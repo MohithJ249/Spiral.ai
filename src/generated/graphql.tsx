@@ -26,7 +26,7 @@ export type Mutation = {
   deleteScript?: Maybe<Scalars['Boolean']['output']>;
   deleteUser?: Maybe<Scalars['Boolean']['output']>;
   removeCollaborator?: Maybe<Scalars['Boolean']['output']>;
-  updateScriptTitle?: Maybe<Script>;
+  updateScript?: Maybe<Script>;
 };
 
 
@@ -72,9 +72,9 @@ export type MutationRemoveCollaboratorArgs = {
 };
 
 
-export type MutationUpdateScriptTitleArgs = {
+export type MutationUpdateScriptArgs = {
   scriptid: Scalars['ID']['input'];
-  title: Scalars['String']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query = {
@@ -109,6 +109,7 @@ export type QueryLoginArgs = {
 
 export type Script = {
   __typename?: 'Script';
+  last_modified: Scalars['String']['output'];
   s3link: Scalars['String']['output'];
   scriptid: Scalars['ID']['output'];
   title: Scalars['String']['output'];
@@ -187,13 +188,13 @@ export type RemoveCollaboratorMutationVariables = Exact<{
 
 export type RemoveCollaboratorMutation = { __typename?: 'Mutation', removeCollaborator?: boolean | null };
 
-export type UpdateScriptTitleMutationVariables = Exact<{
+export type UpdateScriptMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
   title: Scalars['String']['input'];
 }>;
 
 
-export type UpdateScriptTitleMutation = { __typename?: 'Mutation', updateScriptTitle?: { __typename?: 'Script', title: string, s3link: string } | null };
+export type UpdateScriptMutation = { __typename?: 'Mutation' };
 
 export type GetAllSharedScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
@@ -207,7 +208,7 @@ export type GetAllUserScriptsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllUserScriptsQuery = { __typename?: 'Query', getAllUserScripts?: Array<{ __typename?: 'Script', s3link: string, scriptid: string, title: string } | null> | null };
+export type GetAllUserScriptsQuery = { __typename?: 'Query', getAllUserScripts?: Array<{ __typename?: 'Script', s3link: string, scriptid: string, title: string, last_modified: string } | null> | null };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -467,41 +468,41 @@ export function useRemoveCollaboratorMutation(baseOptions?: Apollo.MutationHookO
 export type RemoveCollaboratorMutationHookResult = ReturnType<typeof useRemoveCollaboratorMutation>;
 export type RemoveCollaboratorMutationResult = Apollo.MutationResult<RemoveCollaboratorMutation>;
 export type RemoveCollaboratorMutationOptions = Apollo.BaseMutationOptions<RemoveCollaboratorMutation, RemoveCollaboratorMutationVariables>;
-export const UpdateScriptTitleDocument = gql`
-    mutation UpdateScriptTitle($scriptid: ID!, $title: String!) {
+export const UpdateScriptDocument = gql`
+    mutation UpdateScript($scriptid: ID!, $title: String!) {
   updateScriptTitle(scriptid: $scriptid, title: $title) {
     title
     s3link
   }
 }
     `;
-export type UpdateScriptTitleMutationFn = Apollo.MutationFunction<UpdateScriptTitleMutation, UpdateScriptTitleMutationVariables>;
+export type UpdateScriptMutationFn = Apollo.MutationFunction<UpdateScriptMutation, UpdateScriptMutationVariables>;
 
 /**
- * __useUpdateScriptTitleMutation__
+ * __useUpdateScriptMutation__
  *
- * To run a mutation, you first call `useUpdateScriptTitleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateScriptTitleMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateScriptMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateScriptMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateScriptTitleMutation, { data, loading, error }] = useUpdateScriptTitleMutation({
+ * const [updateScriptMutation, { data, loading, error }] = useUpdateScriptMutation({
  *   variables: {
  *      scriptid: // value for 'scriptid'
  *      title: // value for 'title'
  *   },
  * });
  */
-export function useUpdateScriptTitleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateScriptTitleMutation, UpdateScriptTitleMutationVariables>) {
+export function useUpdateScriptMutation(baseOptions?: Apollo.MutationHookOptions<UpdateScriptMutation, UpdateScriptMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateScriptTitleMutation, UpdateScriptTitleMutationVariables>(UpdateScriptTitleDocument, options);
+        return Apollo.useMutation<UpdateScriptMutation, UpdateScriptMutationVariables>(UpdateScriptDocument, options);
       }
-export type UpdateScriptTitleMutationHookResult = ReturnType<typeof useUpdateScriptTitleMutation>;
-export type UpdateScriptTitleMutationResult = Apollo.MutationResult<UpdateScriptTitleMutation>;
-export type UpdateScriptTitleMutationOptions = Apollo.BaseMutationOptions<UpdateScriptTitleMutation, UpdateScriptTitleMutationVariables>;
+export type UpdateScriptMutationHookResult = ReturnType<typeof useUpdateScriptMutation>;
+export type UpdateScriptMutationResult = Apollo.MutationResult<UpdateScriptMutation>;
+export type UpdateScriptMutationOptions = Apollo.BaseMutationOptions<UpdateScriptMutation, UpdateScriptMutationVariables>;
 export const GetAllSharedScriptsDocument = gql`
     query GetAllSharedScripts($userid: ID!) {
   getAllSharedScripts(userid: $userid) {
@@ -546,6 +547,7 @@ export const GetAllUserScriptsDocument = gql`
     s3link
     scriptid
     title
+    last_modified
   }
 }
     `;
