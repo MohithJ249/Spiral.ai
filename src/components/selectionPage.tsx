@@ -20,11 +20,11 @@ import { useGetAllUserScriptsQuery } from '../generated/graphql';
 
 interface CustomCardProps {
   title?: string;
-  lastModifiedDate?: string;
+  lastModified?: string;
   collaborators?: string[];
 }
 
-function CustomCard({title}: CustomCardProps) {
+function CustomCard({title, lastModified}: CustomCardProps) {
   // const trial = 'testing passing parameters between pages'
   const location = useLocation();
   const currentPath = location.pathname;
@@ -40,6 +40,9 @@ function CustomCard({title}: CustomCardProps) {
         <CardContent>
           <Typography variant="h5" noWrap>
             {title}
+          </Typography>
+          <Typography variant="h6" noWrap>
+            Last Modified: {lastModified}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -80,7 +83,7 @@ function Selection() {
                   <Grid xs={12} sm={6} md={3} item>
                     <Grow in key={index} timeout={1000 + index * 150}>
                       <div>
-                        <CustomCard title={item?.title} lastModifiedDate={new Date().toDateString()} collaborators={['Gordo']}/>
+                        <CustomCard title={item?.title} lastModified={item?.last_modified} collaborators={['Gordo']}/>
                       </div>
                     </Grow>
                   </Grid>
