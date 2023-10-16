@@ -1,6 +1,5 @@
 mutation UpdateScript($scriptid: ID!, $title: String!) {
-  updateScriptTitle(scriptid: $scriptid, title: $title) {
+  updateScript(scriptid: $scriptid, title: $title) {
     title
-    s3link
   }
 }

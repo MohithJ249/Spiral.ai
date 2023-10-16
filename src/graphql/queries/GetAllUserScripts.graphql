@@ -1,6 +1,5 @@
 query GetAllUserScripts($userid: ID!) {
   getAllUserScripts(userid: $userid) {
-    s3link
     scriptid
     title
     last_modified

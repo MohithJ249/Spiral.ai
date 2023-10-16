@@ -1,6 +1,5 @@
-mutation CreateScript($userid: ID!, $title: String!, $s3Link: String!) {
-  createScript(userid: $userid, title: $title, s3link: $s3Link) {
-    s3link
+mutation CreateScript($userid: ID!, $title: String!) {
+  createScript(userid: $userid, title: $title) {
     scriptid
     title
   }

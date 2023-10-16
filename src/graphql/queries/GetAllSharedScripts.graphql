@@ -1,6 +1,5 @@
 query GetAllSharedScripts($userid: ID!) {
   getAllSharedScripts(userid: $userid) {
-    s3link
     scriptid
     title
     userid

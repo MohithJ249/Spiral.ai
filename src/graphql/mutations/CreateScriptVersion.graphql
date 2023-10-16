@@ -1,7 +1,7 @@
 mutation CreateScriptVersion($scriptid: ID!, $s3Link: String!) {
   createScriptVersion(scriptid: $scriptid, s3link: $s3Link) {
-    s3link
     scriptid
     time_saved
+    title
   }
 }

@@ -1,4 +1,3 @@
-import '../../components/selectionPage';
 import React, { useState, useEffect } from 'react';
 import { useCreateUserMutation } from '../../generated/graphql';
 import { Button, FormControl, Input, InputLabel, Alert } from '@mui/material';

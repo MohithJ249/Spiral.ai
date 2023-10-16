@@ -1,4 +1,3 @@
-import '../../components/selectionPage';
 import React, { useState, useEffect } from 'react';
 import { useLoginLazyQuery } from '../../generated/graphql';
 import { Button, TextField, Container, Typography, Box, Alert } from '@mui/material';

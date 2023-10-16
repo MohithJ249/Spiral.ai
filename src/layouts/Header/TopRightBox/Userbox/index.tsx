@@ -60,9 +60,8 @@ const UserBoxDescription = styled(Typography)(
 
 function HeaderUserbox() {
   const user = {
-    name: 'Gordon Ramsey',
+    name: localStorage.getItem('username') || 'Guest',
     avatar: '/static/images/avatars/1.jpg',
-    jobtitle: 'Project Manager'
   };
 
   const ref = useRef<any>(null);
@@ -83,9 +82,6 @@ function HeaderUserbox() {
         <Hidden mdDown>
           <UserBoxText>
             <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
-            <UserBoxDescription variant="body2">
-              {user.jobtitle}
-            </UserBoxDescription>
           </UserBoxText>
         </Hidden>
         <Hidden smDown>

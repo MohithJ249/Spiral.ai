@@ -1,14 +1,12 @@
 import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor } from '@mui/material';
 import { ReactMediaRecorder, ReactMediaRecorderRenderProps } from 'react-media-recorder';
 import { useParams } from 'react-router';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { preProcessFile } from 'typescript';
-
-
-
+import { Storage } from 'aws-amplify';
 
 export default function EditingPage() {
-    const {extraParameter} = useParams();
+    const {extraParameter: title} = useParams();
 
     const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false);
 
@@ -19,16 +17,27 @@ export default function EditingPage() {
     // to record latest audio recording's name
     const [recordingName, setRecordingName] = useState<string>('');
 
-    const [test, setTest] = useState<boolean>(false);
+
+    const getScriptContent = async () => {
+        const fileName = "userid-"+localStorage.getItem('userid') + "/" + title + ".txt";
+        try {
+            const fileContent = await Storage.get(fileName, { download: true });
+            const textContent = await fileContent.Body?.text();
+            console.log('Text Content:', textContent);
+            setScriptContent(textContent || '');
+        } 
+        catch (error) {
+            console.error('Error downloading file:', error);
+        }
+    }
+
+    const [scriptContent, setScriptContent] = useState<string | undefined>(undefined);
+    getScriptContent();
 
     return (
         <>
             <div>
-                <Typography variant="h3">Add editing page here. Check in content/Editing/index.tsx file</Typography>
-
-                <Typography variant="h3">Test Parameter passing below</Typography>            
-
-                <Typography variant="h3">Worked? {extraParameter}</Typography>
+                <Typography variant="h3">Script: {title}</Typography>
 
                 <div style={{ flexGrow: 1 }}>
                     <Grid sx={{ flexGrow: 1 }} container spacing={2}>
@@ -100,7 +109,6 @@ export default function EditingPage() {
                                     <Grid item>
                                         <TextField
                                         id="outlined-multiline-static"
-                                        label="Multiline Text"
                                         multiline
                                         // height of 1 row = 56px, so adjust accordingly
                                         rows={window.innerHeight * 0.8 / 24}
@@ -109,6 +117,8 @@ export default function EditingPage() {
                                             height: window.innerHeight * 0.8,
                                             width: window.innerWidth * 0.6,
                                         }}
+                                        value={scriptContent}
+                                        onChange={(e) => setScriptContent(e.target.value)}
                                         />
                                     </Grid>
                                 </Grow>

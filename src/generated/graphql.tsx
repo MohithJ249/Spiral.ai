@@ -37,15 +37,14 @@ export type MutationAddCollaboratorArgs = {
 
 
 export type MutationCreateScriptArgs = {
-  s3link: Scalars['String']['input'];
   title: Scalars['String']['input'];
   userid: Scalars['ID']['input'];
 };
 
 
 export type MutationCreateScriptVersionArgs = {
-  s3link: Scalars['String']['input'];
   scriptid: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
 };
 
 
@@ -110,7 +109,6 @@ export type QueryLoginArgs = {
 export type Script = {
   __typename?: 'Script';
   last_modified: Scalars['String']['output'];
-  s3link: Scalars['String']['output'];
   scriptid: Scalars['ID']['output'];
   title: Scalars['String']['output'];
   userid: Scalars['ID']['output'];
@@ -118,9 +116,9 @@ export type Script = {
 
 export type ScriptVersion = {
   __typename?: 'ScriptVersion';
-  s3link: Scalars['String']['output'];
   scriptid: Scalars['ID']['output'];
   time_saved: Scalars['String']['output'];
+  title: Scalars['String']['output'];
   versionid: Scalars['ID']['output'];
 };
 
@@ -143,11 +141,10 @@ export type AddCollaboratorMutation = { __typename?: 'Mutation', addCollaborator
 export type CreateScriptMutationVariables = Exact<{
   userid: Scalars['ID']['input'];
   title: Scalars['String']['input'];
-  s3Link: Scalars['String']['input'];
 }>;
 
 
-export type CreateScriptMutation = { __typename?: 'Mutation', createScript?: { __typename?: 'Script', s3link: string, scriptid: string, title: string } | null };
+export type CreateScriptMutation = { __typename?: 'Mutation', createScript?: { __typename?: 'Script', scriptid: string, title: string } | null };
 
 export type CreateScriptVersionMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
@@ -155,7 +152,7 @@ export type CreateScriptVersionMutationVariables = Exact<{
 }>;
 
 
-export type CreateScriptVersionMutation = { __typename?: 'Mutation', createScriptVersion?: { __typename?: 'ScriptVersion', s3link: string, scriptid: string, time_saved: string } | null };
+export type CreateScriptVersionMutation = { __typename?: 'Mutation', createScriptVersion?: { __typename?: 'ScriptVersion', scriptid: string, time_saved: string, title: string } | null };
 
 export type CreateUserMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -194,21 +191,21 @@ export type UpdateScriptMutationVariables = Exact<{
 }>;
 
 
-export type UpdateScriptMutation = { __typename?: 'Mutation' };
+export type UpdateScriptMutation = { __typename?: 'Mutation', updateScript?: { __typename?: 'Script', title: string } | null };
 
 export type GetAllSharedScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
 }>;
 
 
-export type GetAllSharedScriptsQuery = { __typename?: 'Query', getAllSharedScripts?: Array<{ __typename?: 'Script', s3link: string, scriptid: string, title: string, userid: string } | null> | null };
+export type GetAllSharedScriptsQuery = { __typename?: 'Query', getAllSharedScripts?: Array<{ __typename?: 'Script', scriptid: string, title: string, userid: string } | null> | null };
 
 export type GetAllUserScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
 }>;
 
 
-export type GetAllUserScriptsQuery = { __typename?: 'Query', getAllUserScripts?: Array<{ __typename?: 'Script', s3link: string, scriptid: string, title: string, last_modified: string } | null> | null };
+export type GetAllUserScriptsQuery = { __typename?: 'Query', getAllUserScripts?: Array<{ __typename?: 'Script', scriptid: string, title: string, last_modified: string } | null> | null };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -220,7 +217,7 @@ export type GetScriptVersionsQueryVariables = Exact<{
 }>;
 
 
-export type GetScriptVersionsQuery = { __typename?: 'Query', getScriptVersions?: Array<{ __typename?: 'ScriptVersion', s3link: string, scriptid: string, time_saved: string, versionid: string } | null> | null };
+export type GetScriptVersionsQuery = { __typename?: 'Query', getScriptVersions?: Array<{ __typename?: 'ScriptVersion', scriptid: string, time_saved: string, title: string } | null> | null };
 
 export type LoginQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -264,9 +261,8 @@ export type AddCollaboratorMutationHookResult = ReturnType<typeof useAddCollabor
 export type AddCollaboratorMutationResult = Apollo.MutationResult<AddCollaboratorMutation>;
 export type AddCollaboratorMutationOptions = Apollo.BaseMutationOptions<AddCollaboratorMutation, AddCollaboratorMutationVariables>;
 export const CreateScriptDocument = gql`
-    mutation CreateScript($userid: ID!, $title: String!, $s3Link: String!) {
-  createScript(userid: $userid, title: $title, s3link: $s3Link) {
-    s3link
+    mutation CreateScript($userid: ID!, $title: String!) {
+  createScript(userid: $userid, title: $title) {
     scriptid
     title
   }
@@ -289,7 +285,6 @@ export type CreateScriptMutationFn = Apollo.MutationFunction<CreateScriptMutatio
  *   variables: {
  *      userid: // value for 'userid'
  *      title: // value for 'title'
- *      s3Link: // value for 's3Link'
  *   },
  * });
  */
@@ -303,9 +298,9 @@ export type CreateScriptMutationOptions = Apollo.BaseMutationOptions<CreateScrip
 export const CreateScriptVersionDocument = gql`
     mutation CreateScriptVersion($scriptid: ID!, $s3Link: String!) {
   createScriptVersion(scriptid: $scriptid, s3link: $s3Link) {
-    s3link
     scriptid
     time_saved
+    title
   }
 }
     `;
@@ -470,9 +465,8 @@ export type RemoveCollaboratorMutationResult = Apollo.MutationResult<RemoveColla
 export type RemoveCollaboratorMutationOptions = Apollo.BaseMutationOptions<RemoveCollaboratorMutation, RemoveCollaboratorMutationVariables>;
 export const UpdateScriptDocument = gql`
     mutation UpdateScript($scriptid: ID!, $title: String!) {
-  updateScriptTitle(scriptid: $scriptid, title: $title) {
+  updateScript(scriptid: $scriptid, title: $title) {
     title
-    s3link
   }
 }
     `;
@@ -506,7 +500,6 @@ export type UpdateScriptMutationOptions = Apollo.BaseMutationOptions<UpdateScrip
 export const GetAllSharedScriptsDocument = gql`
     query GetAllSharedScripts($userid: ID!) {
   getAllSharedScripts(userid: $userid) {
-    s3link
     scriptid
     title
     userid
@@ -544,7 +537,6 @@ export type GetAllSharedScriptsQueryResult = Apollo.QueryResult<GetAllSharedScri
 export const GetAllUserScriptsDocument = gql`
     query GetAllUserScripts($userid: ID!) {
   getAllUserScripts(userid: $userid) {
-    s3link
     scriptid
     title
     last_modified
@@ -618,10 +610,9 @@ export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAll
 export const GetScriptVersionsDocument = gql`
     query GetScriptVersions($scriptid: ID!) {
   getScriptVersions(scriptid: $scriptid) {
-    s3link
     scriptid
     time_saved
-    versionid
+    title
   }
 }
     `;

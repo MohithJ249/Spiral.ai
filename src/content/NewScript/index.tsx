@@ -3,21 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useCreateScriptMutation } from '../../generated/graphql';
 import axios from 'axios';
-import { Storage, Amplify } from 'aws-amplify';
-
-Amplify.configure({
-    Auth: {
-      identityPoolId: 'us-east-1:2ee0929a-d64e-47db-8092-84863f078496',
-      region: 'us-east-1',
-    },
-    Storage: {
-      AWSS3: {
-        bucket: 'capstone-spiral',
-        region: 'us-east-1',
-        identityPoolId: 'us-east-1:2ee0929a-d64e-47db-8092-84863f078496',
-      },
-    },
-  });
+import { Storage } from 'aws-amplify';
 
 export default function NewScriptPage() {
     const [spacing, setSpacing] = React.useState(2);
@@ -25,61 +11,52 @@ export default function NewScriptPage() {
     const [prompt, setPrompt] = useState<string>('');
     const [additionalInfo, setAdditionalInfo] = useState<string>('');
 
-    const [createScript, { data, loading, error }] = useCreateScriptMutation();
-
+    const [createScript] = useCreateScriptMutation();
+    const [loading, setLoading] = useState<boolean>(false);
     const [errorText, setErrorText] = useState<string | null>(null);
-
-    
-
-    // get window dimensions
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-
+        setLoading(true);
         if(title !== '' && prompt !== '') {
             setErrorText(null);
 
-            // Encode the query parameter
+            const fileName = "userid-"+localStorage.getItem('userid') + "/" + title + ".txt";
             const queryParam = encodeURIComponent(prompt+". Make sure to include this information: "+additionalInfo+".");
-
-            // // Build the complete URL
             const apiUrl = `https://2da9ogp80m.execute-api.us-east-2.amazonaws.com/dev/replicatelambda?prompt_input=${queryParam}`;
 
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
+            const response = await axios.get(apiUrl, {
+                headers: {
+                'Content-Type': 'application/json'
                 }
-                };
-
-            xhttp.open("GET", apiUrl, true);
-            xhttp.setRequestHeader("Content-Type", "application/json");
-            xhttp.send()
-
-            // try {
-            //     await Storage.put("newFile", "basic content", {
-            //       contentType: 'text/plain',
-            //     });
-            //   } catch (error) {
-            //     console.error('Error uploading file:', error);
-            //   }
-
-            // Call lambda function with state information
-            // Create new s3 link file with generated text
-            // const s3Link = '';
-            // await createScript({
-            //     variables: { 
-            //         userid: localStorage.getItem('userid') || '',
-            //         title: title,
-            //         s3Link: s3Link,
-            //     },
-            // });
-            // Redirect to editing page
+            });
+            
+            if (response.status === 200) {
+                const generatedScript = response.data.output;
+        
+                try {
+                    await Storage.put(fileName, generatedScript, {
+                        contentType: 'text/plain',
+                    });
+                } 
+                catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            
+                await createScript({
+                    variables: {
+                        userid: localStorage.getItem('userid') || '',
+                        title: title,
+                    },
+                });
+        
+                window.location.href = '/Editing/' + title;
+            }
         }
         else {
             setErrorText("Error: Please fill out all required fields.");
         }
+        setLoading(false);
     };
     
     return (
@@ -106,6 +83,7 @@ export default function NewScriptPage() {
                     name="title"
                     autoFocus
                     value={title} onChange={(e) => setTitle(e.target.value)}
+                    sx={{ marginTop: 2 }}
                     />
                     <TextField
                     variant="outlined"
@@ -116,17 +94,21 @@ export default function NewScriptPage() {
                     id="prompt"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
+                    placeholder='Write a speech about covid'
+                    sx={{ marginTop: 2 }}
                     />
 
                     <TextField
                     id="additionalInformation"
-                    label="List any additional information that you would like to include in your script here"
+                    label="Additional Information"
+                    placeholder='List any additional information that you would like to include in your script here'
                     multiline
                     rows={window.innerHeight * 0.8 / 48}
                     variant="outlined"
                     sx={{
                         height: window.innerHeight * 0.4,
                         width: window.innerWidth * 0.6,
+                        marginTop: 2,
                     }}
                     />
                     
