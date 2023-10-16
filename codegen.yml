@@ -1,4 +1,4 @@
-schema: https://spiral-backend-9793e325e89f.herokuapp.com
+schema: https://spiral-backend-9793e325e89f.herokuapp.com/
 documents: "src/**/*.graphql"
 generates:
   src/generated/graphql.tsx:

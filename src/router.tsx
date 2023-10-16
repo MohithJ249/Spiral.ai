@@ -20,7 +20,7 @@ const Loader = (Component : any) => (props: any) =>
 
 const MainPage = Loader(lazy(() => import('./content/MainPage')));
 
-const MyDocs = Loader(lazy(() => import('./content/MyDocs')));
+const MyScripts = Loader(lazy(() => import('./content/MyScripts')));
 
 const NewScript = Loader(lazy(() => import('./content/NewScript')));
 
@@ -34,6 +34,8 @@ const Editing = Loader(lazy(() => import('./content/Editing')));
 
 const Login = Loader(lazy(() => import('./content/Login')));
 
+const CreateAccount = Loader(lazy(() => import('./content/CreateAccount')));
+
 const routes: RouteObject[] = [
   {
     path: '',
@@ -44,8 +46,8 @@ const routes: RouteObject[] = [
         element: <MainPage />
       },
       {
-        path: 'MyDocs',
-        element: <MyDocs />
+        path: 'MyScripts',
+        element: <MyScripts />
       },
       {
         path: 'NewScriptPage',
@@ -62,6 +64,10 @@ const routes: RouteObject[] = [
       {
         path: '/',
         element: <Login />
+      },
+      {
+        path: '/CreateAccount',
+        element: <CreateAccount />
       },
       {
         path: 'Editing',
