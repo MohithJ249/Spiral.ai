@@ -1,7 +1,7 @@
 import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor } from '@mui/material';
 import { ReactMediaRecorder, ReactMediaRecorderRenderProps } from 'react-media-recorder';
 import { useParams } from 'react-router';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { preProcessFile } from 'typescript';
 import { Storage } from 'aws-amplify';
 
@@ -18,21 +18,27 @@ export default function EditingPage() {
     const [recordingName, setRecordingName] = useState<string>('');
 
 
-    const getScriptContent = async () => {
-        const fileName = "userid-"+localStorage.getItem('userid') + "/" + title + ".txt";
-        try {
-            const fileContent = await Storage.get(fileName, { download: true });
-            const textContent = await fileContent.Body?.text();
-            console.log('Text Content:', textContent);
-            setScriptContent(textContent || '');
-        } 
-        catch (error) {
-            console.error('Error downloading file:', error);
-        }
-    }
-
     const [scriptContent, setScriptContent] = useState<string | undefined>(undefined);
-    getScriptContent();
+
+    function populateScriptContent() {
+        const fileName = "userid-" + localStorage.getItem('userid') + "/" + title + ".txt";
+
+        Storage.get(fileName, { download: true })
+            .then(fileContent => {
+                return fileContent.Body?.text();
+            })
+            .then(textContent => {
+                console.log('Text Content:', textContent);
+                setScriptContent(textContent || '');
+            })
+            .catch(error => {
+                console.error('Error downloading file:', error);
+        });      
+    }
+      
+    useEffect(() => {
+        populateScriptContent();
+    }, []);
 
     return (
         <>
@@ -68,6 +74,7 @@ export default function EditingPage() {
                                                         setStartButtonClicked(false);
                                                         stopRecording();
                                                         if (mediaBlobUrl !== null) {
+                                                            console.log("HERE")
                                                             if(recordingName === '' || recordingName === null) {
                                                                 var date : Date = new Date();
                                                                 // console.log(date.getTime().toString());
