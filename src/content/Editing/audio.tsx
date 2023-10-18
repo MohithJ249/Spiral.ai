@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Storage } from 'aws-amplify';
+import { Button, Input } from '@mui/material';
 
 function AudioRecorder() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [recording, setRecording] = useState(false);
+  const [recordingName, setRecordingName] = useState<string>();
   const [audioUrl, setAudioUrl] = useState<string | undefined>(undefined);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
@@ -48,11 +51,24 @@ function AudioRecorder() {
     }
   };
 
+  const saveRecording = () => {
+    // First save recording to database to ensure no duplicate names
+    // Then save to S3
+  }
+
+  const saveRecordingDisabled = () => {
+    return !audioUrl || recordingName === undefined || recordingName === '';
+  }
+
   return (
     <div>
-      <button onClick={() => setRecording(!recording)}>
+      <Button onClick={() => setRecording(!recording)}>
         {recording ? 'Stop Recording' : 'Start Recording'}
-      </button>
+      </Button>
+      <Button onClick={saveRecording} disabled={saveRecordingDisabled()}>
+        Save Recording
+      </Button>
+      <Input placeholder="Recording Name" value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
       <audio src={audioUrl} controls />
     </div>
   );

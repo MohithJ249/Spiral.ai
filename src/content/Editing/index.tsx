@@ -7,14 +7,13 @@ import { Storage } from 'aws-amplify';
 import AudioRecorder from './audio';
 
 export default function EditingPage() {
-    const {extraParameter: title} = useParams();
-
-    const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false);
-
+    const [title, setTitle] = useState<string | null>(null);
+    const [scriptid, setScriptid] = useState<string | null>(null);
     const [scriptContent, setScriptContent] = useState<string | undefined>(undefined);
 
     function populateScriptContent() {
-        const fileName = "userid-" + localStorage.getItem('userid') + "/" + title + ".txt";
+        const userid = localStorage.getItem('userid');
+        const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/"+title+".txt";
 
         Storage.get(fileName, { download: true })
             .then(fileContent => {
@@ -30,8 +29,16 @@ export default function EditingPage() {
     }
       
     useEffect(() => {
-        populateScriptContent();
+        const url = window.location.search;
+        const searchParams = new URLSearchParams(url);
+        setTitle(searchParams.get('title'));
+        setScriptid(searchParams.get('scriptid'));
     }, []);
+
+    useEffect(() => {
+        if(title && scriptid)
+            populateScriptContent();
+    }, [title, scriptid]);
 
     return (
         <>
