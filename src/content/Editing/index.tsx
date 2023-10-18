@@ -4,12 +4,12 @@ import { useParams } from 'react-router';
 import { useState, useMemo, useEffect } from 'react';
 import { preProcessFile } from 'typescript';
 import { Storage } from 'aws-amplify';
-import AudioRecorder from './audio';
+import AudioRecorder from '../../components/audio';
 
 export default function EditingPage() {
-    const [title, setTitle] = useState<string | undefined>(undefined);
-    const [scriptid, setScriptid] = useState<string | undefined>(undefined);
-    const [scriptContent, setScriptContent] = useState<string | undefined>(undefined);
+    const [title, setTitle] = useState<string>();
+    const [scriptid, setScriptid] = useState<string>();
+    const [scriptContent, setScriptContent] = useState<string>();
 
     function populateScriptContent() {
         const userid = localStorage.getItem('userid');
@@ -88,5 +88,8 @@ export default function EditingPage() {
                 </div>
             </>
         );
+    }
+    else {
+        return <></>
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
 import { Button, Input, Alert } from '@mui/material';
-import { useSaveRecordingMutation } from '../../generated/graphql';
+import { useSaveRecordingMutation } from '../generated/graphql';
 
 interface AudioRecorderProps {
   scriptid: string;
@@ -24,12 +24,6 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
       stopRecording();
     }
   }, [recording]);
-
-  useEffect(() => {
-    if (error) {
-      setErrorText(error.message);
-    }
-  }, [error]);
 
   const startRecording = async () => {
     try {
@@ -71,8 +65,25 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
           scriptid: scriptid,
           title: recordingName,
         }
-      })
-      // Then save to S3
+      }).then(() => {
+        setErrorText(undefined);
+        // Save recording to S3
+        const userid = localStorage.getItem('userid');
+        const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/recordings/"+recordingName+".wav";
+        Storage.put(fileName, audioUrl, {
+          contentType: 'audio/wav',
+          level: 'public',
+        }).then(() => {
+          setRecordingName('');
+          setAudioUrl('');
+          setErrorText('');
+        }).catch((error) => {
+          setErrorText("Error: " + error.message)
+        });
+      }).catch((error) => {
+        if(error.message.includes('duplicate key value violates unique constraint "uq_scriptid_title"'))
+          setErrorText("A recording with that name already exists. Please choose a different name.");
+      });
     }
 
   }
