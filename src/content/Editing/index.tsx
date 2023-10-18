@@ -7,8 +7,8 @@ import { Storage } from 'aws-amplify';
 import AudioRecorder from './audio';
 
 export default function EditingPage() {
-    const [title, setTitle] = useState<string | null>(null);
-    const [scriptid, setScriptid] = useState<string | null>(null);
+    const [title, setTitle] = useState<string | undefined>(undefined);
+    const [scriptid, setScriptid] = useState<string | undefined>(undefined);
     const [scriptContent, setScriptContent] = useState<string | undefined>(undefined);
 
     function populateScriptContent() {
@@ -31,8 +31,8 @@ export default function EditingPage() {
     useEffect(() => {
         const url = window.location.search;
         const searchParams = new URLSearchParams(url);
-        setTitle(searchParams.get('title'));
-        setScriptid(searchParams.get('scriptid'));
+        setTitle(searchParams.get('title') || undefined);
+        setScriptid(searchParams.get('scriptid') || undefined);
     }, []);
 
     useEffect(() => {
@@ -40,51 +40,53 @@ export default function EditingPage() {
             populateScriptContent();
     }, [title, scriptid]);
 
-    return (
-        <>
-            <div>
-                <Typography variant="h3">Script: {title}</Typography>
+    if(scriptid && title) {
+        return (
+            <>
+                <div>
+                    <Typography variant="h3">Script: {title}</Typography>
 
-                <div style={{ flexGrow: 1 }}>
-                    <Grid sx={{ flexGrow: 1 }} container spacing={2}>
-                        <Grid item xs={12}>
-                            <Grid container justifyContent="center" spacing={2}>
-                                <Grow in key='RecordingPane' timeout={1000}>
-                                    <Grid item>
-                                        <Paper
+                    <div style={{ flexGrow: 1 }}>
+                        <Grid sx={{ flexGrow: 1 }} container spacing={2}>
+                            <Grid item xs={12}>
+                                <Grid container justifyContent="center" spacing={2}>
+                                    <Grow in key='RecordingPane' timeout={1000}>
+                                        <Grid item>
+                                            <Paper
+                                                sx={{
+                                                height: window.innerHeight * 0.8,
+                                                width: window.innerWidth * 0.2,
+                                                backgroundColor: '#eeeeee',
+                                                }}
+                                            >
+                                                <AudioRecorder scriptid={scriptid}/>
+                                            </Paper>
+                                        </Grid>
+                                    </Grow>
+
+                                    <Grow in key='EditingPane' timeout={1500}>
+                                        <Grid item>
+                                            <TextField
+                                            id="outlined-multiline-static"
+                                            multiline
+                                            // height of 1 row = 56px, so adjust accordingly
+                                            rows={window.innerHeight * 0.8 / 24}
+                                            variant="outlined"
                                             sx={{
-                                            height: window.innerHeight * 0.8,
-                                            width: window.innerWidth * 0.2,
-                                            backgroundColor: '#eeeeee',
+                                                height: window.innerHeight * 0.8,
+                                                width: window.innerWidth * 0.6,
                                             }}
-                                        >
-                                            <AudioRecorder />
-                                        </Paper>
-                                    </Grid>
-                                </Grow>
-
-                                <Grow in key='EditingPane' timeout={1500}>
-                                    <Grid item>
-                                        <TextField
-                                        id="outlined-multiline-static"
-                                        multiline
-                                        // height of 1 row = 56px, so adjust accordingly
-                                        rows={window.innerHeight * 0.8 / 24}
-                                        variant="outlined"
-                                        sx={{
-                                            height: window.innerHeight * 0.8,
-                                            width: window.innerWidth * 0.6,
-                                        }}
-                                        value={scriptContent}
-                                        onChange={(e) => setScriptContent(e.target.value)}
-                                        />
-                                    </Grid>
-                                </Grow>
+                                            value={scriptContent}
+                                            onChange={(e) => setScriptContent(e.target.value)}
+                                            />
+                                        </Grid>
+                                    </Grow>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
+                    </div>
                 </div>
-            </div>
-        </>
-    );
+            </>
+        );
+    }
 }

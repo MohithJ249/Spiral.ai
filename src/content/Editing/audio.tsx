@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
-import { Button, Input } from '@mui/material';
+import { Button, Input, Alert } from '@mui/material';
+import { useSaveRecordingMutation } from '../../generated/graphql';
 
-function AudioRecorder() {
-  const [stream, setStream] = useState<MediaStream | null>(null);
+interface AudioRecorderProps {
+  scriptid: string;
+}
+
+function AudioRecorder({ scriptid }: AudioRecorderProps) {
+  const [stream, setStream] = useState<MediaStream>();
   const [recording, setRecording] = useState(false);
   const [recordingName, setRecordingName] = useState<string>();
-  const [audioUrl, setAudioUrl] = useState<string | undefined>(undefined);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string>();
+  const mediaRecorderRef = useRef<MediaRecorder>();
   const audioChunks = useRef<Blob[]>([]);
+  const [saveRecordingInDatabase, { loading, error }] = useSaveRecordingMutation();
+  const [errorText, setErrorText] = useState<string>();
 
   useEffect(() => {
     if (recording) {
@@ -18,6 +25,11 @@ function AudioRecorder() {
     }
   }, [recording]);
 
+  useEffect(() => {
+    if (error) {
+      setErrorText(error.message);
+    }
+  }, [error]);
 
   const startRecording = async () => {
     try {
@@ -52,16 +64,26 @@ function AudioRecorder() {
   };
 
   const saveRecording = () => {
-    // First save recording to database to ensure no duplicate names
-    // Then save to S3
+    if(recordingName) {
+      // First save recording to database to ensure no duplicate names
+      saveRecordingInDatabase({
+        variables: {
+          scriptid: scriptid,
+          title: recordingName,
+        }
+      })
+      // Then save to S3
+    }
+
   }
 
   const saveRecordingDisabled = () => {
-    return !audioUrl || recordingName === undefined || recordingName === '';
+    return !audioUrl || recordingName === undefined || recordingName === '' || loading;
   }
 
   return (
     <div>
+      {errorText && <Alert severity="error">{errorText}</Alert>}
       <Button onClick={() => setRecording(!recording)}>
         {recording ? 'Stop Recording' : 'Start Recording'}
       </Button>

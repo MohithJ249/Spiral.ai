@@ -26,6 +26,7 @@ export type Mutation = {
   deleteScript?: Maybe<Scalars['Boolean']['output']>;
   deleteUser?: Maybe<Scalars['Boolean']['output']>;
   removeCollaborator?: Maybe<Scalars['Boolean']['output']>;
+  saveRecording?: Maybe<Scalars['Boolean']['output']>;
   updateScript?: Maybe<Script>;
 };
 
@@ -71,6 +72,12 @@ export type MutationRemoveCollaboratorArgs = {
 };
 
 
+export type MutationSaveRecordingArgs = {
+  scriptid: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateScriptArgs = {
   scriptid: Scalars['ID']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
@@ -79,8 +86,10 @@ export type MutationUpdateScriptArgs = {
 export type Query = {
   __typename?: 'Query';
   getAllSharedScripts?: Maybe<Array<Maybe<Script>>>;
+  getAllUserRecordings?: Maybe<Array<Maybe<Recording>>>;
   getAllUserScripts?: Maybe<Array<Maybe<Script>>>;
   getAllUsers?: Maybe<Array<Maybe<User>>>;
+  getScriptRecordings?: Maybe<Array<Maybe<Recording>>>;
   getScriptVersions?: Maybe<Array<Maybe<ScriptVersion>>>;
   login?: Maybe<User>;
 };
@@ -91,7 +100,18 @@ export type QueryGetAllSharedScriptsArgs = {
 };
 
 
+export type QueryGetAllUserRecordingsArgs = {
+  userid: Scalars['ID']['input'];
+};
+
+
 export type QueryGetAllUserScriptsArgs = {
+  userid: Scalars['ID']['input'];
+};
+
+
+export type QueryGetScriptRecordingsArgs = {
+  title: Scalars['String']['input'];
   userid: Scalars['ID']['input'];
 };
 
@@ -104,6 +124,14 @@ export type QueryGetScriptVersionsArgs = {
 export type QueryLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type Recording = {
+  __typename?: 'Recording';
+  recordingid: Scalars['ID']['output'];
+  scriptid: Scalars['ID']['output'];
+  time_saved: Scalars['String']['output'];
+  title: Scalars['String']['output'];
 };
 
 export type Script = {
@@ -184,6 +212,14 @@ export type RemoveCollaboratorMutationVariables = Exact<{
 
 
 export type RemoveCollaboratorMutation = { __typename?: 'Mutation', removeCollaborator?: boolean | null };
+
+export type SaveRecordingMutationVariables = Exact<{
+  scriptid: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+}>;
+
+
+export type SaveRecordingMutation = { __typename?: 'Mutation', saveRecording?: boolean | null };
 
 export type UpdateScriptMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
@@ -463,6 +499,38 @@ export function useRemoveCollaboratorMutation(baseOptions?: Apollo.MutationHookO
 export type RemoveCollaboratorMutationHookResult = ReturnType<typeof useRemoveCollaboratorMutation>;
 export type RemoveCollaboratorMutationResult = Apollo.MutationResult<RemoveCollaboratorMutation>;
 export type RemoveCollaboratorMutationOptions = Apollo.BaseMutationOptions<RemoveCollaboratorMutation, RemoveCollaboratorMutationVariables>;
+export const SaveRecordingDocument = gql`
+    mutation SaveRecording($scriptid: ID!, $title: String!) {
+  saveRecording(scriptid: $scriptid, title: $title)
+}
+    `;
+export type SaveRecordingMutationFn = Apollo.MutationFunction<SaveRecordingMutation, SaveRecordingMutationVariables>;
+
+/**
+ * __useSaveRecordingMutation__
+ *
+ * To run a mutation, you first call `useSaveRecordingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveRecordingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveRecordingMutation, { data, loading, error }] = useSaveRecordingMutation({
+ *   variables: {
+ *      scriptid: // value for 'scriptid'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useSaveRecordingMutation(baseOptions?: Apollo.MutationHookOptions<SaveRecordingMutation, SaveRecordingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveRecordingMutation, SaveRecordingMutationVariables>(SaveRecordingDocument, options);
+      }
+export type SaveRecordingMutationHookResult = ReturnType<typeof useSaveRecordingMutation>;
+export type SaveRecordingMutationResult = Apollo.MutationResult<SaveRecordingMutation>;
+export type SaveRecordingMutationOptions = Apollo.BaseMutationOptions<SaveRecordingMutation, SaveRecordingMutationVariables>;
 export const UpdateScriptDocument = gql`
     mutation UpdateScript($scriptid: ID!, $title: String!) {
   updateScript(scriptid: $scriptid, title: $title) {

@@ -1,0 +1,3 @@
+mutation SaveRecording($scriptid: ID!, $title: String!) {
+  saveRecording(scriptid: $scriptid, title: $title)
+}

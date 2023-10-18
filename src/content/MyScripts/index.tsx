@@ -20,16 +20,17 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   interface CustomCardProps {
     title?: string;
     lastModified?: string;
+    scriptid?: string;
   }
   
-  function CustomCard({title, lastModified}: CustomCardProps) {
+  function CustomCard({title, scriptid, lastModified}: CustomCardProps) {
     const location = useLocation();
     const currentPath = location.pathname;
     return (
       <Card>
         {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
         of the script and last modified date*/}
-        <CardActionArea component={NavLink} to={`/Editing/${title}`}>
+        <CardActionArea component={NavLink}   to={{pathname: `/Editing`,search: `?title=${title}&scriptid=${scriptid}`,}}>
           <CardContent>
             <Typography variant="h5" noWrap>
               {title}
@@ -61,7 +62,7 @@ export default function MyScripts() {
                   <Grid xs={12} sm={6} md={3} item>
                     <Grow in key={index} timeout={1000 + index * 150}>
                       <div>
-                        <CustomCard title={item?.title} lastModified={item?.last_modified}/>
+                        <CustomCard title={item?.title} lastModified={item?.last_modified} scriptid={item?.scriptid}/>
                       </div>
                     </Grow>
                   </Grid>
