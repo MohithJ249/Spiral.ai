@@ -8,29 +8,30 @@ import AudioRecorder from '../../components/AudioRecorder';
 
 import MakeVersionButton from '../../components/MakeVersionButton';
 
-
 export default function EditingPage() {
     const [title, setTitle] = useState<string>();
     const [scriptid, setScriptid] = useState<string>();
     const [scriptContent, setScriptContent] = useState<string>();
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
+    const [notificationText, setNotificationText] = useState<string>();
+    const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
+    const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
 
-    function populateScriptContent() {
-        const userid = localStorage.getItem('userid');
-        const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/"+title+".txt";
-
-        Storage.get(fileName, { download: true })
-            .then(fileContent => {
-                return fileContent.Body?.text();
-            })
-            .then(textContent => {
-                console.log('Text Content:', textContent);
-                setScriptContent(textContent || '');
-            })
-            .catch(error => {
-                console.error('Error downloading file:', error);
-        });      
-    }
+    // Add ctrl+s shortcut to save script
+    useEffect(() => {
+        const handleSave = (e: any) => {
+          if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            saveScript();
+          }
+        };
+    
+        document.addEventListener('keydown', handleSave);
+    
+        return () => {
+          document.removeEventListener('keydown', handleSave);
+        };
+      }, [scriptContent]);
       
     useEffect(() => {
         const url = window.location.search;
@@ -45,23 +46,53 @@ export default function EditingPage() {
     }, [title, scriptid]);
 
     const saveScript = () => {
-        setIsSavingScript(true);
+        if(!isSavingScript) {
+            setIsSavingScript(true);
+            const userid = localStorage.getItem('userid');
+            const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/"+title+".txt";
+            Storage.put(fileName, scriptContent || '', {
+                contentType: 'text/plain'
+            }).then(() => {
+                showNotification('success', 'Script saved successfully!');
+            }).catch(() => {
+                showNotification('error', 'Error saving script, please try again.');
+            }).finally(() => {
+                setIsSavingScript(false);
+            });
+        }
+    }
+
+    const showNotification = (severity: 'success' | 'info' | 'warning' | 'error', text: string) => {
+        setNotificationSeverity(severity);
+        setNotificationText(text);
+        setIsNotificationOpen(true);
+    }
+
+    const populateScriptContent = () => {
         const userid = localStorage.getItem('userid');
         const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/"+title+".txt";
-        Storage.put(fileName, scriptContent || '', {
-            contentType: 'text/plain'
-        }).then(() => {
-            setIsSavingScript(false);
-        }).catch(() => {
-            setIsSavingScript(false);
-        });
+
+        Storage.get(fileName, { download: true })
+            .then(fileContent => {
+                return fileContent.Body?.text();
+            })
+            .then(textContent => {
+                setScriptContent(textContent || '');
+            })
+            .catch(error => {
+                console.error('Error downloading file:', error);
+        });      
     }
 
     if(scriptid && title !== undefined && scriptContent !== undefined) {
         return (
             <>
                 <div>
-                    
+                    <Snackbar open={isNotificationOpen} autoHideDuration={6000} onClose={()=>setIsNotificationOpen(false)}>
+                        <Alert onClose={()=>setIsNotificationOpen(false)} severity={notificationSeverity} sx={{ width: '100%' }}>
+                            {notificationText}
+                        </Alert>
+                    </Snackbar>
                     <Typography variant="h3">Script: {title}</Typography>
 
                     <div style={{ flexGrow: 1 }}>
@@ -77,8 +108,12 @@ export default function EditingPage() {
                                                 backgroundColor: '#eeeeee',
                                                 }}
                                             >
+                                                
                                                 <AudioRecorder scriptid={scriptid}/>
-
+                                                <Button onClick={saveScript} disabled={isSavingScript}>
+                                                    Save Script
+                                                </Button>
+                                                <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} onShowNotification={showNotification} />
                                             </Paper>
                                         </Grid>
                                     </Grow>
@@ -101,10 +136,6 @@ export default function EditingPage() {
                                         </Grid>
                                     </Grow>
                                 </Grid>
-                                <Button onClick={saveScript} disabled={isSavingScript}>
-                                    Save Script
-                                </Button>
-                                <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} />
                             </Grid>
                         </Grid>
                     </div>

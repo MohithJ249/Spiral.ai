@@ -8,24 +8,18 @@ import { useCreateScriptVersionMutation } from '../generated/graphql';
 interface MakeVersionButtonProps {
     scriptid: string;
     scriptContent: string;
+    onShowNotification: (severity: 'success' | 'info' | 'warning' | 'error', message: string) => void;
 }
 
-function MakeVersionButton({ scriptContent, scriptid }: MakeVersionButtonProps) {
+function MakeVersionButton({ scriptContent, scriptid, onShowNotification }: MakeVersionButtonProps) {
     const [createScriptVersion] = useCreateScriptVersionMutation();
     const [isMakingVersion, setIsMakingVersion] = useState<boolean>(false);
-    const [versionErrorOpen, setVersionErrorOpen] = useState<boolean>(false);
-    const [versionSuccessOpen, setVersionSuccessOpen] = useState<boolean>(false);
-
-    const closeAllNotifications = () => {
-        setVersionErrorOpen(false);
-        setVersionSuccessOpen(false);
-    }
 
     const makeVersion = () => {
+        const errorNotificationText = 'Error saving version, please try again.';
+        const successNotificationText = 'Version saved successfully!';
         const uniqueString = uuidv4();
         setIsMakingVersion(true);
-        setVersionErrorOpen(false);
-        setVersionSuccessOpen(false);
 
         createScriptVersion({
             variables: {
@@ -38,31 +32,20 @@ function MakeVersionButton({ scriptContent, scriptid }: MakeVersionButtonProps) 
             Storage.put(fileName, scriptContent || '', {
                 contentType: 'text/plain'
             }).then(() => {
-                setIsMakingVersion(false);
-                setVersionSuccessOpen(true);
+                onShowNotification('success', successNotificationText);
             }).catch(() => {
-                setIsMakingVersion(false);
-                setVersionErrorOpen(true);
+                onShowNotification('error', errorNotificationText);
             });
         }).catch(() => {
+            onShowNotification('error', errorNotificationText);
+        }).finally(() => {
             setIsMakingVersion(false);
-            setVersionErrorOpen(true);
-        })
+        });
     }
 
 
   return (
     <div>
-        <Snackbar open={versionErrorOpen} autoHideDuration={6000} onClose={closeAllNotifications}>
-            <Alert onClose={closeAllNotifications} severity="error" sx={{ width: '100%' }}>
-                Error saving version, please try again.
-            </Alert>
-        </Snackbar>
-        <Snackbar open={versionSuccessOpen} autoHideDuration={6000} onClose={closeAllNotifications}>
-            <Alert onClose={closeAllNotifications} severity="success" sx={{ width: '100%' }}>
-                Version saved successfully.
-            </Alert>
-        </Snackbar>
       <Button onClick={makeVersion} disabled={isMakingVersion}>
         Make Version
       </Button>
