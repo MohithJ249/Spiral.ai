@@ -176,7 +176,7 @@ export type CreateScriptMutation = { __typename?: 'Mutation', createScript?: { _
 
 export type CreateScriptVersionMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
-  s3Link: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 }>;
 
 
@@ -332,8 +332,8 @@ export type CreateScriptMutationHookResult = ReturnType<typeof useCreateScriptMu
 export type CreateScriptMutationResult = Apollo.MutationResult<CreateScriptMutation>;
 export type CreateScriptMutationOptions = Apollo.BaseMutationOptions<CreateScriptMutation, CreateScriptMutationVariables>;
 export const CreateScriptVersionDocument = gql`
-    mutation CreateScriptVersion($scriptid: ID!, $s3Link: String!) {
-  createScriptVersion(scriptid: $scriptid, s3link: $s3Link) {
+    mutation CreateScriptVersion($scriptid: ID!, $title: String!) {
+  createScriptVersion(scriptid: $scriptid, title: $title) {
     scriptid
     time_saved
     title
@@ -356,7 +356,7 @@ export type CreateScriptVersionMutationFn = Apollo.MutationFunction<CreateScript
  * const [createScriptVersionMutation, { data, loading, error }] = useCreateScriptVersionMutation({
  *   variables: {
  *      scriptid: // value for 'scriptid'
- *      s3Link: // value for 's3Link'
+ *      title: // value for 'title'
  *   },
  * });
  */

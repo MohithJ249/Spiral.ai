@@ -85,7 +85,6 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
           setErrorText("A recording with that name already exists. Please choose a different name.");
       });
     }
-
   }
 
   const saveRecordingDisabled = () => {
