@@ -1,10 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
-
-// import SidebarLayout from './layouts/SidebarLayout';
-import BaseLayout from './layouts/BaseLayout';
-import SidebarLayout from './layouts/SidebarLayout';
 import Header from './layouts/Header';
 
 import CircularLabelWithProgress from './components/loadingAnimation';
@@ -35,6 +30,8 @@ const Editing = Loader(lazy(() => import('./content/Editing')));
 const Login = Loader(lazy(() => import('./content/Login')));
 
 const CreateAccount = Loader(lazy(() => import('./content/CreateAccount')));
+
+const VersionHistory = Loader(lazy(() => import('./content/VersionHistory')));
 
 const routes: RouteObject[] = [
   // {
@@ -82,13 +79,10 @@ const routes: RouteObject[] = [
       {
         path: 'Editing',
         element: <Editing />,
-        // Add routes to accept parameters from other pages
-        children: [
-          {
-            path: ':extraParameter',
-            element: <Editing />
-          }
-        ]
+      },
+      {
+        path: 'VersionHistory',
+        element: <VersionHistory />,
       },
       {
         path: '*',

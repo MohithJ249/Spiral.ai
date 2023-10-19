@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
 import { Button, Alert, Snackbar } from '@mui/material';
 import { useSaveRecordingMutation } from '../generated/graphql';
-import { v4 as uuidv4 } from 'uuid';
 import { useCreateScriptVersionMutation } from '../generated/graphql';
 
 interface MakeVersionButtonProps {
@@ -18,17 +17,16 @@ function MakeVersionButton({ scriptContent, scriptid, onShowNotification }: Make
     const makeVersion = () => {
         const errorNotificationText = 'Error saving version, please try again.';
         const successNotificationText = 'Version saved successfully!';
-        const uniqueString = uuidv4();
         setIsMakingVersion(true);
 
         createScriptVersion({
             variables: {
                 scriptid: scriptid || '',
-                title: uniqueString,
             }
-        }).then(() => {
+        }).then((result) => {
             const userid = localStorage.getItem('userid');
-            const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/versions/"+uniqueString+".txt";
+            const versionid = result.data?.createScriptVersion?.versionid;
+            const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/versions/"+versionid+".txt";
             Storage.put(fileName, scriptContent || '', {
                 contentType: 'text/plain'
             }).then(() => {

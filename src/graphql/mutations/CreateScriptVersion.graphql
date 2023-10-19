@@ -1,7 +1,7 @@
-mutation CreateScriptVersion($scriptid: ID!, $title: String!) {
-  createScriptVersion(scriptid: $scriptid, title: $title) {
+mutation CreateScriptVersion($scriptid: ID!) {
+  createScriptVersion(scriptid: $scriptid) {
     scriptid
     time_saved
-    title
+    versionid
   }
 }

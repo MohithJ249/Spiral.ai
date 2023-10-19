@@ -1,8 +1,5 @@
 import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor, Snackbar, Alert } from '@mui/material';
-import { ReactMediaRecorder, ReactMediaRecorderRenderProps } from 'react-media-recorder';
-import { useParams } from 'react-router';
 import { useState, useMemo, useEffect } from 'react';
-import { preProcessFile } from 'typescript';
 import { Storage } from 'aws-amplify';
 import AudioRecorder from '../../components/AudioRecorder';
 
@@ -114,6 +111,9 @@ export default function EditingPage() {
                                                     Save Script
                                                 </Button>
                                                 <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} onShowNotification={showNotification} />
+                                                <Button onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
+                                                    See Version History
+                                                </Button>
                                             </Paper>
                                         </Grid>
                                     </Grow>

@@ -45,7 +45,6 @@ export type MutationCreateScriptArgs = {
 
 export type MutationCreateScriptVersionArgs = {
   scriptid: Scalars['ID']['input'];
-  title: Scalars['String']['input'];
 };
 
 
@@ -146,7 +145,6 @@ export type ScriptVersion = {
   __typename?: 'ScriptVersion';
   scriptid: Scalars['ID']['output'];
   time_saved: Scalars['String']['output'];
-  title: Scalars['String']['output'];
   versionid: Scalars['ID']['output'];
 };
 
@@ -176,11 +174,10 @@ export type CreateScriptMutation = { __typename?: 'Mutation', createScript?: { _
 
 export type CreateScriptVersionMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
-  title: Scalars['String']['input'];
 }>;
 
 
-export type CreateScriptVersionMutation = { __typename?: 'Mutation', createScriptVersion?: { __typename?: 'ScriptVersion', scriptid: string, time_saved: string, title: string } | null };
+export type CreateScriptVersionMutation = { __typename?: 'Mutation', createScriptVersion?: { __typename?: 'ScriptVersion', scriptid: string, time_saved: string, versionid: string } | null };
 
 export type CreateUserMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -253,7 +250,7 @@ export type GetScriptVersionsQueryVariables = Exact<{
 }>;
 
 
-export type GetScriptVersionsQuery = { __typename?: 'Query', getScriptVersions?: Array<{ __typename?: 'ScriptVersion', scriptid: string, time_saved: string, title: string } | null> | null };
+export type GetScriptVersionsQuery = { __typename?: 'Query', getScriptVersions?: Array<{ __typename?: 'ScriptVersion', scriptid: string, time_saved: string, versionid: string } | null> | null };
 
 export type LoginQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -332,11 +329,11 @@ export type CreateScriptMutationHookResult = ReturnType<typeof useCreateScriptMu
 export type CreateScriptMutationResult = Apollo.MutationResult<CreateScriptMutation>;
 export type CreateScriptMutationOptions = Apollo.BaseMutationOptions<CreateScriptMutation, CreateScriptMutationVariables>;
 export const CreateScriptVersionDocument = gql`
-    mutation CreateScriptVersion($scriptid: ID!, $title: String!) {
-  createScriptVersion(scriptid: $scriptid, title: $title) {
+    mutation CreateScriptVersion($scriptid: ID!) {
+  createScriptVersion(scriptid: $scriptid) {
     scriptid
     time_saved
-    title
+    versionid
   }
 }
     `;
@@ -356,7 +353,6 @@ export type CreateScriptVersionMutationFn = Apollo.MutationFunction<CreateScript
  * const [createScriptVersionMutation, { data, loading, error }] = useCreateScriptVersionMutation({
  *   variables: {
  *      scriptid: // value for 'scriptid'
- *      title: // value for 'title'
  *   },
  * });
  */
@@ -680,7 +676,7 @@ export const GetScriptVersionsDocument = gql`
   getScriptVersions(scriptid: $scriptid) {
     scriptid
     time_saved
-    title
+    versionid
   }
 }
     `;
