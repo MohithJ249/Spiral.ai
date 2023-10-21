@@ -1,8 +1,8 @@
 import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor, Snackbar, Alert } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
+import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
-
 import MakeVersionButton from '../../components/MakeVersionButton';
 
 export default function EditingPage() {
@@ -10,12 +10,25 @@ export default function EditingPage() {
     const searchParams = new URLSearchParams(url);
     const title = searchParams.get('title');
     const scriptid = searchParams.get('scriptid');
-    
+
     const [scriptContent, setScriptContent] = useState<string>();
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [deleteScriptMutation] = useDeleteScriptMutation();
+    const { data: scriptRecordingsData } = useGetScriptRecordingsQuery({
+        variables: {
+            userid: localStorage.getItem('userid') || '',
+            title: title || ''
+        }
+    });
+
+    const { data: scriptVersionsData } = useGetScriptVersionsQuery({
+        variables: {
+            scriptid: scriptid || ''
+        }
+    });
 
     useEffect(() => {
         populateScriptContent();
@@ -76,6 +89,32 @@ export default function EditingPage() {
         });      
     }
 
+    const deleteScript = async () => {
+        if(scriptVersionsData) {
+            scriptVersionsData.getScriptVersions?.forEach(async version => {
+                await Storage.remove("userid-"+localStorage.getItem('userid')+"/scriptid-"+scriptid+"/versions/"+version?.versionid+".txt");
+            });
+        }
+
+        if(scriptRecordingsData) {
+            scriptRecordingsData.getScriptRecordings?.forEach(async recording => {
+                await Storage.remove("userid-"+localStorage.getItem('userid')+"/scriptid-"+scriptid+"/recordings/"+recording?.recordingid+".wav");
+            });
+        }
+
+        await Storage.remove("userid-"+localStorage.getItem('userid')+"/scriptid-"+scriptid+"/"+title+".txt");
+
+        deleteScriptMutation({
+            variables: {
+                scriptid: scriptid || ''
+            }
+        }).then(() => {
+            window.location.href = '/MyScripts';
+        }).catch(() => {
+            showNotification('error', 'Error deleting script, please try again.');
+        });
+    }
+
     if(scriptid && title !== undefined && scriptContent !== undefined) {
         return (
             <>
@@ -108,6 +147,9 @@ export default function EditingPage() {
                                                 <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} onShowNotification={showNotification} />
                                                 <Button onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
                                                     See Version History
+                                                </Button>
+                                                <Button color='error' onClick={deleteScript}>
+                                                    Delete Script
                                                 </Button>
                                             </Paper>
                                         </Grid>

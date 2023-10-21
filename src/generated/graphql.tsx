@@ -246,6 +246,14 @@ export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers?: Array<{ __typename?: 'User', userid: string, email: string, username: string } | null> | null };
 
+export type GetScriptRecordingsQueryVariables = Exact<{
+  userid: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+}>;
+
+
+export type GetScriptRecordingsQuery = { __typename?: 'Query', getScriptRecordings?: Array<{ __typename?: 'Recording', recordingid: string, scriptid: string, time_saved: string, title: string } | null> | null };
+
 export type GetScriptVersionsQueryVariables = Exact<{
   scriptid: Scalars['ID']['input'];
 }>;
@@ -674,6 +682,45 @@ export function useGetAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
 export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
 export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
+export const GetScriptRecordingsDocument = gql`
+    query GetScriptRecordings($userid: ID!, $title: String!) {
+  getScriptRecordings(userid: $userid, title: $title) {
+    recordingid
+    scriptid
+    time_saved
+    title
+  }
+}
+    `;
+
+/**
+ * __useGetScriptRecordingsQuery__
+ *
+ * To run a query within a React component, call `useGetScriptRecordingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScriptRecordingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScriptRecordingsQuery({
+ *   variables: {
+ *      userid: // value for 'userid'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useGetScriptRecordingsQuery(baseOptions: Apollo.QueryHookOptions<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>(GetScriptRecordingsDocument, options);
+      }
+export function useGetScriptRecordingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>(GetScriptRecordingsDocument, options);
+        }
+export type GetScriptRecordingsQueryHookResult = ReturnType<typeof useGetScriptRecordingsQuery>;
+export type GetScriptRecordingsLazyQueryHookResult = ReturnType<typeof useGetScriptRecordingsLazyQuery>;
+export type GetScriptRecordingsQueryResult = Apollo.QueryResult<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>;
 export const GetScriptVersionsDocument = gql`
     query GetScriptVersions($scriptid: ID!) {
   getScriptVersions(scriptid: $scriptid) {

@@ -1,0 +1,8 @@
+query GetScriptRecordings($userid: ID!, $title: String!) {
+  getScriptRecordings(userid: $userid, title: $title) {
+    recordingid
+    scriptid
+    time_saved
+    title
+  }
+}
