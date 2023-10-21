@@ -42,22 +42,19 @@ function Version({time_saved, versionid, scriptid, onSetScriptContent}: VersionP
 }
 
 export default function VersionHistory() {
-    const [scriptid, setScriptid] = useState<string>();
-    const [title, setTitle] = useState<string>();
+    const url = window.location.search;
+    const searchParams = new URLSearchParams(url);
+    const title = searchParams.get('title');
+    const scriptid = searchParams.get('scriptid');
+
     const [scriptContent, setScriptContent] = useState<string>();
     const { data } = useGetScriptVersionsQuery({variables: { scriptid: scriptid || '' }, skip: !scriptid});
     const [createScriptVersion] = useCreateScriptVersionMutation();
+
     const textStyle = {
-        color: 'initial', // Use 'inherit' for the default text color
+        color: 'initial',
         pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
-        // Add any other styles you want here
-      };
-    useEffect(() => {
-        const url = window.location.search;
-        const searchParams = new URLSearchParams(url);
-        setTitle(searchParams.get('title') || undefined);
-        setScriptid(searchParams.get('scriptid') || undefined);
-    }, []);
+    };
 
     const returnToEditing = () => {
         window.location.href = '/Editing?scriptid='+scriptid+'&title='+title;
@@ -90,7 +87,7 @@ export default function VersionHistory() {
                     })
                 })
             })
-        });    
+        });
     }
 
     if(scriptid && data?.getScriptVersions) {

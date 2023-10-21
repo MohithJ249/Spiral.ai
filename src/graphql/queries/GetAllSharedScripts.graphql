@@ -3,5 +3,7 @@ query GetAllSharedScripts($userid: ID!) {
     scriptid
     title
     userid
+    owner_username
+    last_modified
   }
 }

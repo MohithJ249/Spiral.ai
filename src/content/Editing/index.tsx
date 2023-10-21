@@ -6,13 +6,20 @@ import AudioRecorder from '../../components/AudioRecorder';
 import MakeVersionButton from '../../components/MakeVersionButton';
 
 export default function EditingPage() {
-    const [title, setTitle] = useState<string>();
-    const [scriptid, setScriptid] = useState<string>();
+    const url = window.location.search;
+    const searchParams = new URLSearchParams(url);
+    const title = searchParams.get('title');
+    const scriptid = searchParams.get('scriptid');
+    
     const [scriptContent, setScriptContent] = useState<string>();
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+
+    useEffect(() => {
+        populateScriptContent();
+    }, []);
 
     // Add ctrl+s shortcut to save script
     useEffect(() => {
@@ -29,18 +36,6 @@ export default function EditingPage() {
           document.removeEventListener('keydown', handleSave);
         };
       }, [scriptContent]);
-      
-    useEffect(() => {
-        const url = window.location.search;
-        const searchParams = new URLSearchParams(url);
-        setTitle(searchParams.get('title') || undefined);
-        setScriptid(searchParams.get('scriptid') || undefined);
-    }, []);
-
-    useEffect(() => {
-        if(title && scriptid)
-            populateScriptContent();
-    }, [title, scriptid]);
 
     const saveScript = () => {
         if(!isSavingScript) {

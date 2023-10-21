@@ -136,6 +136,7 @@ export type Recording = {
 export type Script = {
   __typename?: 'Script';
   last_modified: Scalars['String']['output'];
+  owner_username?: Maybe<Scalars['String']['output']>;
   scriptid: Scalars['ID']['output'];
   title: Scalars['String']['output'];
   userid: Scalars['ID']['output'];
@@ -231,7 +232,7 @@ export type GetAllSharedScriptsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllSharedScriptsQuery = { __typename?: 'Query', getAllSharedScripts?: Array<{ __typename?: 'Script', scriptid: string, title: string, userid: string } | null> | null };
+export type GetAllSharedScriptsQuery = { __typename?: 'Query', getAllSharedScripts?: Array<{ __typename?: 'Script', scriptid: string, title: string, userid: string, owner_username?: string | null, last_modified: string } | null> | null };
 
 export type GetAllUserScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
@@ -567,6 +568,8 @@ export const GetAllSharedScriptsDocument = gql`
     scriptid
     title
     userid
+    owner_username
+    last_modified
   }
 }
     `;
