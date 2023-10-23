@@ -115,6 +115,21 @@ export default function EditingPage() {
         });
     }
 
+    const handleReplaceText = () => {
+        const textField = document.getElementById('outlined-multiline-static') as HTMLInputElement;
+      
+        if (textField) {
+          const selectionStart = textField.selectionStart;
+          const selectionEnd = textField.selectionEnd;
+      
+          if(scriptContent && selectionStart && selectionEnd)
+           {
+                const newText = scriptContent.slice(0, selectionStart) + 'hello' + scriptContent.slice(selectionEnd);
+                setScriptContent(newText);
+            }
+        }
+    }
+
     if(scriptid && title !== undefined && scriptContent !== undefined) {
         return (
             <>
@@ -150,6 +165,10 @@ export default function EditingPage() {
                                                 </Button>
                                                 <Button color='error' onClick={deleteScript}>
                                                     Delete Script
+                                                </Button>
+
+                                                <Button onClick={handleReplaceText}>
+                                                    Replace Text
                                                 </Button>
                                             </Paper>
                                         </Grid>
