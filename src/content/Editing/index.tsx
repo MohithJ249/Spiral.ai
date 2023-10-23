@@ -7,15 +7,17 @@ import MakeVersionButton from '../../components/MakeVersionButton';
 
 export default function EditingPage() {
     const url = window.location.search;
-    const searchParams = new URLSearchParams(url);
-    const title = searchParams.get('title');
-    const scriptid = searchParams.get('scriptid');
+    const searchParams = useMemo(() => new URLSearchParams(url), [url]);
+    const title = useMemo(() => searchParams.get('title'), [searchParams]);
+    const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
 
     const [scriptContent, setScriptContent] = useState<string>();
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
+
     const [deleteScriptMutation] = useDeleteScriptMutation();
     const { data: scriptRecordingsData } = useGetScriptRecordingsQuery({
         variables: {
@@ -23,7 +25,6 @@ export default function EditingPage() {
             title: title || ''
         }
     });
-
     const { data: scriptVersionsData } = useGetScriptVersionsQuery({
         variables: {
             scriptid: scriptid || ''
@@ -115,18 +116,29 @@ export default function EditingPage() {
         });
     }
 
-    const handleReplaceText = () => {
+    const selectText = () => {
         const textField = document.getElementById('outlined-multiline-static') as HTMLInputElement;
       
         if (textField) {
           const selectionStart = textField.selectionStart;
           const selectionEnd = textField.selectionEnd;
       
-          if(scriptContent && selectionStart && selectionEnd)
-           {
-                const newText = scriptContent.slice(0, selectionStart) + 'hello' + scriptContent.slice(selectionEnd);
-                setScriptContent(newText);
+            if(scriptContent && selectionStart && selectionEnd)
+            {
+                setSelectedTextPosition([selectionStart, selectionEnd]);
             }
+        }
+    }
+
+    const handleReplaceText = () => {      
+        if (selectedTextPosition) {
+          const selectionStart = selectedTextPosition[0];
+          const selectionEnd = selectedTextPosition[1];
+      
+          if(scriptContent) {
+            const newText = scriptContent.slice(0, selectionStart) + 'hello' + scriptContent.slice(selectionEnd);
+            setScriptContent(newText);
+          }
         }
     }
 
@@ -167,9 +179,6 @@ export default function EditingPage() {
                                                     Delete Script
                                                 </Button>
 
-                                                <Button onClick={handleReplaceText}>
-                                                    Replace Text
-                                                </Button>
                                             </Paper>
                                         </Grid>
                                     </Grow>
@@ -184,11 +193,37 @@ export default function EditingPage() {
                                             variant="outlined"
                                             sx={{
                                                 height: window.innerHeight * 0.8,
-                                                width: window.innerWidth * 0.6,
+                                                width: window.innerWidth * 0.5,
                                             }}
                                             value={scriptContent}
                                             onChange={(e) => setScriptContent(e.target.value)}
                                             />
+                                        </Grid>
+                                    </Grow>
+
+                                    <Grow in key='LLMPane' timeout={1000}>
+                                        <Grid item>
+                                            <Paper
+                                                sx={{
+                                                height: window.innerHeight * 0.8,
+                                                width: window.innerWidth * 0.2,
+                                                backgroundColor: '#eeeeee',
+                                                }}
+                                            >
+                                                <TextField
+                                                    id='selected-text'
+                                                    value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]) : ''}
+                                                    multiline
+                                                    disabled
+                                                />
+                                                <Button onClick={handleReplaceText}>
+                                                    Replace Text
+                                                </Button>
+                                                
+                                                <Button onClick={selectText}>
+                                                    Select Text
+                                                </Button>
+                                            </Paper>
                                         </Grid>
                                     </Grow>
                                 </Grid>

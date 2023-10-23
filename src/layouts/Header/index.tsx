@@ -97,7 +97,7 @@ function Header() {
           display: 'block',
           flex: 1,
           pt: '80px',
-          margin: '0px 100px 0px 200px',
+          margin: '0px 0px 0px 80px',
         }}
       >
         <Box display="block" sx={{ margin: '50px 0px 0px -100px' }}>
