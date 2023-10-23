@@ -1,9 +1,11 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor, Snackbar, Alert } from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor, Snackbar, Alert, PaperProps } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
+import axios from 'axios';
 import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
 import MakeVersionButton from '../../components/MakeVersionButton';
+import { set } from 'nprogress';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -13,6 +15,8 @@ export default function EditingPage() {
 
     const [scriptContent, setScriptContent] = useState<string>();
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
+    const [generatedText, setGeneratedText] = useState<string>('');
+    const [promptText, setPromptText] = useState<string>('');
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
@@ -30,6 +34,11 @@ export default function EditingPage() {
             scriptid: scriptid || ''
         }
     });
+
+    const disabledBoxStyle = {
+        color: 'initial',
+        pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
+    };
 
     useEffect(() => {
         populateScriptContent();
@@ -120,38 +129,100 @@ export default function EditingPage() {
         const textField = document.getElementById('outlined-multiline-static') as HTMLInputElement;
       
         if (textField) {
-          const selectionStart = textField.selectionStart;
-          const selectionEnd = textField.selectionEnd;
+            const selectionStart = textField.selectionStart;
+            const selectionEnd = textField.selectionEnd;
       
             if(scriptContent && selectionStart && selectionEnd)
             {
-                setSelectedTextPosition([selectionStart, selectionEnd]);
+                const indices = indicesOfNonSpacesAroundPosition(scriptContent, selectionStart, selectionEnd)
+                setSelectedTextPosition([indices[0], indices[1]]);
             }
         }
     }
 
-    const handleReplaceText = () => {      
+    const indicesOfNonSpacesAroundPosition = (str: string, start: number, end: number) => {
+        var startIndex = -1;
+        var endIndex = -1;
+        for (let i = start - 1; i >= 0; i--) {
+            if (str[i] !== ' ') {
+                startIndex = i+1;
+                break;
+            }
+        }
+
+        for (let i = end; i < str.length; i++) {
+            if (str[i] !== ' ') {
+                endIndex = i;
+                break;
+            }
+        }
+        
+        return [startIndex, endIndex]; // Character not found before the selected position
+    }
+
+    const handleReplaceText = async () => {      
         if (selectedTextPosition) {
           const selectionStart = selectedTextPosition[0];
           const selectionEnd = selectedTextPosition[1];
       
           if(scriptContent) {
-            const newText = scriptContent.slice(0, selectionStart) + 'hello' + scriptContent.slice(selectionEnd);
+              
+            // TODO: need to fix spacing around highlighted text
+            var responseText = ' ' + generatedText;
+            if(scriptContent.charAt(selectionEnd) === ' ')
+                responseText += ' ';
+
+            const newText = scriptContent.slice(0, selectionStart) + responseText + scriptContent.slice(selectionEnd);
             setScriptContent(newText);
+            setSelectedTextPosition(undefined);
+            showNotification('success', 'Text replaced successfully!')
           }
         }
     }
+    
+    const generateText = async () => {
+        //llama 2 response
+        if(selectedTextPosition) {
+            const selectedText = scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim();
+    
+            const queryParam = encodeURIComponent(promptText+": "+selectedText);
+            console.log(queryParam)
+            const apiUrl = `https://2da9ogp80m.execute-api.us-east-2.amazonaws.com/dev/replicatelambda?prompt_input=${queryParam}`;
+            
+            const LLMResponse = await axios.get(apiUrl, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
 
+            setGeneratedText(LLMResponse.data.output);
+        }
+    }
+    
     if(scriptid && title !== undefined && scriptContent !== undefined) {
         return (
             <>
                 <div>
-                    <Snackbar open={isNotificationOpen} autoHideDuration={6000} onClose={()=>setIsNotificationOpen(false)}>
-                        <Alert onClose={()=>setIsNotificationOpen(false)} severity={notificationSeverity} sx={{ width: '100%' }}>
+                    <Snackbar
+                        open={isNotificationOpen}
+                        autoHideDuration={6000}
+                        onClose={() => setIsNotificationOpen(false)}
+                        sx={{ height: "100%"}}
+                        anchorOrigin={{
+                           vertical: "top",
+                           horizontal: "right"
+                        }}
+                        >
+                        <Alert
+                            onClose={() => setIsNotificationOpen(false)}
+                            severity={notificationSeverity}
+                            sx={{ width: '100%' }}
+                        >
                             {notificationText}
                         </Alert>
                     </Snackbar>
-                    <Typography variant="h3">Script: {title}</Typography>
+
+                    <Typography variant="h3">{title}</Typography>
 
                     <div style={{ flexGrow: 1 }}>
                         <Grid sx={{ flexGrow: 1 }} container spacing={2}>
@@ -210,19 +281,39 @@ export default function EditingPage() {
                                                 backgroundColor: '#eeeeee',
                                                 }}
                                             >
-                                                <TextField
-                                                    id='selected-text'
-                                                    value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]) : ''}
-                                                    multiline
-                                                    disabled
-                                                />
-                                                <Button onClick={handleReplaceText}>
-                                                    Replace Text
-                                                </Button>
-                                                
+
                                                 <Button onClick={selectText}>
                                                     Select Text
                                                 </Button>
+                                                <TextField
+                                                    id='selected-text'
+                                                    value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim() : ''}
+                                                    multiline
+                                                    placeholder='Selected text will appear here.'
+                                                    style={disabledBoxStyle}
+                                                />
+
+                                                <Button onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined}>
+                                                    Generate
+                                                </Button>
+                                                <TextField
+                                                    id='prompt-text'
+                                                    value={promptText}
+                                                    multiline
+                                                    onChange={(e) => setPromptText(e.target.value)}
+                                                    placeholder='Prompt here.'
+                                                />
+                                                
+                                                <Button onClick={handleReplaceText} disabled={!generatedText}>
+                                                    Replace
+                                                </Button>
+                                                <TextField
+                                                    id='generated-text'
+                                                    value={generatedText}
+                                                    multiline
+                                                    onChange={(e) => setGeneratedText(e.target.value)}
+                                                    placeholder='Generated text will appear here.'
+                                                />
                                             </Paper>
                                         </Grid>
                                     </Grow>
