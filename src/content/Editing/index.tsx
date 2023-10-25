@@ -244,7 +244,6 @@ export default function EditingPage() {
                                                 <Button color='error' onClick={deleteScript}>
                                                     Delete Script
                                                 </Button>
-
                                             </Paper>
                                         </Grid>
                                     </Grow>

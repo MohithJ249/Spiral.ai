@@ -5,6 +5,7 @@ import { useCreateScriptMutation } from '../../generated/graphql';
 import axios from 'axios';
 import { Storage } from 'aws-amplify';
 import { ApolloError } from '@apollo/client';
+import PDFReader from '../../components/PDFReader';
 
 export default function NewScriptPage() {
     const [title, setTitle] = useState<string>('');
@@ -124,10 +125,13 @@ export default function NewScriptPage() {
                         height: window.innerHeight * 0.4,
                         width: window.innerWidth * 0.6,
                         marginTop: 2,
+                        marginBottom: 3
                     }}
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     />
+
+                    <PDFReader />
                     
                     <Button
                     type="submit"
