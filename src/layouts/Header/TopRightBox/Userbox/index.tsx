@@ -78,7 +78,7 @@ function HeaderUserbox() {
   const handleSignout = () => { 
     localStorage.removeItem('userid');
     localStorage.removeItem('username');
-    window.location.href = '/';
+    window.location.href = '/Login';
   }
 
   return (
