@@ -13,6 +13,8 @@ const Loader = (Component : any) => (props: any) =>
 
 // Pages
 
+const Landing = Loader(lazy(() => import('./content/Landing')))
+
 const MainPage = Loader(lazy(() => import('./content/MainPage')));
 
 const MyScripts = Loader(lazy(() => import('./content/MyScripts')));
@@ -70,6 +72,10 @@ const routes: RouteObject[] = [
       },
       {
         path: '/',
+        element: <Landing />
+      },
+      {
+        path: '/Login',
         element: <Login />
       },
       {
