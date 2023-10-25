@@ -207,11 +207,6 @@ export default function EditingPage() {
                         open={isNotificationOpen}
                         autoHideDuration={6000}
                         onClose={() => setIsNotificationOpen(false)}
-                        sx={{ height: "100%"}}
-                        anchorOrigin={{
-                           vertical: "top",
-                           horizontal: "right"
-                        }}
                         >
                         <Alert
                             onClose={() => setIsNotificationOpen(false)}
@@ -238,7 +233,7 @@ export default function EditingPage() {
                                                 }}
                                             >
                                                 
-                                                <AudioRecorder scriptid={scriptid}/>
+                                                <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
                                                 <Button onClick={saveScript} disabled={isSavingScript}>
                                                     Save Script
                                                 </Button>

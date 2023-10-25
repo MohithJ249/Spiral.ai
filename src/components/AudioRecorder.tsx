@@ -5,9 +5,10 @@ import { useSaveRecordingMutation } from '../generated/graphql';
 
 interface AudioRecorderProps {
   scriptid: string;
+  onShowNotification: (severity: 'success' | 'info' | 'warning' | 'error', text: string) => void;
 }
 
-function AudioRecorder({ scriptid }: AudioRecorderProps) {
+function AudioRecorder({ scriptid, onShowNotification }: AudioRecorderProps) {
   const [stream, setStream] = useState<MediaStream>();
   const [recording, setRecording] = useState(false);
   const [recordingName, setRecordingName] = useState<string>();
@@ -15,7 +16,6 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
   const mediaRecorderRef = useRef<MediaRecorder>();
   const audioChunks = useRef<Blob[]>([]);
   const [saveRecordingInDatabase, { loading, error }] = useSaveRecordingMutation();
-  const [errorText, setErrorText] = useState<string>();
 
   useEffect(() => {
     if (recording) {
@@ -27,6 +27,7 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
 
   const startRecording = async () => {
     try {
+        audioChunks.current = [];
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         setStream(stream);
         const mediaRecorder = new MediaRecorder(stream);
@@ -40,7 +41,6 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
         mediaRecorderRef.current.onstop = () => {
             const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
             setAudioUrl(URL.createObjectURL(audioBlob));
-            audioChunks.current = [];
         };
 
         mediaRecorderRef.current.start();
@@ -66,23 +66,23 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
           title: recordingName,
         }
       }).then(() => {
-        setErrorText(undefined);
         // Save recording to S3
         const userid = localStorage.getItem('userid');
         const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/recordings/"+recordingName+".wav";
-        Storage.put(fileName, audioUrl, {
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
+        Storage.put(fileName, audioBlob, {
           contentType: 'audio/wav',
           level: 'public',
         }).then(() => {
           setRecordingName('');
-          setAudioUrl('');
-          setErrorText('');
+          setAudioUrl('');         
+          onShowNotification('success', 'Recording saved successfully.'); 
         }).catch((error) => {
-          setErrorText("Error: " + error.message)
+          onShowNotification('error', 'Error saving recording: ' + error.message);
         });
       }).catch((error) => {
         if(error.message.includes('duplicate key value violates unique constraint "uq_scriptid_title"'))
-          setErrorText("A recording with that name already exists. Please choose a different name.");
+          onShowNotification('error', 'A recording with that name already exists. Please choose a different name.');
       });
     }
   }
@@ -93,7 +93,6 @@ function AudioRecorder({ scriptid }: AudioRecorderProps) {
 
   return (
     <div>
-      {errorText && <Alert severity="error">{errorText}</Alert>}
       <Button onClick={() => setRecording(!recording)}>
         {recording ? 'Stop Recording' : 'Start Recording'}
       </Button>
