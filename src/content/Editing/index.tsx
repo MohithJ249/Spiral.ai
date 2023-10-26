@@ -1,11 +1,11 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, recomposeColor, Snackbar, Alert, PaperProps } from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
-import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery } from '../../generated/graphql';
+import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
+import CollaboratorModal from '../../components/CollaboratorModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { set } from 'nprogress';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -241,6 +241,7 @@ export default function EditingPage() {
                                                 <Button onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
                                                     See Version History
                                                 </Button>
+                                                <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
                                                 <Button color='error' onClick={deleteScript}>
                                                     Delete Script
                                                 </Button>

@@ -1,0 +1,8 @@
+query GetAllScriptCollaborators($scriptid: ID!) {
+  getAllScriptCollaborators(scriptid: $scriptid) {
+    email
+    password
+    userid
+    username
+  }
+}

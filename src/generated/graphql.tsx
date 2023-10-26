@@ -84,6 +84,7 @@ export type MutationUpdateScriptArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getAllScriptCollaborators?: Maybe<Array<Maybe<User>>>;
   getAllSharedScripts?: Maybe<Array<Maybe<Script>>>;
   getAllUserRecordings?: Maybe<Array<Maybe<Recording>>>;
   getAllUserScripts?: Maybe<Array<Maybe<Script>>>;
@@ -91,6 +92,11 @@ export type Query = {
   getScriptRecordings?: Maybe<Array<Maybe<Recording>>>;
   getScriptVersions?: Maybe<Array<Maybe<ScriptVersion>>>;
   login?: Maybe<User>;
+};
+
+
+export type QueryGetAllScriptCollaboratorsArgs = {
+  scriptid: Scalars['ID']['input'];
 };
 
 
@@ -226,6 +232,13 @@ export type UpdateScriptMutationVariables = Exact<{
 
 
 export type UpdateScriptMutation = { __typename?: 'Mutation', updateScript?: { __typename?: 'Script', title: string } | null };
+
+export type GetAllScriptCollaboratorsQueryVariables = Exact<{
+  scriptid: Scalars['ID']['input'];
+}>;
+
+
+export type GetAllScriptCollaboratorsQuery = { __typename?: 'Query', getAllScriptCollaborators?: Array<{ __typename?: 'User', email: string, password: string, userid: string, username: string } | null> | null };
 
 export type GetAllSharedScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
@@ -570,6 +583,49 @@ export function useUpdateScriptMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateScriptMutationHookResult = ReturnType<typeof useUpdateScriptMutation>;
 export type UpdateScriptMutationResult = Apollo.MutationResult<UpdateScriptMutation>;
 export type UpdateScriptMutationOptions = Apollo.BaseMutationOptions<UpdateScriptMutation, UpdateScriptMutationVariables>;
+export const GetAllScriptCollaboratorsDocument = gql`
+    query GetAllScriptCollaborators($scriptid: ID!) {
+  getAllScriptCollaborators(scriptid: $scriptid) {
+    email
+    password
+    userid
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetAllScriptCollaboratorsQuery__
+ *
+ * To run a query within a React component, call `useGetAllScriptCollaboratorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllScriptCollaboratorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllScriptCollaboratorsQuery({
+ *   variables: {
+ *      scriptid: // value for 'scriptid'
+ *   },
+ * });
+ */
+export function useGetAllScriptCollaboratorsQuery(baseOptions: Apollo.QueryHookOptions<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>(GetAllScriptCollaboratorsDocument, options);
+      }
+export function useGetAllScriptCollaboratorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>(GetAllScriptCollaboratorsDocument, options);
+        }
+export function useGetAllScriptCollaboratorsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>(GetAllScriptCollaboratorsDocument, options);
+        }
+export type GetAllScriptCollaboratorsQueryHookResult = ReturnType<typeof useGetAllScriptCollaboratorsQuery>;
+export type GetAllScriptCollaboratorsLazyQueryHookResult = ReturnType<typeof useGetAllScriptCollaboratorsLazyQuery>;
+export type GetAllScriptCollaboratorsSuspenseQueryHookResult = ReturnType<typeof useGetAllScriptCollaboratorsSuspenseQuery>;
+export type GetAllScriptCollaboratorsQueryResult = Apollo.QueryResult<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>;
 export const GetAllSharedScriptsDocument = gql`
     query GetAllSharedScripts($userid: ID!) {
   getAllSharedScripts(userid: $userid) {
@@ -606,8 +662,13 @@ export function useGetAllSharedScriptsLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>(GetAllSharedScriptsDocument, options);
         }
+export function useGetAllSharedScriptsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>(GetAllSharedScriptsDocument, options);
+        }
 export type GetAllSharedScriptsQueryHookResult = ReturnType<typeof useGetAllSharedScriptsQuery>;
 export type GetAllSharedScriptsLazyQueryHookResult = ReturnType<typeof useGetAllSharedScriptsLazyQuery>;
+export type GetAllSharedScriptsSuspenseQueryHookResult = ReturnType<typeof useGetAllSharedScriptsSuspenseQuery>;
 export type GetAllSharedScriptsQueryResult = Apollo.QueryResult<GetAllSharedScriptsQuery, GetAllSharedScriptsQueryVariables>;
 export const GetAllUserScriptsDocument = gql`
     query GetAllUserScripts($userid: ID!) {
@@ -643,8 +704,13 @@ export function useGetAllUserScriptsLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>(GetAllUserScriptsDocument, options);
         }
+export function useGetAllUserScriptsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>(GetAllUserScriptsDocument, options);
+        }
 export type GetAllUserScriptsQueryHookResult = ReturnType<typeof useGetAllUserScriptsQuery>;
 export type GetAllUserScriptsLazyQueryHookResult = ReturnType<typeof useGetAllUserScriptsLazyQuery>;
+export type GetAllUserScriptsSuspenseQueryHookResult = ReturnType<typeof useGetAllUserScriptsSuspenseQuery>;
 export type GetAllUserScriptsQueryResult = Apollo.QueryResult<GetAllUserScriptsQuery, GetAllUserScriptsQueryVariables>;
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
@@ -679,8 +745,13 @@ export function useGetAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
         }
+export function useGetAllUsersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+        }
 export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
 export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
+export type GetAllUsersSuspenseQueryHookResult = ReturnType<typeof useGetAllUsersSuspenseQuery>;
 export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
 export const GetScriptRecordingsDocument = gql`
     query GetScriptRecordings($userid: ID!, $title: String!) {
@@ -718,8 +789,13 @@ export function useGetScriptRecordingsLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>(GetScriptRecordingsDocument, options);
         }
+export function useGetScriptRecordingsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>(GetScriptRecordingsDocument, options);
+        }
 export type GetScriptRecordingsQueryHookResult = ReturnType<typeof useGetScriptRecordingsQuery>;
 export type GetScriptRecordingsLazyQueryHookResult = ReturnType<typeof useGetScriptRecordingsLazyQuery>;
+export type GetScriptRecordingsSuspenseQueryHookResult = ReturnType<typeof useGetScriptRecordingsSuspenseQuery>;
 export type GetScriptRecordingsQueryResult = Apollo.QueryResult<GetScriptRecordingsQuery, GetScriptRecordingsQueryVariables>;
 export const GetScriptVersionsDocument = gql`
     query GetScriptVersions($scriptid: ID!) {
@@ -755,8 +831,13 @@ export function useGetScriptVersionsLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>(GetScriptVersionsDocument, options);
         }
+export function useGetScriptVersionsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>(GetScriptVersionsDocument, options);
+        }
 export type GetScriptVersionsQueryHookResult = ReturnType<typeof useGetScriptVersionsQuery>;
 export type GetScriptVersionsLazyQueryHookResult = ReturnType<typeof useGetScriptVersionsLazyQuery>;
+export type GetScriptVersionsSuspenseQueryHookResult = ReturnType<typeof useGetScriptVersionsSuspenseQuery>;
 export type GetScriptVersionsQueryResult = Apollo.QueryResult<GetScriptVersionsQuery, GetScriptVersionsQueryVariables>;
 export const LoginDocument = gql`
     query Login($email: String!, $password: String!) {
@@ -793,6 +874,11 @@ export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Logi
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
         }
+export function useLoginSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
+export type LoginSuspenseQueryHookResult = ReturnType<typeof useLoginSuspenseQuery>;
 export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
