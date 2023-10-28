@@ -97,10 +97,12 @@ function Header() {
           display: 'block',
           flex: 1,
           pt: '80px',
-          margin: '0px 0px 0px 80px',
+          justifyContent: 'center',
+          // marginTop: '5%',
+          // margin: '0px 0px 0px 40px',
         }}
       >
-        <Box display="block" sx={{ margin: '50px 0px 0px -100px' }}>
+        <Box display="block" sx={{ justifyContent : 'center', margin: 'auto', marginTop: '2%'}}>
           <Outlet />
         </Box>
       </Box>

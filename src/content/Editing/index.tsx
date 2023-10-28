@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordi
 import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
+import { Delete, History, PostAdd, Save } from '@mui/icons-material';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -198,6 +199,17 @@ export default function EditingPage() {
             setGeneratedText(LLMResponse.data.output);
         }
     }
+
+    const styledCard2LeftPane = {
+        backgroundColor: '#4d4d4d',
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '10px 0px 0px 0px',
+        padding: '20px',
+        borderRadius: '15px',
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        '& > :not(style)': { m: 1 }
+    }
     
     if(scriptid && title !== undefined && scriptContent !== undefined) {
         return (
@@ -220,100 +232,119 @@ export default function EditingPage() {
                     <Typography variant="h3">{title}</Typography>
 
                     <div style={{ flexGrow: 1 }}>
-                        <Grid sx={{ flexGrow: 1 }} container spacing={2}>
-                            <Grid item xs={12}>
-                                <Grid container justifyContent="center" spacing={2}>
-                                    <Grow in key='RecordingPane' timeout={1000}>
-                                        <Grid item>
-                                            <Paper
-                                                sx={{
-                                                height: window.innerHeight * 0.8,
-                                                width: window.innerWidth * 0.2,
-                                                backgroundColor: '#eeeeee',
-                                                }}
-                                            >
+                        <Grid sx={{ flexGrow: 1 }} container justifyContent="center" spacing={1}>
+                            <Grow in key='RecordingPane' timeout={1000}>
+                                <Grid item>
+                                    <Paper
+                                        sx={{
+                                        height: window.innerHeight * 0.8,
+                                        width: window.innerWidth * 0.2,
+                                        backgroundColor: '#eeeeee',
+
+                                        }}>
                                                 
-                                                <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
-                                                <Button onClick={saveScript} disabled={isSavingScript}>
-                                                    Save Script
-                                                </Button>
+                                        <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
+                                        
+                                        {/* script management card */}
+                                        <Box sx={styledCard2LeftPane} flexDirection={'row'}>
+                                            <Tooltip title="Save Script">
+                                                <Fab onClick={saveScript} disabled={isSavingScript}>
+                                                    <Save />
+                                                </Fab>
+                                            </Tooltip>
+                                            
+                                            <Tooltip title='Generate New Version'>
                                                 <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} onShowNotification={showNotification} />
-                                                <Button onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
-                                                    See Version History
-                                                </Button>
-                                                <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
-                                                <Button color='error' onClick={deleteScript}>
-                                                    Delete Script
-                                                </Button>
-                                            </Paper>
-                                        </Grid>
-                                    </Grow>
+                                            </Tooltip>
 
-                                    <Grow in key='EditingPane' timeout={1500}>
-                                        <Grid item>
-                                            <TextField
-                                            id="outlined-multiline-static"
-                                            multiline
-                                            // height of 1 row = 56px, so adjust accordingly
-                                            rows={window.innerHeight * 0.8 / 24}
-                                            variant="outlined"
-                                            sx={{
-                                                height: window.innerHeight * 0.8,
-                                                width: window.innerWidth * 0.5,
-                                            }}
-                                            value={scriptContent}
-                                            onChange={(e) => setScriptContent(e.target.value)}
-                                            />
-                                        </Grid>
-                                    </Grow>
+                                            <Tooltip title='View Version History'>
+                                                <Fab onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
+                                                    <History />
+                                                </Fab>
+                                            </Tooltip>
 
-                                    <Grow in key='LLMPane' timeout={1000}>
-                                        <Grid item>
-                                            <Paper
-                                                sx={{
-                                                height: window.innerHeight * 0.8,
-                                                width: window.innerWidth * 0.2,
-                                                backgroundColor: '#eeeeee',
-                                                }}
-                                            >
+                                            <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
+                                            
+                                            <Tooltip title='Delete Script'>
+                                                <Fab color='error' onClick={deleteScript}>
+                                                    <Delete />
+                                                </Fab>
+                                            </Tooltip>
+                                        </Box>
 
-                                                <Button onClick={selectText}>
-                                                    Select Text
-                                                </Button>
-                                                <TextField
-                                                    id='selected-text'
-                                                    value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim() : ''}
-                                                    multiline
-                                                    placeholder='Selected text will appear here.'
-                                                    style={disabledBoxStyle}
-                                                />
-
-                                                <Button onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined}>
-                                                    Generate
-                                                </Button>
-                                                <TextField
-                                                    id='prompt-text'
-                                                    value={promptText}
-                                                    multiline
-                                                    onChange={(e) => setPromptText(e.target.value)}
-                                                    placeholder='Prompt here.'
-                                                />
-                                                
-                                                <Button onClick={handleReplaceText} disabled={!generatedText}>
-                                                    Replace
-                                                </Button>
-                                                <TextField
-                                                    id='generated-text'
-                                                    value={generatedText}
-                                                    multiline
-                                                    onChange={(e) => setGeneratedText(e.target.value)}
-                                                    placeholder='Generated text will appear here.'
-                                                />
-                                            </Paper>
-                                        </Grid>
-                                    </Grow>
+                                        {/* Add Documents card */}
+                                        <Box sx={styledCard2LeftPane}>
+                                            <Typography variant="h5">
+                                                Add Document Parsing so button + additional information
+                                            </Typography>
+                                        </Box>
+                                    </Paper>
                                 </Grid>
-                            </Grid>
+                            </Grow>
+
+                            <Grow in key='EditingPane' timeout={1500}>
+                                <Grid item>
+                                    <TextField
+                                    id="outlined-multiline-static"
+                                    multiline
+                                    // height of 1 row = 56px, so adjust accordingly
+                                    rows={window.innerHeight * 0.8 / 24}
+                                    variant="outlined"
+                                    sx={{
+                                        height: window.innerHeight * 0.8,
+                                        width: window.innerWidth * 0.5,
+                                    }}
+                                    value={scriptContent}
+                                    onChange={(e) => setScriptContent(e.target.value)}
+                                    />
+                                </Grid>
+                            </Grow>
+
+                            <Grow in key='LLMPane' timeout={2000}>
+                                <Grid item>
+                                    <Paper
+                                        sx={{
+                                        height: window.innerHeight * 0.8,
+                                        width: window.innerWidth * 0.2,
+                                        backgroundColor: '#eeeeee',
+                                        }}
+                                    >
+
+                                        <Button onClick={selectText}>
+                                            Select Text
+                                        </Button>
+                                        <TextField
+                                            id='selected-text'
+                                            value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim() : ''}
+                                            multiline
+                                            placeholder='Selected text will appear here.'
+                                            style={disabledBoxStyle}
+                                        />
+
+                                        <Button onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined}>
+                                            Generate
+                                        </Button>
+                                        <TextField
+                                            id='prompt-text'
+                                            value={promptText}
+                                            multiline
+                                            onChange={(e) => setPromptText(e.target.value)}
+                                            placeholder='Prompt here.'
+                                        />
+                                        
+                                        <Button onClick={handleReplaceText} disabled={!generatedText}>
+                                            Replace
+                                        </Button>
+                                        <TextField
+                                            id='generated-text'
+                                            value={generatedText}
+                                            multiline
+                                            onChange={(e) => setGeneratedText(e.target.value)}
+                                            placeholder='Generated text will appear here.'
+                                        />
+                                    </Paper>
+                                </Grid>
+                            </Grow>
                         </Grid>
                     </div>
                 </div>

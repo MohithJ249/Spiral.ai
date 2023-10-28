@@ -57,7 +57,7 @@ export default function MyScripts() {
               spacing={3} 
               direction='row' 
               justifyContent='flex-start'
-              alignItems='flex-start'>
+              padding={2}>
                 { data.getAllUserScripts.map((item, index) => (
                   <Grid xs={12} sm={6} md={3} item>
                     <Grow in key={index} timeout={1000 + index * 150}>

@@ -1,7 +1,8 @@
-import { Button, Typography, Modal, Box, Input } from '@mui/material';
+import { Button, Typography, Modal, Box, Input, Grow, Fab, Tooltip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import {useAddCollaboratorMutation, useRemoveCollaboratorMutation, useGetAllScriptCollaboratorsLazyQuery } from '../generated/graphql';
 import { ApolloError } from '@apollo/client';
+import { Share } from '@mui/icons-material';
 
 interface CollaboratorModalProps {
   scriptid: string;
@@ -17,14 +18,16 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
 
     const modalStyle = {
         position: 'absolute' as 'absolute',
-        top: '50%',
-        left: '50%',
+        top: '40%',
+        left: '40%',
         transform: 'translate(-50%, -50%)',
         width: 400,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
+        // top: '${top}%',
+        margin:'auto'
     };
 
     useEffect(() => {
@@ -93,24 +96,34 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
 
   return (
     <div>
-        <Button onClick={()=>setModalOpen(true)}>Script Sharing</Button>
-        <Modal
-            open={modalOpen}
-            onClose={()=>setModalOpen(false)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-            >
-            <Box sx={modalStyle}>
-                <Typography>Add a collaborator:</Typography>
-                <Input placeholder="Enter Email" value={shareScriptInput} onChange={(e) => setShareScriptInput(e.target.value)} />
-                <Button onClick={addCollaborator} disabled={!shareScriptInput}>Share</Button>
-                <div>
-                    <Typography sx={{marginTop:2}}>Current Collaborators:</Typography>
-                    {displayCollaborators()}
-                    
-                </div>
-            </Box>
-        </Modal>
+        <Tooltip title="Share Script">
+            <Fab onClick={()=>setModalOpen(true)}>
+                <Share />
+                <Modal
+                    open={modalOpen}
+                    onClose={()=>setModalOpen(false)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                    sx={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    >
+                    <Grow in={modalOpen} timeout={750}>
+                        <Box sx={modalStyle}>
+                            <Typography>Add a collaborator:</Typography>
+                            <Input placeholder="Enter Email" value={shareScriptInput} onChange={(e) => setShareScriptInput(e.target.value)} />
+                            <Button onClick={addCollaborator} disabled={!shareScriptInput}>Share</Button>
+                            <div>
+                                <Typography sx={{marginTop:2}}>Current Collaborators:</Typography>
+                                {displayCollaborators()}
+                                
+                            </div>
+                        </Box>
+                    </Grow> 
+                </Modal>
+            </Fab>
+        </Tooltip>
     </div>
   );
 }
