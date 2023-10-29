@@ -75,6 +75,11 @@ export default function NewScriptPage() {
         }
     };
     
+    const handleExtractedText = (text: string) => {
+        setAdditionalInfo(additionalInfo + text);
+    }
+
+
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -131,7 +136,7 @@ export default function NewScriptPage() {
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     />
 
-                    <PDFReader />
+                    <PDFReader getExtractedText={handleExtractedText}/>
                     
                     <Button
                     type="submit"
