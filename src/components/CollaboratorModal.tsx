@@ -97,7 +97,7 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
   return (
     <div>
         <Tooltip title="Share Script">
-            <Fab onClick={()=>setModalOpen(true)}>
+            <Fab size='small' onClick={()=>setModalOpen(true)}>
                 <Share />
                 <Modal
                     open={modalOpen}

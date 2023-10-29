@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -6,7 +6,7 @@ import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordi
 import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { Delete, History, PostAdd, Save } from '@mui/icons-material';
+import { Build, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -236,48 +236,58 @@ export default function EditingPage() {
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
+                                        elevation={0}
                                         sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.2,
-                                        backgroundColor: '#eeeeee',
+                                        backgroundColor: '#ffffff',
 
                                         }}>
-                                                
-                                        <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
+
+                                        <Grow in timeout={1300}>
+                                            <div>
+                                                <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
+                                            </div>
+                                        </Grow>     
                                         
                                         {/* script management card */}
-                                        <Box sx={styledCard2LeftPane} flexDirection={'row'}>
-                                            <Tooltip title="Save Script">
-                                                <Fab onClick={saveScript} disabled={isSavingScript}>
-                                                    <Save />
-                                                </Fab>
-                                            </Tooltip>
-                                            
-                                            <Tooltip title='Generate New Version'>
-                                                <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} onShowNotification={showNotification} />
-                                            </Tooltip>
 
-                                            <Tooltip title='View Version History'>
-                                                <Fab onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
-                                                    <History />
-                                                </Fab>
-                                            </Tooltip>
+                                        <Grow in timeout={1600}>
+                                            <Box sx={styledCard2LeftPane} flexDirection={'row'}>
+                                                <Tooltip title="Save Script">
+                                                    <Fab size='small' onClick={saveScript} disabled={isSavingScript}>
+                                                        <Save />
+                                                    </Fab>
+                                                </Tooltip>
+                                                
+                                                <Tooltip title='Generate New Version'>
+                                                    <MakeVersionButton scriptid={scriptid} scriptContent={scriptContent} onShowNotification={showNotification} />
+                                                </Tooltip>
 
-                                            <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
-                                            
-                                            <Tooltip title='Delete Script'>
-                                                <Fab color='error' onClick={deleteScript}>
-                                                    <Delete />
-                                                </Fab>
-                                            </Tooltip>
-                                        </Box>
+                                                <Tooltip title='View Version History'>
+                                                    <Fab size='small' onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
+                                                        <History />
+                                                    </Fab>
+                                                </Tooltip>
+
+                                                <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
+                                                
+                                                <Tooltip title='Delete Script'>
+                                                    <Fab size='small' color='error' onClick={deleteScript}>
+                                                        <Delete />
+                                                    </Fab>
+                                                </Tooltip>
+                                            </Box>
+                                        </Grow>
 
                                         {/* Add Documents card */}
-                                        <Box sx={styledCard2LeftPane}>
-                                            <Typography variant="h5">
-                                                Add Document Parsing so button + additional information
-                                            </Typography>
-                                        </Box>
+                                        <Grow in timeout={1900}>
+                                            <Box sx={styledCard2LeftPane}>
+                                                <Typography variant="h5">
+                                                    Add Document Parsing so button + additional information
+                                                </Typography>
+                                            </Box>
+                                        </Grow>
                                     </Paper>
                                 </Grid>
                             </Grow>
@@ -293,6 +303,12 @@ export default function EditingPage() {
                                     sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.5,
+                                        // for changing the color of the textfield box
+                                        // "& .MuiOutlinedInput-root": {
+                                        //     "&.Mui-focused fieldset": {
+                                        //         borderColor: "red"
+                                        //     }
+                                        // }
                                     }}
                                     value={scriptContent}
                                     onChange={(e) => setScriptContent(e.target.value)}
@@ -306,42 +322,75 @@ export default function EditingPage() {
                                         sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.2,
-                                        backgroundColor: '#eeeeee',
+                                        backgroundColor: '#fffff',
                                         }}
+                                        elevation={0}
                                     >
 
-                                        <Button onClick={selectText}>
-                                            Select Text
-                                        </Button>
-                                        <TextField
-                                            id='selected-text'
-                                            value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim() : ''}
-                                            multiline
-                                            placeholder='Selected text will appear here.'
-                                            style={disabledBoxStyle}
-                                        />
+                                        <Stack spacing={2} direction="column">
+                                            <Grow in timeout={2200}>
+                                                <Fab onClick={selectText} variant='extended'>
+                                                    <Done />
+                                                    Highlight & Select Text
+                                                </Fab>
+                                            </Grow>
 
-                                        <Button onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined}>
-                                            Generate
-                                        </Button>
-                                        <TextField
-                                            id='prompt-text'
-                                            value={promptText}
-                                            multiline
-                                            onChange={(e) => setPromptText(e.target.value)}
-                                            placeholder='Prompt here.'
-                                        />
-                                        
-                                        <Button onClick={handleReplaceText} disabled={!generatedText}>
-                                            Replace
-                                        </Button>
-                                        <TextField
-                                            id='generated-text'
-                                            value={generatedText}
-                                            multiline
-                                            onChange={(e) => setGeneratedText(e.target.value)}
-                                            placeholder='Generated text will appear here.'
-                                        />
+                                            <Grow in timeout={2400}>
+                                                <TextField
+                                                    id='selected-text'
+                                                    value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim() : ''}
+                                                    multiline
+                                                    placeholder='Selected text will appear here.'
+                                                    style={disabledBoxStyle}
+                                                    rows={window.innerHeight * 0.2 / 30}
+                                                    sx={{
+                                                        height: window.innerHeight * 0.2,
+                                                    }}
+                                                    />
+                                            </Grow>
+
+                                            <Grow in timeout={2600}>
+                                                <TextField
+                                                    id='prompt-text'
+                                                    value={promptText}
+                                                    multiline
+                                                    onChange={(e) => setPromptText(e.target.value)}
+                                                    placeholder='Prompt here.'
+                                                    rows={window.innerHeight * 0.2 / 30}
+                                                    sx={{
+                                                        height: window.innerHeight * 0.2,
+                                                    }}
+                                                />
+                                            </Grow>
+
+                                            <Grow in timeout={2800}>
+                                                <Stack direction='row' sx={{justifyContent: 'center', '& > :not(style)': { margin: 0.5 }}}>
+                                                    <Fab variant='extended' onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined}>
+                                                        <Build />
+                                                        Generate
+                                                    </Fab>
+                                                    
+                                                    <Fab variant='extended' onClick={handleReplaceText} disabled={!generatedText}>
+                                                        <Create />
+                                                        Replace
+                                                    </Fab>
+                                                </Stack>
+                                            </Grow>
+
+                                            <Grow in timeout={3000}>
+                                                <TextField
+                                                    id='generated-text'
+                                                    value={generatedText}
+                                                    multiline
+                                                    onChange={(e) => setGeneratedText(e.target.value)}
+                                                    placeholder='Generated text will appear here.'
+                                                    rows={window.innerHeight * 0.2 / 30}
+                                                    sx={{
+                                                        height: window.innerHeight * 0.2,
+                                                    }}
+                                                />
+                                            </Grow>
+                                        </Stack>
                                     </Paper>
                                 </Grid>
                             </Grow>

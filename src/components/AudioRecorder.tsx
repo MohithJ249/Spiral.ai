@@ -5,9 +5,6 @@ import { Pause, PlayArrow, NotStarted, RecordVoiceOver, StopCircle, Save, Volume
 import { useSaveRecordingMutation } from '../generated/graphql';
 import { time } from 'console';
 
-// only for testing purposes
-const testSong = require('./random-thoughts-20586.mp3');
-
 interface AudioRecorderProps {
   scriptid: string;
   onShowNotification: (severity: 'success' | 'info' | 'warning' | 'error', text: string) => void;
@@ -26,7 +23,6 @@ function AudioRecorder({ scriptid, onShowNotification }: AudioRecorderProps) {
   const [volume, setVolume] = useState<number>(80);
   const audioRef = useRef<HTMLAudioElement>(null);
   
-  const [currentSong, setCurrentSong] = useState<string>(testSong);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState<string | undefined>('00:00');
   const [duration, setDuration] = useState<string | undefined>('00:00');
