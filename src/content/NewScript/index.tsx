@@ -1,4 +1,4 @@
-import { Alert, Button, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography, Container, Box } from '@mui/material';
+import { Alert, Button, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography, Container, Box, Select, MenuItem } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useCreateScriptMutation } from '../../generated/graphql';
@@ -11,6 +11,7 @@ export default function NewScriptPage() {
     const [title, setTitle] = useState<string>('');
     const [prompt, setPrompt] = useState<string>('');
     const [additionalInfo, setAdditionalInfo] = useState<string>('');
+    const [speechTime, setSpeechTime] = useState<number>(30);
 
     const [createScript] = useCreateScriptMutation();
     const [loading, setLoading] = useState<boolean>(false);
@@ -135,6 +136,19 @@ export default function NewScriptPage() {
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     />
+
+                    <Select
+                        value={speechTime}
+                        label="Time"
+                        onChange={(e) => setSpeechTime(e.target.value as number)}
+                    >
+                        <MenuItem value={30}>30 Seconds</MenuItem>
+                        <MenuItem value={60}>1 Minute</MenuItem>
+                        <MenuItem value={120}>2 Minutes</MenuItem>
+                        <MenuItem value={180}>3 Minutes</MenuItem>
+                        <MenuItem value={240}>4 Minutes</MenuItem>
+                        <MenuItem value={300}>5 Minutes</MenuItem>
+                    </Select>
 
                     <PDFReader getExtractedText={handleExtractedText}/>
                     
