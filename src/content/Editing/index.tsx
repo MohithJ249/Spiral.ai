@@ -186,7 +186,7 @@ export default function EditingPage() {
         if(selectedTextPosition) {
             const selectedText = scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim();
     
-            const queryParam = encodeURIComponent(promptText+": "+selectedText);
+            const queryParam = encodeURIComponent(promptText+". "+selectedText);
             console.log(queryParam)
             const apiUrl = `https://2da9ogp80m.execute-api.us-east-2.amazonaws.com/dev/replicatelambda?prompt_input=${queryParam}`;
             
@@ -211,7 +211,7 @@ export default function EditingPage() {
         '& > :not(style)': { m: 1 }
     }
     
-    if(scriptid && title !== undefined && scriptContent !== undefined) {
+    if(scriptid && title && scriptContent !== undefined) {
         return (
             <>
                 <div>
@@ -246,7 +246,7 @@ export default function EditingPage() {
 
                                         <Grow in timeout={1300}>
                                             <div>
-                                                <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
+                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification}/>
                                             </div>
                                         </Grow>     
                                         

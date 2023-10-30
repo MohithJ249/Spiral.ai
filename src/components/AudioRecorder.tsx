@@ -7,10 +7,11 @@ import { time } from 'console';
 
 interface AudioRecorderProps {
   scriptid: string;
+  scriptTitle?: string;
   onShowNotification: (severity: 'success' | 'info' | 'warning' | 'error', text: string) => void;
 }
 
-function AudioRecorder({ scriptid, onShowNotification }: AudioRecorderProps) {
+function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecorderProps) {
   const [stream, setStream] = useState<MediaStream>();
   const [recording, setRecording] = useState(false);
   const [recordingName, setRecordingName] = useState<string>();
@@ -133,6 +134,10 @@ function AudioRecorder({ scriptid, onShowNotification }: AudioRecorderProps) {
     return !audioUrl || recordingName === undefined || recordingName === '' || loading;
   }
 
+  const goToRecordings = () => { 
+    window.location.href = '/Recordings?title=' + scriptTitle + '&scriptid=' + scriptid;
+  }
+
   // styling audio player
 
   const styledDiv = {
@@ -170,6 +175,7 @@ function AudioRecorder({ scriptid, onShowNotification }: AudioRecorderProps) {
       display: otherProps.thumbless ? 'none' : 'block'
     }
   }))
+  
 
   const MyVolSliderTag = () => {
 
@@ -287,6 +293,7 @@ function AudioRecorder({ scriptid, onShowNotification }: AudioRecorderProps) {
         </Stack>
         <MyVolSliderTag />
         <audio className='my-audio' src={audioUrl} ref={audioRef}></audio>
+        <Button onClick={goToRecordings}>Recordings</Button>
       </Paper>
 
     {/* <div>
