@@ -186,7 +186,7 @@ export default function EditingPage() {
         if(selectedTextPosition) {
             const selectedText = scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim();
     
-            const queryParam = encodeURIComponent(promptText+": "+selectedText);
+            const queryParam = encodeURIComponent(promptText+". "+selectedText);
             console.log(queryParam)
             const apiUrl = `https://2da9ogp80m.execute-api.us-east-2.amazonaws.com/dev/replicatelambda?prompt_input=${queryParam}`;
             
@@ -211,7 +211,7 @@ export default function EditingPage() {
         '& > :not(style)': { m: 1 }
     }
     
-    if(scriptid && title !== undefined && scriptContent !== undefined) {
+    if(scriptid && title && scriptContent !== undefined) {
         return (
             <>
                 <div>
@@ -246,7 +246,7 @@ export default function EditingPage() {
 
                                         <Grow in timeout={1300}>
                                             <div>
-                                                <AudioRecorder scriptid={scriptid} onShowNotification={showNotification}/>
+                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification}/>
                                             </div>
                                         </Grow>     
                                         
@@ -280,14 +280,7 @@ export default function EditingPage() {
                                             </Box>
                                         </Grow>
 
-                                        {/* Add Documents card */}
-                                        <Grow in timeout={1900}>
-                                            <Box sx={styledCard2LeftPane}>
-                                                <Typography variant="h5">
-                                                    Add Document Parsing so button + additional information
-                                                </Typography>
-                                            </Box>
-                                        </Grow>
+                                        
                                     </Paper>
                                 </Grid>
                             </Grow>
@@ -303,6 +296,9 @@ export default function EditingPage() {
                                     sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.5,
+                                        '& fieldset': {
+                                            borderRadius: '15px'
+                                        },
                                         // for changing the color of the textfield box
                                         // "& .MuiOutlinedInput-root": {
                                         //     "&.Mui-focused fieldset": {
@@ -345,6 +341,9 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
+                                                        '& fieldset': {
+                                                            borderRadius: '15px'
+                                                        }
                                                     }}
                                                     />
                                             </Grow>
@@ -359,6 +358,9 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
+                                                        '& fieldset': {
+                                                            borderRadius: '15px'
+                                                        }
                                                     }}
                                                 />
                                             </Grow>
@@ -387,6 +389,9 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
+                                                        '& fieldset': {
+                                                            borderRadius: '15px'
+                                                        }
                                                     }}
                                                 />
                                             </Grow>

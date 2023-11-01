@@ -175,6 +175,9 @@ export default function VersionHistory() {
                                     sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.6,
+                                        '& fieldset': {
+                                            borderRadius: '15px'
+                                        }
                                     }}
                                     value={scriptContent}
                                     defaultValue='Please select a version.'
