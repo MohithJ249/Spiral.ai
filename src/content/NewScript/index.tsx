@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Storage } from 'aws-amplify';
 import { ApolloError } from '@apollo/client';
 import PDFReader from '../../components/PDFReader';
+import OpenAI from "openai";
 
 export default function NewScriptPage() {
     const [title, setTitle] = useState<string>('');
@@ -17,6 +18,10 @@ export default function NewScriptPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorText, setErrorText] = useState<string | null>(null);
 
+    const openai = new OpenAI({
+        apiKey: process.env.REACT_APP_API_KEY
+    });
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -24,16 +29,14 @@ export default function NewScriptPage() {
         if(title !== '' && prompt !== '') {
             setErrorText(null);
 
-            const queryParam = encodeURIComponent(prompt+". Make sure to include this information: "+additionalInfo+".");
-            const apiUrl = `https://2da9ogp80m.execute-api.us-east-2.amazonaws.com/dev/replicatelambda?prompt_input=${queryParam}`;
+            const content = prompt + ". Make sure to include this information: " + additionalInfo + ". Max limit 128 characters.";
             
-            axios.get(apiUrl, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: content }],
             })
             .then(response => {
-                if (response.status === 200) 
+                if (response.choices)
                 {
                     createScript({
                         variables: {
@@ -45,7 +48,7 @@ export default function NewScriptPage() {
                         const userid = localStorage.getItem('userid');
                         const scriptid = createScriptResponse.data?.createScript?.scriptid;
                         const fileName = "userid-"+userid + "/scriptid-" + scriptid + "/"+title+".txt";
-                        const generatedScript = response.data.output;
+                        const generatedScript = response.choices[0].message.content;
 
                         Storage.put(fileName, generatedScript, {
                             contentType: 'text/plain',
@@ -74,6 +77,18 @@ export default function NewScriptPage() {
             setErrorText("Error: Please fill out all required fields.");
             setLoading(false);
         }
+    };
+
+    const handleSubmit2 = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const chatCompletion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: "Say this is a test" }],
+        });
+        
+        console.log(chatCompletion.choices);
+        
     };
     
     const handleExtractedText = (text: string) => {
