@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
-import { Box, Button, Card, CardContent, CardMedia, IconButton, Input, Paper, Slider, Stack, Tooltip, Typography, styled  } from '@mui/material';
+import { Box, Button, Card, CardContent, CardMedia, IconButton, Input, LinearProgress, Paper, Slider, Stack, Tooltip, Typography, styled  } from '@mui/material';
 import { Pause, PlayArrow, NotStarted, RecordVoiceOver, StopCircle, Save, VolumeUp, VolumeDown, Waves } from '@mui/icons-material';
 import { useSaveRecordingMutation } from '../generated/graphql';
 import { time } from 'console';
@@ -21,12 +21,11 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   const [saveRecordingInDatabase, { loading, error }] = useSaveRecordingMutation();
 
   // for audio player
-  const [volume, setVolume] = useState<number>(80);
   const audioRef = useRef<HTMLAudioElement>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
-  const [elapsed, setElapsed] = useState<string | undefined>('00:00');
-  const [duration, setDuration] = useState<string | undefined>('00:00');
+  const [elapsed, setElapsed] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
 
   useEffect(() => {
     if (recording) {
@@ -34,39 +33,29 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     } else {
       stopRecording();
     }
-  
-    const formatTime = (time: number) => {
+    
+    if(!recording) {
+      setInterval(() => {
+        if (audioRef.current) {
+          console.log(audioRef?.current?.duration);
+          const currDuration: number = Math.floor(audioRef?.current?.duration);
+          const currElapsed: number = Math.floor(audioRef?.current?.currentTime);
+          setDuration(currDuration);
+          setElapsed(currElapsed);
+        }
+      }, 100);
+    }
+  }, [recording]);
+
+  const formatTime = (time: number) => {
+    if(time && !isNaN(time) && isFinite(time)) {
       const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
       const seconds = Math.floor(time % 60) < 10 ? `0${Math.floor(time % 60)}` : Math.floor(time % 60);
-  
-      if (Number.isNaN(minutes) || Number.isNaN(seconds)) return '00:00';
-  
+
       return `${minutes}:${seconds}`;
     }
-  
-    const handleLoadedMetadata = () => {
-      if (audioRef.current) {
-        const currDuration: number = Math.floor(audioRef.current.duration);
-        const currElapsed: number = Math.floor(audioRef.current.currentTime);
-        console.log(formatTime(currDuration), '/', currDuration, ':::', formatTime(currElapsed), '/', currElapsed);
-        setDuration(formatTime(currDuration));
-        setElapsed(formatTime(currElapsed));
-      }
-    }
-  
-    if (audioRef.current) {
-      // Listen for the 'loadedmetadata' event
-      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-    }
-  
-    // Clean up the event listener when the component unmounts
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      }
-    };
-  }, [recording]);
-  
+    return "00:00";
+  }
 
   const startRecording = async () => {
     try {
@@ -84,6 +73,9 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
         mediaRecorderRef.current.onstop = () => {
             const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
             setAudioUrl(URL.createObjectURL(audioBlob));
+            
+            if(audioRef.current)
+              audioRef.current.src = URL.createObjectURL(audioBlob);
         };
 
         mediaRecorderRef.current.start();
@@ -97,6 +89,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
       mediaRecorderRef.current.stop();
       if(stream)
         stream.getTracks().forEach((track) => track.stop());
+    
     }
   };
 
@@ -178,31 +171,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   
 
   const MyVolSliderTag = () => {
-
-    // const handleVolChange = (event: React.SyntheticEvent | Event, newValue: number | number[]) => {
-    //   const inputElement = event.target as HTMLInputElement;
-    //   const value = inputElement.value;
-    //   const newVolume = Number(value);
-    //   console.log(newVolume);
-    //   if (audioRef.current) {
-    //     audioRef.current.volume = newVolume / 100;
-    //   }
-    //   setVolume(newVolume);
-    // };
-    // const handleVolume = (e: React.ChangeEvent<HTMLInputElement> | React.SyntheticEvent | Event): void => {
-    //   const inputElement = e.target as HTMLInputElement;
-    //   const value = inputElement.value;
-    //   const volume = Number(value) / 100;
-    //   setVolume(volume);
-    //   if(audioRef.current)
-    //     audioRef.current.volume = volume;
-    // }
-
+    const [volume, setVolume] = useState(70);
     const handleVolume = (e: Event, newValue: number | number[]): void => {
       // const { value } = e.target;
-      const volume = Number(newValue) / 100;
-      if(audioRef.current)
-        audioRef.current.volume = volume;
+      let currVolume = Number(newValue);
+      if(audioRef.current) {
+        audioRef.current.volume = currVolume / 100;
+        setVolume(currVolume);
+      }
     }
 
     return (
@@ -218,8 +194,8 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
             <PlayBar
               min={0}
               max={100}
+              value={volume}
               onChange={handleVolume}
-              defaultValue={70}
             />
             <VolumeUp />
         </Stack>
@@ -243,7 +219,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
       <Paper sx={styledPaper}>
         <Stack direction='row' spacing={1} sx={{
           justifyContent: 'center'}}>
-          <Input placeholder="Recording Name" value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
+          <Input placeholder="Recording Name" style={{color: 'white'}} value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
         </Stack>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
           <Stack direction='row' spacing={1}
@@ -287,33 +263,18 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
           width: '100%',
           alignItems: 'center',
         }}>
-          <Typography sx={{color: 'silver'}}>{elapsed}</Typography>
-          <PlayBar thumbless/>
-          <Typography sx={{color: 'silver'}}>{duration}</Typography>
+          <Typography sx={{color: 'silver'}}>{formatTime(elapsed)}</Typography>
+          <PlayBar thumbless value={elapsed} max={duration} onChange={(e, newValue) => {
+            if(audioRef.current)
+              audioRef.current.currentTime = newValue as number;
+          }
+          }/>
+          <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
         </Stack>
         <MyVolSliderTag />
         <audio className='my-audio' src={audioUrl} ref={audioRef}></audio>
-        <Button onClick={goToRecordings}>Recordings</Button>
+        <Button onClick={goToRecordings}>View All Recordings</Button>
       </Paper>
-
-    {/* <div>
-      <Card sx={{ display: 'flex' , justifyContent: 'center', borderRadius: '10px' }}>
-        <Box sx={{ flexDirection: 'column', margin: '20px' }}>
-          <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Input placeholder="Recording Name" value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
-          </CardContent>
-          <Box sx={{ display: 'flex', justifyContent: 'center', pl: 1, pb: 1 }}>
-            <IconButton aria-label="play/pause">
-              <RecordVoiceOver sx={{ height: 38, width: 38 }} onClick={() => setRecording(!recording)}/>
-            </IconButton>
-            <IconButton aria-label="save" onClick={saveRecording} disabled={saveRecordingDisabled()}>
-              <Save sx={{ height: 38, width: 38 }} />
-            </IconButton>
-          </Box>
-          <audio controls src={audioUrl}/> 
-        </Box>
-      </Card>
-    </div> */}
     </>
   );
 }
