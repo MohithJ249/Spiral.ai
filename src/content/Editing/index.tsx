@@ -299,12 +299,7 @@ export default function EditingPage() {
                                         '& fieldset': {
                                             borderRadius: '15px'
                                         },
-                                        // for changing the color of the textfield box
-                                        // "& .MuiOutlinedInput-root": {
-                                        //     "&.Mui-focused fieldset": {
-                                        //         borderColor: "red"
-                                        //     }
-                                        // }
+
                                     }}
                                     value={scriptContent}
                                     onChange={(e) => setScriptContent(e.target.value)}

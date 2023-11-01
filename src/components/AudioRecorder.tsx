@@ -205,8 +205,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
               max={100}
               value={volume}
               onChange={handleVolume}
-              defaultValue={70}
               />
+              {/* <input
+                type="range"
+                min="0"
+                max="100"
+                value="volume"
+                onchange="handleVolume(event.value)"
+              /> */}
             <VolumeUp />
         </Stack>
       </Box>
