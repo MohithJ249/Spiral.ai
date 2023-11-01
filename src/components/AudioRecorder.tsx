@@ -33,19 +33,27 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     } else {
       stopRecording();
     }
-    
-    if(!recording) {
-      setInterval(() => {
-        if (audioRef.current) {
-          console.log(audioRef?.current?.duration);
-          const currDuration: number = Math.floor(audioRef?.current?.duration);
-          const currElapsed: number = Math.floor(audioRef?.current?.currentTime);
-          setDuration(currDuration);
-          setElapsed(currElapsed);
-        }
-      }, 100);
-    }
   }, [recording]);
+
+  var getDuration = function (url: any, next: any) {
+    var _player = new Audio(url);
+    _player.addEventListener("durationchange", function (e) {
+        if (this.duration!=Infinity) {
+           var duration = this.duration
+           _player.remove();
+           next(duration);
+        };
+    }, false);      
+    _player.load();
+    _player.currentTime = 24*60*60;
+    _player.volume = 0;
+};
+
+  useEffect(() => {
+    getDuration (audioUrl, function (duration: any) {
+      setDuration(duration)
+  });
+  }, [audioUrl]);
 
   const formatTime = (time: number) => {
     if(time && !isNaN(time) && isFinite(time)) {
@@ -72,10 +80,12 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
 
         mediaRecorderRef.current.onstop = () => {
             const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
-            setAudioUrl(URL.createObjectURL(audioBlob));
+            const newURL = URL.createObjectURL(audioBlob);
+            setAudioUrl(newURL);
             
-            if(audioRef.current)
-              audioRef.current.src = URL.createObjectURL(audioBlob);
+            if(audioRef.current && newURL) {
+              audioRef.current.src = newURL;
+            }
         };
 
         mediaRecorderRef.current.start();
@@ -89,7 +99,6 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
       mediaRecorderRef.current.stop();
       if(stream)
         stream.getTracks().forEach((track) => track.stop());
-    
     }
   };
 
@@ -196,7 +205,8 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
               max={100}
               value={volume}
               onChange={handleVolume}
-            />
+              defaultValue={70}
+              />
             <VolumeUp />
         </Stack>
       </Box>
@@ -213,6 +223,18 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     setIsPlaying(!isPlaying);
   }
 
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+      console.log("DDDD " + audioRef.current.duration);
+    }
+  };
+
+  const onTimeUpdate = () => {
+    if (audioRef.current) {
+      setElapsed(audioRef.current.currentTime);
+    }
+  };
 
   return (
     <>
@@ -272,7 +294,12 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
           <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
         </Stack>
         <MyVolSliderTag />
-        <audio className='my-audio' src={audioUrl} ref={audioRef}></audio>
+        <audio 
+          className='my-audio' 
+          src={audioUrl}
+          ref={audioRef} 
+          onLoadedMetadata={onLoadedMetadata} 
+          onTimeUpdate={onTimeUpdate}></audio>
         <Button onClick={goToRecordings}>View All Recordings</Button>
       </Paper>
     </>
