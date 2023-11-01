@@ -296,9 +296,6 @@ export default function EditingPage() {
                                     sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.5,
-                                        '& fieldset': {
-                                            borderRadius: '15px'
-                                        },
 
                                     }}
                                     value={scriptContent}
@@ -336,9 +333,6 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
-                                                        '& fieldset': {
-                                                            borderRadius: '15px'
-                                                        }
                                                     }}
                                                     />
                                             </Grow>
@@ -353,9 +347,6 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
-                                                        '& fieldset': {
-                                                            borderRadius: '15px'
-                                                        }
                                                     }}
                                                 />
                                             </Grow>
@@ -384,9 +375,6 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
-                                                        '& fieldset': {
-                                                            borderRadius: '15px'
-                                                        }
                                                     }}
                                                 />
                                             </Grow>
