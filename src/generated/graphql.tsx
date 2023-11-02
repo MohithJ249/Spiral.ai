@@ -17,15 +17,27 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  commentid: Scalars['ID']['output'];
+  scriptid: Scalars['ID']['output'];
+  text_content: Scalars['String']['output'];
+  time_saved: Scalars['String']['output'];
+  userid: Scalars['ID']['output'];
+  username?: Maybe<Scalars['String']['output']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addCollaborator?: Maybe<Scalars['Boolean']['output']>;
   createScript?: Maybe<Script>;
   createScriptVersion?: Maybe<ScriptVersion>;
   createUser?: Maybe<User>;
+  deleteComment?: Maybe<Scalars['Boolean']['output']>;
   deleteRecording?: Maybe<Scalars['Boolean']['output']>;
   deleteScript?: Maybe<Scalars['Boolean']['output']>;
   deleteUser?: Maybe<Scalars['Boolean']['output']>;
+  postComment?: Maybe<Scalars['Boolean']['output']>;
   removeCollaborator?: Maybe<Scalars['Boolean']['output']>;
   saveRecording?: Maybe<Scalars['Boolean']['output']>;
   updateScript?: Maybe<Script>;
@@ -56,6 +68,11 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteCommentArgs = {
+  commentid: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteRecordingArgs = {
   scriptid: Scalars['ID']['input'];
   title: Scalars['String']['input'];
@@ -68,6 +85,13 @@ export type MutationDeleteScriptArgs = {
 
 
 export type MutationDeleteUserArgs = {
+  userid: Scalars['ID']['input'];
+};
+
+
+export type MutationPostCommentArgs = {
+  scriptid: Scalars['ID']['input'];
+  text_content: Scalars['String']['input'];
   userid: Scalars['ID']['input'];
 };
 
@@ -92,6 +116,7 @@ export type MutationUpdateScriptArgs = {
 export type Query = {
   __typename?: 'Query';
   getAllScriptCollaborators?: Maybe<Array<Maybe<User>>>;
+  getAllScriptComments?: Maybe<Array<Maybe<Comment>>>;
   getAllSharedScripts?: Maybe<Array<Maybe<Script>>>;
   getAllUserRecordings?: Maybe<Array<Maybe<Recording>>>;
   getAllUserScripts?: Maybe<Array<Maybe<Script>>>;
@@ -103,6 +128,11 @@ export type Query = {
 
 
 export type QueryGetAllScriptCollaboratorsArgs = {
+  scriptid: Scalars['ID']['input'];
+};
+
+
+export type QueryGetAllScriptCommentsArgs = {
   scriptid: Scalars['ID']['input'];
 };
 
@@ -202,6 +232,13 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email: string, password: string, username: string, userid: string } | null };
 
+export type DeleteCommentMutationVariables = Exact<{
+  commentid: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment?: boolean | null };
+
 export type DeleteRecordingMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
   title: Scalars['String']['input'];
@@ -223,6 +260,15 @@ export type DeleteUserMutationVariables = Exact<{
 
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: boolean | null };
+
+export type PostCommentMutationVariables = Exact<{
+  scriptid: Scalars['ID']['input'];
+  userid: Scalars['ID']['input'];
+  textContent: Scalars['String']['input'];
+}>;
+
+
+export type PostCommentMutation = { __typename?: 'Mutation', postComment?: boolean | null };
 
 export type RemoveCollaboratorMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
@@ -254,6 +300,13 @@ export type GetAllScriptCollaboratorsQueryVariables = Exact<{
 
 
 export type GetAllScriptCollaboratorsQuery = { __typename?: 'Query', getAllScriptCollaborators?: Array<{ __typename?: 'User', email: string, password: string, userid: string, username: string } | null> | null };
+
+export type GetAllScriptCommentsQueryVariables = Exact<{
+  scriptid: Scalars['ID']['input'];
+}>;
+
+
+export type GetAllScriptCommentsQuery = { __typename?: 'Query', getAllScriptComments?: Array<{ __typename?: 'Comment', commentid: string, scriptid: string, text_content: string, time_saved: string, userid: string, username?: string | null } | null> | null };
 
 export type GetAllSharedScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
@@ -438,6 +491,37 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const DeleteCommentDocument = gql`
+    mutation DeleteComment($commentid: ID!) {
+  deleteComment(commentid: $commentid)
+}
+    `;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      commentid: // value for 'commentid'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, options);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const DeleteRecordingDocument = gql`
     mutation DeleteRecording($scriptid: ID!, $title: String!) {
   deleteRecording(scriptid: $scriptid, title: $title)
@@ -532,6 +616,39 @@ export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const PostCommentDocument = gql`
+    mutation PostComment($scriptid: ID!, $userid: ID!, $textContent: String!) {
+  postComment(scriptid: $scriptid, userid: $userid, text_content: $textContent)
+}
+    `;
+export type PostCommentMutationFn = Apollo.MutationFunction<PostCommentMutation, PostCommentMutationVariables>;
+
+/**
+ * __usePostCommentMutation__
+ *
+ * To run a mutation, you first call `usePostCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postCommentMutation, { data, loading, error }] = usePostCommentMutation({
+ *   variables: {
+ *      scriptid: // value for 'scriptid'
+ *      userid: // value for 'userid'
+ *      textContent: // value for 'textContent'
+ *   },
+ * });
+ */
+export function usePostCommentMutation(baseOptions?: Apollo.MutationHookOptions<PostCommentMutation, PostCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PostCommentMutation, PostCommentMutationVariables>(PostCommentDocument, options);
+      }
+export type PostCommentMutationHookResult = ReturnType<typeof usePostCommentMutation>;
+export type PostCommentMutationResult = Apollo.MutationResult<PostCommentMutation>;
+export type PostCommentMutationOptions = Apollo.BaseMutationOptions<PostCommentMutation, PostCommentMutationVariables>;
 export const RemoveCollaboratorDocument = gql`
     mutation RemoveCollaborator($scriptid: ID!, $email: ID!) {
   removeCollaborator(scriptid: $scriptid, email: $email)
@@ -673,6 +790,51 @@ export type GetAllScriptCollaboratorsQueryHookResult = ReturnType<typeof useGetA
 export type GetAllScriptCollaboratorsLazyQueryHookResult = ReturnType<typeof useGetAllScriptCollaboratorsLazyQuery>;
 export type GetAllScriptCollaboratorsSuspenseQueryHookResult = ReturnType<typeof useGetAllScriptCollaboratorsSuspenseQuery>;
 export type GetAllScriptCollaboratorsQueryResult = Apollo.QueryResult<GetAllScriptCollaboratorsQuery, GetAllScriptCollaboratorsQueryVariables>;
+export const GetAllScriptCommentsDocument = gql`
+    query GetAllScriptComments($scriptid: ID!) {
+  getAllScriptComments(scriptid: $scriptid) {
+    commentid
+    scriptid
+    text_content
+    time_saved
+    userid
+    username
+  }
+}
+    `;
+
+/**
+ * __useGetAllScriptCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetAllScriptCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllScriptCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllScriptCommentsQuery({
+ *   variables: {
+ *      scriptid: // value for 'scriptid'
+ *   },
+ * });
+ */
+export function useGetAllScriptCommentsQuery(baseOptions: Apollo.QueryHookOptions<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>(GetAllScriptCommentsDocument, options);
+      }
+export function useGetAllScriptCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>(GetAllScriptCommentsDocument, options);
+        }
+export function useGetAllScriptCommentsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>(GetAllScriptCommentsDocument, options);
+        }
+export type GetAllScriptCommentsQueryHookResult = ReturnType<typeof useGetAllScriptCommentsQuery>;
+export type GetAllScriptCommentsLazyQueryHookResult = ReturnType<typeof useGetAllScriptCommentsLazyQuery>;
+export type GetAllScriptCommentsSuspenseQueryHookResult = ReturnType<typeof useGetAllScriptCommentsSuspenseQuery>;
+export type GetAllScriptCommentsQueryResult = Apollo.QueryResult<GetAllScriptCommentsQuery, GetAllScriptCommentsQueryVariables>;
 export const GetAllSharedScriptsDocument = gql`
     query GetAllSharedScripts($userid: ID!) {
   getAllSharedScripts(userid: $userid) {

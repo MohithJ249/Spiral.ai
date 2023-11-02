@@ -1,0 +1,10 @@
+query GetAllScriptComments($scriptid: ID!) {
+  getAllScriptComments(scriptid: $scriptid) {
+    commentid
+    scriptid
+    text_content
+    time_saved
+    userid
+    username
+  }
+}
