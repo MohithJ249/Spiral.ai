@@ -11,9 +11,7 @@ export const StyledTheme = createTheme({
       MuiCard: {
         styleOverrides: {
           root: {
-            // background: "#ebb412",
-            boxShadow: "20px 20px 30px #505059,-20px -20px 30px #ffffff;"
-            // boxShadow: "22px 22px 79px #120d0d,-22px -22px 79px #463535;",
+            background: 'white',          
           }
         }
       },
@@ -32,6 +30,7 @@ export const StyledTheme = createTheme({
             // border: "2px solid",
             textDecoration: "italic",
             padding: 20,
+            backgroundColor: 'f1efee',
           },
         },
       },
@@ -57,6 +56,7 @@ export const StyledTheme = createTheme({
           h1: {
             fontSize: 30,
             textAlignLast: "center",
+            
           },
         },
       },

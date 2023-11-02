@@ -1,19 +1,13 @@
 import {
   Box,
-  Button,
-  ButtonBase,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  Menu,
-  MenuItem,
   Typography
 } from '@mui/material';
-import { useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 
 const ListWrapper = styled(Box)(
   ({ theme }) => `
@@ -38,9 +32,9 @@ const ListWrapper = styled(Box)(
                             position: absolute;
                             bottom: -10px;
                             transition: all .2s;
-                            border-radius: '2px';
+                            border-radius: 2px;
                             content: "";
-                            background: '#000000';
+                            background: ${theme.palette.primary.main};
                         }
                     }
                 }
@@ -48,7 +42,6 @@ const ListWrapper = styled(Box)(
                 &.active,
                 &:active,
                 &:hover {
-                
                     background: transparent;
                 
                     .MuiListItemText-root {
@@ -67,68 +60,39 @@ const ListWrapper = styled(Box)(
 );
 
 function HeaderMenu() {
-  const ref = useRef<any>(null);
-  const [isOpen, setOpen] = useState<boolean>(false);
-
-  const handleOpen = (): void => {
-    setOpen(true);
-  };
-
-  const handleClose = (): void => {
-    setOpen(false);
-  };
-
   return (
     <>
       <ListWrapper
         sx={{
-          display: {
-            // xs: 'none',
-            // md: 'block'
-          },
+          display: 'flex',
+          alignItems: 'center', // Align items vertically
+          minHeight: '80px', // Increase the height of the header
+          px: 2, // Padding on the sides
         }}
       >
-        <List disablePadding component={Box} display="flex">
-          {/* <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Button
-              size="small"
-              variant="outlined"
-              sx={{ whiteSpace: 'nowrap' }}
-            >
-              + New Script
-            </Button>
-          </Box> */}
-          <ListItem
-            classes={{ root: 'MuiListItem-indicators' }}
-            button = {true}
+        <Box sx={{ p: 1, display: 'flex', alignItems: 'center', border: '1px solid black' }}>
+          {/* This box will contain the New Script button and will be positioned on the top left */}
+          <ListItemButton
             component={NavLink}
             to="/NewScript"
           >
-            {/* don't wrap button text*/}
-            <ListItemButton sx={{}}>
-              + New Script
-            </ListItemButton>
-            {/* <Button>
-              + New Script
-            </Button> */}
-            {/* <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
-              primary="+ New Script"
-            /> */}
-          </ListItem>
+            + New Script
+          </ListItemButton>
+        </Box>
+        {/* Spacer to push the menu items to the center */}
+        <Box sx={{ flexGrow: 1 }} />
+        {/* Centered list items */}
+        <List sx={{ display: 'flex', justifyContent: 'center', flex: 1 }}> {/* Adjusted for centering */}
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
             button
             component={NavLink}
             to="/MyScripts"
+            sx={{ justifyContent: 'center' }} // Center the list item
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
               primary="My Scripts"
+              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
             />
           </ListItem>
           <ListItem
@@ -136,10 +100,11 @@ function HeaderMenu() {
             button
             component={NavLink}
             to="/Shared"
+            sx={{ justifyContent: 'center' }} // Center the list item
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
               primary="Shared"
+              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
             />
           </ListItem>
           <ListItem
@@ -147,13 +112,16 @@ function HeaderMenu() {
             button
             component={NavLink}
             to="/Recordings"
+            sx={{ justifyContent: 'center' }} // Center the list item
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
               primary="Recordings"
+              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
             />
           </ListItem>
         </List>
+        {/* Spacer to balance the layout */}
+        <Box sx={{ flexGrow: 1 }} />
       </ListWrapper>
     </>
   );
