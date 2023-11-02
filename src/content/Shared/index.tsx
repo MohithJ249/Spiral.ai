@@ -32,7 +32,7 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
       <Card>
         {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
         of the script and last modified date*/}
-        <CardActionArea component={NavLink}   to={{pathname: `/Editing`,search: `?title=${title}&scriptid=${scriptid}`,}}>
+        <CardActionArea component={NavLink}   to={{pathname: `/ViewShared`,search: `?title=${title}&scriptid=${scriptid}&ownerid=${userid}`,}}>
           <CardContent>
             <Typography variant="h5" noWrap>
               {title}

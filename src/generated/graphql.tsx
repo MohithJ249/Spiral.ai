@@ -23,6 +23,7 @@ export type Mutation = {
   createScript?: Maybe<Script>;
   createScriptVersion?: Maybe<ScriptVersion>;
   createUser?: Maybe<User>;
+  deleteRecording?: Maybe<Scalars['Boolean']['output']>;
   deleteScript?: Maybe<Scalars['Boolean']['output']>;
   deleteUser?: Maybe<Scalars['Boolean']['output']>;
   removeCollaborator?: Maybe<Scalars['Boolean']['output']>;
@@ -52,6 +53,12 @@ export type MutationCreateUserArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteRecordingArgs = {
+  scriptid: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
 };
 
 
@@ -194,6 +201,14 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email: string, password: string, username: string, userid: string } | null };
+
+export type DeleteRecordingMutationVariables = Exact<{
+  scriptid: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+}>;
+
+
+export type DeleteRecordingMutation = { __typename?: 'Mutation', deleteRecording?: boolean | null };
 
 export type DeleteScriptMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
@@ -423,6 +438,38 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const DeleteRecordingDocument = gql`
+    mutation DeleteRecording($scriptid: ID!, $title: String!) {
+  deleteRecording(scriptid: $scriptid, title: $title)
+}
+    `;
+export type DeleteRecordingMutationFn = Apollo.MutationFunction<DeleteRecordingMutation, DeleteRecordingMutationVariables>;
+
+/**
+ * __useDeleteRecordingMutation__
+ *
+ * To run a mutation, you first call `useDeleteRecordingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRecordingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRecordingMutation, { data, loading, error }] = useDeleteRecordingMutation({
+ *   variables: {
+ *      scriptid: // value for 'scriptid'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useDeleteRecordingMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRecordingMutation, DeleteRecordingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteRecordingMutation, DeleteRecordingMutationVariables>(DeleteRecordingDocument, options);
+      }
+export type DeleteRecordingMutationHookResult = ReturnType<typeof useDeleteRecordingMutation>;
+export type DeleteRecordingMutationResult = Apollo.MutationResult<DeleteRecordingMutation>;
+export type DeleteRecordingMutationOptions = Apollo.BaseMutationOptions<DeleteRecordingMutation, DeleteRecordingMutationVariables>;
 export const DeleteScriptDocument = gql`
     mutation DeleteScript($scriptid: ID!) {
   deleteScript(scriptid: $scriptid)
