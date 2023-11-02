@@ -4,10 +4,11 @@ import logo from './logo.svg';
 import './App.css';
 import { useRoutes } from 'react-router-dom';
 import router from './router';
-import { CssBaseline } from '@mui/material';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 // import MyDocs from './dashboard/MyDocs';
 import client from './graphql/client';
 import { Amplify } from 'aws-amplify';
+import { StyledTheme } from './styles/styles';
 
 Amplify.configure({
   Auth: {
@@ -29,9 +30,11 @@ function App() {
   return (
     <div className="App">
        <ApolloProvider client={client}>
-        <CssBaseline />
-        {content}
-      </ApolloProvider>
+        <ThemeProvider theme={StyledTheme}>
+          <CssBaseline />
+          {content}
+        </ThemeProvider>
+        </ApolloProvider>
     </div>
   );
 }
