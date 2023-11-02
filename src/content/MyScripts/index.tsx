@@ -26,6 +26,8 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   function CustomCard({title, scriptid, lastModified}: CustomCardProps) {
     const location = useLocation();
     const currentPath = location.pathname;
+
+
     return (
       <Card>
         {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
@@ -50,7 +52,6 @@ export default function MyScripts() {
     if(data?.getAllUserScripts) {
       return (
         <>
-          <Typography >Welcome {localStorage.getItem('username')}</Typography>
           <Box sx={{ flexWrap: 'wrap', display: 'flex'}}>
             <Grid 
               container 

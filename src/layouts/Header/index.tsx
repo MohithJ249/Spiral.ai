@@ -26,7 +26,7 @@ const HeaderWrapper = styled(Box)(
         padding: ${theme.spacing(0, 2)};
         right: 0;
         z-index: 6;
-        background-color: ${alpha('#11192a', 0.85)};
+        background-color: #1976d2;
         backdrop-filter: blur(3px);
         position: fixed;
         justify-content: space-between;
@@ -44,7 +44,7 @@ function getNavbar(sidebarToggle: boolean, toggleSidebar: MouseEventHandler<HTML
       display="flex"
       alignItems="center"
       sx={{
-        boxShadow: '0 8px 8px 5px lightblue'
+        boxShadow: '0 8px 8px 5px white'
       }}
     >
       {/* add these two lines to center the menu */}
@@ -98,12 +98,14 @@ function Header() {
           flex: 1,
           pt: '80px',
           justifyContent: 'center',
+          backgroundColor: '#f1efee'
           // marginTop: '5%',
           // margin: '0px 0px 0px 40px',
         }}
       >
         <Box display="block" sx={{ justifyContent : 'center', margin: 'auto', marginTop: '2%'}}>
           <Outlet />
+
         </Box>
       </Box>
     </>
