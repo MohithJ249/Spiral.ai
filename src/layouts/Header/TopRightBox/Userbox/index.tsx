@@ -32,7 +32,7 @@ const UserBoxButton = styled(Button)(
 
 const MenuUserBox = styled(Box)(
   ({ theme }) => `
-        background: '#add8e6';
+        background: white;
         padding: ${theme.spacing(2)};
 `
 );
@@ -47,14 +47,21 @@ const UserBoxText = styled(Box)(
 const UserBoxLabel = styled(Typography)(
   ({ theme }) => `
         font-weight: ${theme.typography.fontWeightBold};
-        color: '#add8e6';
+        color: white;
         display: block;
 `
 );
 
+const UserBoxLabel2 = styled(Typography)(
+  ({ theme }) => `
+        font-weight: ${theme.typography.fontWeightBold};
+        color: black;
+        display: block;
+`
+);
 const UserBoxDescription = styled(Typography)(
   ({ theme }) => `
-        color: ${lighten('#add8e6', 0.5)}
+        color: black;
 `
 );
 
@@ -110,7 +117,7 @@ function HeaderUserbox() {
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
           <Avatar variant="rounded" alt={user.name} src={user.avatar} />
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
+            <UserBoxLabel2 variant="body1">{user.name}</UserBoxLabel2>
             <UserBoxDescription variant="body2">
               settings goes here
             </UserBoxDescription>
