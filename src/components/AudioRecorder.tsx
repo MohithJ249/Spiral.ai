@@ -223,13 +223,6 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     setIsPlaying(!isPlaying);
   }
 
-  const onLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-      console.log("DDDD " + audioRef.current.duration);
-    }
-  };
-
   const onTimeUpdate = () => {
     if (audioRef.current) {
       setElapsed(audioRef.current.currentTime);
@@ -298,7 +291,6 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
           className='my-audio' 
           src={audioUrl}
           ref={audioRef} 
-          onLoadedMetadata={onLoadedMetadata} 
           onTimeUpdate={onTimeUpdate}></audio>
         <Button onClick={goToRecordings}>View All Recordings</Button>
       </Paper>

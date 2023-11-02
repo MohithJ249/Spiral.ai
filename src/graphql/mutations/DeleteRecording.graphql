@@ -1,0 +1,3 @@
+mutation DeleteRecording($scriptid: ID!, $title: String!) {
+  deleteRecording(scriptid: $scriptid, title: $title)
+}
