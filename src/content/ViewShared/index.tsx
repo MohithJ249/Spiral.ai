@@ -1,7 +1,7 @@
 import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box, TextField, Paper, Fab, Stack } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
-import {  } from '../../generated/graphql';
+import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../../generated/graphql';
 import { Create, PlaylistAddCheck } from '@mui/icons-material';
 import Scrollbar from '../../components/scrollbar';
 
@@ -12,10 +12,19 @@ export default function ViewShared() {
     const scriptid = searchParams.get('scriptid');
     const ownerid = searchParams.get('ownerid');
 
+    const [commentText, setCommentText] = useState<string>('');
     const [scriptContent, setScriptContent] = useState<string>();
+    const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
+    const [postCommentMutation] = usePostCommentMutation();
+    const [deleteCommentMutation] = useDeleteCommentMutation();
 
     useEffect(() => {
         if(scriptid) {
+            fetchScriptComments({
+                variables: {
+                    scriptid: scriptid || ''
+                }
+            });
             const fileName = "userid-"+ownerid+ "/scriptid-" + scriptid + "/"+title+".txt";
             Storage.get(fileName, { download: true })
             .then(fileContent => {
@@ -35,8 +44,27 @@ export default function ViewShared() {
         pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
     };
 
-    const postComment = () => {
+    const postComment = async () => {
+        if(commentText) {
+            await postCommentMutation({
+                variables: {
+                    scriptid: scriptid || '',
+                    userid: localStorage.getItem('userid') || '',
+                    textContent: commentText
+                }
+            });
+            setCommentText('');
+            refetchComments();
+        }
+    }
 
+    const deleteComment = async (commentid: string) => {
+        await deleteCommentMutation({
+            variables: {
+                commentid: commentid
+            }
+        });
+        refetchComments();
     }
 
     if(scriptid) {
@@ -59,14 +87,33 @@ export default function ViewShared() {
                                         }}
                                     >
                                         <Stack direction="column" sx={{'& > :not(style)': { m: 1 }}}>
-                                            <Fab variant="extended" onClick={postComment}>
+                                            <Fab variant="extended" onClick={postComment} disabled={!commentText}>
                                                 <Create />
                                                 Post Comment
                                             </Fab>
                                             <TextField
                                             multiline
-                                            rows={window.innerHeight * 0.8 / 100}>
+                                            rows={window.innerHeight * 0.8 / 100}
+                                            value={commentText}
+                                            onChange={(e) => setCommentText(e.target.value)}
+                                            >
                                             </TextField>
+                                            {data?.getAllScriptComments?.map(comment => {
+                                                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                    return (
+                                                        <Card key={comment.commentid}>
+                                                            <CardContent>
+                                                            <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
+                                                            <Typography variant="body1">{comment.text_content}</Typography>
+                                                            {comment.userid === localStorage.getItem('userid') ? (
+                                                                <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
+                                                            ) : null}
+                                                            </CardContent>
+                                                        </Card>
+                                                    );
+                                                }
+                                                return null; // Or any other fallback you want when text_content is undefined or falsy
+                                            })}
                                         </Stack>
                                     </Paper>
                                 </Grid>
