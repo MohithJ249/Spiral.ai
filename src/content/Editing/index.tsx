@@ -296,15 +296,7 @@ export default function EditingPage() {
                                     sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.5,
-                                        '& fieldset': {
-                                            borderRadius: '15px'
-                                        },
-                                        // for changing the color of the textfield box
-                                        // "& .MuiOutlinedInput-root": {
-                                        //     "&.Mui-focused fieldset": {
-                                        //         borderColor: "red"
-                                        //     }
-                                        // }
+
                                     }}
                                     value={scriptContent}
                                     onChange={(e) => setScriptContent(e.target.value)}
@@ -341,9 +333,6 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
-                                                        '& fieldset': {
-                                                            borderRadius: '15px'
-                                                        }
                                                     }}
                                                     />
                                             </Grow>
@@ -358,9 +347,6 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
-                                                        '& fieldset': {
-                                                            borderRadius: '15px'
-                                                        }
                                                     }}
                                                 />
                                             </Grow>
@@ -389,9 +375,6 @@ export default function EditingPage() {
                                                     rows={window.innerHeight * 0.2 / 30}
                                                     sx={{
                                                         height: window.innerHeight * 0.2,
-                                                        '& fieldset': {
-                                                            borderRadius: '15px'
-                                                        }
                                                     }}
                                                 />
                                             </Grow>
