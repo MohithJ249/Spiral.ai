@@ -7,6 +7,7 @@ import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
 import { Build, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
+import OpenAI from "openai";
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -16,7 +17,7 @@ export default function EditingPage() {
 
     const [scriptContent, setScriptContent] = useState<string>();
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
-    const [generatedText, setGeneratedText] = useState<string>('');
+    const [generatedText, setGeneratedText] = useState<string | null>('');
     const [promptText, setPromptText] = useState<string>('');
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
@@ -42,6 +43,11 @@ export default function EditingPage() {
         color: 'initial',
         pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
     };
+
+    const openai = new OpenAI({
+        apiKey: process.env.REACT_APP_API_KEY,
+        dangerouslyAllowBrowser: true
+    });
 
     useEffect(() => {
         populateScriptContent();
@@ -192,18 +198,21 @@ export default function EditingPage() {
         //llama 2 response
         if(selectedTextPosition) {
             const selectedText = scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim();
-    
-            const queryParam = encodeURIComponent(promptText+". "+selectedText);
-            console.log(queryParam)
-            const apiUrl = `https://2da9ogp80m.execute-api.us-east-2.amazonaws.com/dev/replicatelambda?prompt_input=${queryParam}`;
             
-            const LLMResponse = await axios.get(apiUrl, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            setGeneratedText(LLMResponse.data.output);
+            const queryParam = promptText + ". " + selectedText;
+            console.log(queryParam)
+            
+            try {
+                const LLMResponse = await openai.chat.completions.create({
+                    model: "gpt-3.5-turbo",
+                    messages: [{ role: "user", content: queryParam }],
+                })
+                setGeneratedText(LLMResponse.choices[0].message.content);
+            }
+            catch (error) {
+                console.error(`ERROR: ${error}`)
+            }
+            
         }
     }
 
