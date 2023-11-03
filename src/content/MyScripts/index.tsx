@@ -26,12 +26,14 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   function CustomCard({title, scriptid, lastModified}: CustomCardProps) {
     const location = useLocation();
     const currentPath = location.pathname;
+
+
     return (
       <Card>
         {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
         of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/Editing`,search: `?title=${title}&scriptid=${scriptid}`,}}>
-          <CardContent>
+          <CardContent sx = {{color: 'black'}}>
             <Typography variant="h5" noWrap>
               {title}
             </Typography>
@@ -44,14 +46,13 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
     );
   }
 
-export default function MyScripts() {
+  export default function MyScripts() {
     const { data } = useGetAllUserScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
 
     if(data?.getAllUserScripts) {
       return (
         <>
-          <Typography >Welcome {localStorage.getItem('username')}</Typography>
-          <Box sx={{ flexWrap: 'wrap', display: 'flex'}}>
+          <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>
             <Grid 
               container 
               spacing={3} 

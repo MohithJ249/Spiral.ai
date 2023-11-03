@@ -1,8 +1,8 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
-import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, } from '../../generated/graphql';
+import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, useGetAllScriptCommentsLazyQuery, useDeleteCommentMutation } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
@@ -23,6 +23,8 @@ export default function EditingPage() {
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
 
+    const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
+    const [deleteCommentMutation] = useDeleteCommentMutation();
     const [deleteScriptMutation] = useDeleteScriptMutation();
     const { data: scriptRecordingsData } = useGetScriptRecordingsQuery({
         variables: {
@@ -43,6 +45,11 @@ export default function EditingPage() {
 
     useEffect(() => {
         populateScriptContent();
+        fetchScriptComments({
+            variables: {
+                scriptid: scriptid || ''
+            }
+        });
     }, []);
 
     // Add ctrl+s shortcut to save script
@@ -200,6 +207,15 @@ export default function EditingPage() {
         }
     }
 
+    const deleteComment = async (commentid: string) => {
+        await deleteCommentMutation({
+            variables: {
+                commentid: commentid
+            }
+        });
+        refetchComments();
+    }
+
     const styledCard2LeftPane = {
         backgroundColor: '#4d4d4d',
         display: 'flex',
@@ -280,14 +296,27 @@ export default function EditingPage() {
                                             </Box>
                                         </Grow>
 
-                                        {/* Add Documents card */}
-                                        <Grow in timeout={1900}>
-                                            <Box sx={styledCard2LeftPane}>
-                                                <Typography variant="h5">
-                                                    Add Document Parsing so button + additional information
-                                                </Typography>
+                                        <Grow in timeout={1300}>
+                                        <div style={{ overflowY: 'auto', maxHeight: '400px'}}>
+                                            <Box sx={styledCard2LeftPane} flexDirection={'column'}>
+                                                <Typography variant="h5">Comments</Typography>
+                                                {data?.getAllScriptComments?.map(comment => {
+                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                        return (
+                                                            <Card key={comment.commentid}>
+                                                                <CardContent>
+                                                                    <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
+                                                                    <Typography variant="body1">{comment.text_content}</Typography>
+                                                                    <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
+                                                                </CardContent>
+                                                            </Card>
+                                                        );
+                                                    }
+                                                    return null; // Or any other fallback you want when text_content is undefined or falsy
+                                                })}
                                             </Box>
-                                        </Grow>
+                                        </div>
+                                        </Grow>     
                                     </Paper>
                                 </Grid>
                             </Grow>
@@ -303,12 +332,7 @@ export default function EditingPage() {
                                     sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.5,
-                                        // for changing the color of the textfield box
-                                        // "& .MuiOutlinedInput-root": {
-                                        //     "&.Mui-focused fieldset": {
-                                        //         borderColor: "red"
-                                        //     }
-                                        // }
+
                                     }}
                                     value={scriptContent}
                                     onChange={(e) => setScriptContent(e.target.value)}

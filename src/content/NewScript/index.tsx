@@ -1,4 +1,4 @@
-import { Alert, Button, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography, Container, Box, Select, MenuItem } from '@mui/material';
+import { Alert, Button, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography, Container, Box, Select, MenuItem, IconButton, Fab } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useCreateScriptMutation } from '../../generated/graphql';
@@ -7,6 +7,7 @@ import { Storage } from 'aws-amplify';
 import { ApolloError } from '@apollo/client';
 import PDFReader from '../../components/PDFReader';
 import OpenAI from "openai";
+import { Create, FileUploadOutlined } from '@mui/icons-material';
 
 export default function NewScriptPage() {
     const [title, setTitle] = useState<string>('');
@@ -19,7 +20,8 @@ export default function NewScriptPage() {
     const [errorText, setErrorText] = useState<string | null>(null);
 
     const openai = new OpenAI({
-        apiKey: process.env.REACT_APP_API_KEY
+        apiKey: process.env.REACT_APP_API_KEY,
+        dangerouslyAllowBrowser: true
     });
     
     const handleSubmit = async (e: React.FormEvent) => {
@@ -92,7 +94,11 @@ export default function NewScriptPage() {
     };
     
     const handleExtractedText = (text: string) => {
-        setAdditionalInfo(additionalInfo + text);
+        setAdditionalInfo(text);
+    }
+
+    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e);
     }
 
 
@@ -120,7 +126,7 @@ export default function NewScriptPage() {
                     name="title"
                     autoFocus
                     value={title} onChange={(e) => setTitle(e.target.value)}
-                    sx={{ marginTop: 2 }}
+                    sx={{ margin: 2, width: window.innerWidth * 0.6 }}
                     />
                     <TextField
                     variant="outlined"
@@ -132,7 +138,7 @@ export default function NewScriptPage() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder='Write a speech about covid'
-                    sx={{ marginTop: 2 }}
+                    sx={{ margin: 2, width: window.innerWidth * 0.6 }}
                     />
 
                     <TextField
@@ -145,38 +151,40 @@ export default function NewScriptPage() {
                     sx={{
                         height: window.innerHeight * 0.4,
                         width: window.innerWidth * 0.6,
-                        marginTop: 2,
-                        marginBottom: 3
+                        margin: 2
                     }}
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     />
 
-                    <Select
+                    <TextField
                         value={speechTime}
-                        label="Time"
-                        onChange={(e) => setSpeechTime(e.target.value as number)}
+                        id='speechTimeSelector'
+                        label="Speech Length"
+                        select
+                        onChange={(e) => setSpeechTime(Number(e.target.value))}
+                        sx={{margin: 2}}
                     >
-                        <MenuItem value={30}>30 Seconds</MenuItem>
-                        <MenuItem value={60}>1 Minute</MenuItem>
-                        <MenuItem value={120}>2 Minutes</MenuItem>
-                        <MenuItem value={180}>3 Minutes</MenuItem>
-                        <MenuItem value={240}>4 Minutes</MenuItem>
-                        <MenuItem value={300}>5 Minutes</MenuItem>
-                    </Select>
+                        <MenuItem key={1} value={30}>30 Seconds</MenuItem>
+                        <MenuItem key={2}value={60}>1 Minute</MenuItem>
+                        <MenuItem key={3} value={120}>2 Minutes</MenuItem>
+                        <MenuItem key={4} value={180}>3 Minutes</MenuItem>
+                        <MenuItem key={5} value={240}>4 Minutes</MenuItem>
+                        <MenuItem key={6} value={300}>5 Minutes</MenuItem>
+                    </TextField>
 
-                    <PDFReader getExtractedText={handleExtractedText}/>
+                    <PDFReader getExtractedText={handleExtractedText} addtionalInfo={additionalInfo} onSetAdditionalInfo={setAdditionalInfo} margin={2}/>
                     
-                    <Button
+                    <Fab
                     type="submit"
-                    fullWidth
-                    variant="contained"
+                    variant="extended"
                     color="primary"
-                    sx={{ mt: 3, mb: 2 }}
+                    sx={{ mt: 3, mb: 2, width: window.innerWidth * 0.6  }}
                     disabled={loading} onClick={handleSubmit}
                     >
+                    <Create />
                     Generate Script
-                    </Button>
+                    </Fab>
                 </Box>
             </Box>
         </Container>

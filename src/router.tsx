@@ -23,6 +23,8 @@ const NewScript = Loader(lazy(() => import('./content/NewScript')));
 
 const Shared = Loader(lazy(() => import('./content/Shared')));
 
+const ViewShared = Loader(lazy(() => import('./content/ViewShared')));
+
 const Recordings = Loader(lazy(() => import('./content/Recordings')));
 
 const Error = Loader(lazy(() => import('./content/Error')));
@@ -65,6 +67,10 @@ const routes: RouteObject[] = [
       {
         path: 'Shared',
         element: <Shared />
+      },
+      {
+        path: 'ViewShared',
+        element: <ViewShared />
       },
       {
         path: 'Recordings',
