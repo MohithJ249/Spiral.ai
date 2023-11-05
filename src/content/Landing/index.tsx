@@ -15,7 +15,6 @@ const SpiralAnimation: React.FC = () => {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    height: 100vh;
                     font-family: 'Hello', sans-serif;
                     background-color: white;
                     color: #1976d2;
@@ -27,8 +26,10 @@ const SpiralAnimation: React.FC = () => {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    justify-content: center;
                     background-color: white;
-                    
+                    margin-top: -80px;
+                    height: 100vh;
                 }
 
                 .spiral {
@@ -108,6 +109,7 @@ const SpiralAnimation: React.FC = () => {
                 <button className="login-btn" onClick={() => window.location.href = '/CreateAccount'} >Create Account</button>
 
             </div>
+
         </>
     );
 }

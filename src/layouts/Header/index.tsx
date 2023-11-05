@@ -99,6 +99,7 @@ function Header() {
           pt: '80px',
           justifyContent: 'center',
           backgroundColor: '#f1efee',
+          height: '100vh',
           // marginTop: '5%',
           // margin: '0px 0px 0px 40px',
         }}
