@@ -110,18 +110,6 @@ function HeaderMenu() {
               primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
             />
           </ListItem>
-          <ListItem
-            classes={{ root: 'MuiListItem-indicators' }}
-            button
-            component={NavLink}
-            to="/Recordings"
-            sx={{ justifyContent: 'center' }} // Center the list item
-          >
-            <ListItemText
-              primary="Recordings"
-              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
-            />
-          </ListItem>
         </List>
         {/* Spacer to balance the layout */}
         <Box sx={{ flexGrow: 1 }} />
