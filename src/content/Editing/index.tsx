@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -23,6 +23,10 @@ export default function EditingPage() {
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
+    const [customPromptingEnabled, setCustomPromptingEnabled] = useState<boolean>(false);
+    const [tone, setTone] = useState<string>('Casual');
+    const [textLength, setTextLength] = useState<string>('Increase');
+    const [selectorType, setSelectorType] = useState<string>('Tone');
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [deleteCommentMutation] = useDeleteCommentMutation();
@@ -193,26 +197,47 @@ export default function EditingPage() {
           }
         }
     }
+
+    const getPromptText = (selectedText: string) : string => {
+        if(customPromptingEnabled) {
+            return promptText+". "+selectedText;
+        }
+        else {
+            if(selectorType === 'Length') {
+                if(textLength === 'Increase') {
+                    return 'Increase text length by adding more detail: '+selectedText;
+                }
+                else {
+                    return 'Shorten this text: '+selectedText;
+                }
+            }
+            else if(selectorType === 'Tone') {
+                return 'Change the tone of this text to '+tone+': '+selectedText;
+            }
+        }
+
+        return '';
+    }
     
     const generateText = async () => {
-        //llama 2 response
         if(selectedTextPosition) {
             const selectedText = scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim();
             
-            const queryParam = promptText + ". " + selectedText;
-            console.log(queryParam)
-            
-            try {
-                const LLMResponse = await openai.chat.completions.create({
-                    model: "gpt-3.5-turbo",
-                    messages: [{ role: "user", content: queryParam }],
-                })
-                setGeneratedText(LLMResponse.choices[0].message.content);
+            if(selectedText) {
+                const queryParam = getPromptText(selectedText);
+                console.log(queryParam)
+                
+                try {
+                    const LLMResponse = await openai.chat.completions.create({
+                        model: "gpt-3.5-turbo",
+                        messages: [{ role: "user", content: queryParam }],
+                    })
+                    setGeneratedText(LLMResponse.choices[0].message.content);
+                }
+                catch (error) {
+                    console.error(`ERROR: ${error}`)
+                }
             }
-            catch (error) {
-                console.error(`ERROR: ${error}`)
-            }
-            
         }
     }
 
@@ -224,6 +249,10 @@ export default function EditingPage() {
         });
         refetchComments();
     }
+
+    const handleSwitchChange = (event: any) => {
+        setCustomPromptingEnabled(event.target.checked);
+    };
 
     const styledActionsButtons = {
         display: 'flex',
@@ -262,10 +291,86 @@ export default function EditingPage() {
             backgroundColor: '#4d4d4d' 
         }
     }
+
     const goToRecordings = () => { 
         window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
     }   
 
+    const getCustomPrompting = () => {
+        return (
+            <TextField
+                id="prompt-text"
+                value={promptText}
+                multiline
+                onChange={(e) => setPromptText(e.target.value)}
+                placeholder="Prompt here."
+                rows={window.innerHeight * 0.2 / 28}
+                sx={{
+                ...TextfieldStyling
+                }}
+            />
+        );
+    }
+
+    const getSelector = () => {
+        if(selectorType === 'Length') {
+            return (
+                <TextField
+                    value={textLength}
+                    id='lengthSelector'
+                    label="Customize Length:"
+                    select
+                    onChange={(e) => setTextLength(e.target.value)}
+                    sx={{margin: 2, ...TextfieldStyling}}
+                >
+                    <MenuItem key={1} value={"Increase"}>Increase</MenuItem>
+                    <MenuItem key={2} value={"Decrease"}>Decrease</MenuItem>
+                </TextField>
+            );
+        }
+        else if(selectorType === 'Tone') {
+            return (
+                <TextField
+                    value={tone}
+                    id='toneSelector'
+                    label="Convert tone to:"
+                    select
+                    onChange={(e) => setTone(e.target.value)}
+                    sx={{margin: 2, ...TextfieldStyling}}
+                >
+                    <MenuItem key={1} value={"Casual"}>Casual</MenuItem>
+                    <MenuItem key={2} value={"Persuasive"}>Persuasive</MenuItem>
+                    <MenuItem key={3} value={"Professional"}>Professional</MenuItem>
+                    <MenuItem key={4} value={"Academic"}>Academic</MenuItem>
+                    <MenuItem key={5} value={"Dramatic"}>Dramatic</MenuItem>
+                    <MenuItem key={6} value={"Humorous"}>Humorous</MenuItem>
+                </TextField>
+            );
+        }
+    }
+
+    const getSelections = () => {
+        return (
+            <>
+                <TextField
+                    value={selectorType}
+                    id='selectorType'
+                    label="What would you like to modify"
+                    select
+                    onChange={(e) => setSelectorType(e.target.value)}
+                    sx={{margin: 2, ...TextfieldStyling}}
+                >
+                    <MenuItem key={1} value={"Length"}>Length</MenuItem>
+                    <MenuItem key={2} value={"Tone"}>Tone</MenuItem>
+                </TextField>
+                {getSelector()}
+            </>
+        );
+    }
+
+    const displayPromptOrSelections = () => {
+        return customPromptingEnabled ? getCustomPrompting() : getSelections();
+    }
     
     if(scriptid && title && scriptContent !== undefined) {
         return (
@@ -419,19 +524,16 @@ export default function EditingPage() {
                                                     />
                                             </Grow>
 
-                                            <Grow in timeout={2600}>
-                                                <TextField
-                                                    id='prompt-text'
-                                                    value={promptText}
-                                                    multiline
-                                                    onChange={(e) => setPromptText(e.target.value)}
-                                                    placeholder='Prompt here.'
-                                                    rows={window.innerHeight * 0.2 / 28}
-                                                    sx={{
-                                                        ...TextfieldStyling
-                                                    }}
-                                                />
-                                            </Grow>
+                                            <FormGroup>
+                                                <FormControlLabel control={
+                                                    <Switch 
+                                                            checked={customPromptingEnabled}
+                                                            onChange={handleSwitchChange} 
+                                                    />} 
+                                                    label="Custom Prompting" />
+                                            </FormGroup>
+
+                                            {displayPromptOrSelections()}
 
                                             <Grow in timeout={2800}>
                                                 <Stack direction='row' sx={{justifyContent: 'center', '& > :not(style)': { margin: 0.5 }}}>
