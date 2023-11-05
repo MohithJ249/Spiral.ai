@@ -44,7 +44,7 @@ function getNavbar(sidebarToggle: boolean, toggleSidebar: MouseEventHandler<HTML
       display="flex"
       alignItems="center"
       sx={{
-        boxShadow: '0 8px 8px 5px white'
+        boxShadow: '0 8px 8px 5px #f1efee'
       }}
     >
       {/* add these two lines to center the menu */}
@@ -98,12 +98,12 @@ function Header() {
           flex: 1,
           pt: '80px',
           justifyContent: 'center',
-          backgroundColor: '#f1efee'
+          backgroundColor: '#f1efee',
           // marginTop: '5%',
           // margin: '0px 0px 0px 40px',
         }}
       >
-        <Box display="block" sx={{ justifyContent : 'center', margin: 'auto', marginTop: '2%'}}>
+        <Box display="block" sx={{ justifyContent : 'center', margin: 'auto'}}>
           <Outlet />
 
         </Box>

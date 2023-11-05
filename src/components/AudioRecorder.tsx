@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
-import { Box, Button, Card, CardContent, CardMedia, IconButton, Input, LinearProgress, Paper, Slider, Stack, Tooltip, Typography, styled  } from '@mui/material';
-import { Pause, PlayArrow, NotStarted, RecordVoiceOver, StopCircle, Save, VolumeUp, VolumeDown, Waves } from '@mui/icons-material';
+import { Box, Button, Card, CardContent, CardMedia, Fab, IconButton, Input, LinearProgress, Paper, Slider, Stack, Tooltip, Typography, styled  } from '@mui/material';
+import { Pause, PlayArrow, NotStarted, RecordVoiceOver, StopCircle, Save, VolumeUp, VolumeDown, Waves, RadioButtonChecked } from '@mui/icons-material';
 import { useSaveRecordingMutation } from '../generated/graphql';
 import { time } from 'console';
 
@@ -136,9 +136,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     return !audioUrl || recordingName === undefined || recordingName === '' || loading;
   }
 
-  const goToRecordings = () => { 
-    window.location.href = '/Recordings?title=' + scriptTitle + '&scriptid=' + scriptid;
-  }
+  
 
   // styling audio player
 
@@ -153,32 +151,27 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   }
 
   
-  const styledPaper = {
-    backgroundColor: '#4d4d4d',
-    padding: '20px',
-    borderRadius: '15px',
-    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-  };
-
+  
   interface sliderProps {
     theme?: any;
     thumbless?: boolean;
   }
-
+  
   const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
-    color: 'silver',
+    color: 'white',
     height: 2,
     '&:hover': {
       cursor: 'auto',
     },
     '& .MuiSlider-thumb': {
+      color: 'white',
       width: '14px',
       height: '14px',
       display: otherProps.thumbless ? 'none' : 'block'
     }
   }))
   
-
+  
   const MyVolSliderTag = () => {
     const [volume, setVolume] = useState(70);
     const handleVolume = (e: Event, newValue: number | number[]): void => {
@@ -189,9 +182,9 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
         setVolume(currVolume);
       }
     }
-
+    
     return (
-      <Box sx={{ width: 200 }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center'  }}>
         <Stack direction='row' spacing={1}
             sx={{
               display : 'flex',
@@ -199,26 +192,19 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
               width: '70%',
               alignItems: 'center',
             }}>         
-            <VolumeDown />
+            <VolumeDown sx={{color: 'white'}}/>
             <PlayBar
               min={0}
               max={100}
               value={volume}
               onChange={handleVolume}
               />
-              {/* <input
-                type="range"
-                min="0"
-                max="100"
-                value="volume"
-                onchange="handleVolume(event.value)"
-              /> */}
-            <VolumeUp />
+            <VolumeUp sx={{color: 'white'}}/>
         </Stack>
       </Box>
     );
   }
-
+  
   const togglePlay = () => {
     if(!isPlaying) {
       audioRef.current?.play();
@@ -228,19 +214,43 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     }
     setIsPlaying(!isPlaying);
   }
-
+  
   const onTimeUpdate = () => {
     if (audioRef.current) {
       setElapsed(audioRef.current.currentTime);
     }
   };
+  
+  const styledPaper = {
+    backgroundColor: 'black',
+    padding: '20px',
+    borderRadius: '15px',
+  };
+  const FabStyling = {
+    color: 'white',
+    backgroundColor: 'black',
+    '&:hover': { 
+          color: 'white',
+          backgroundColor: '#4d4d4d' 
+      }
+  }
 
   return (
     <>
       <Paper sx={styledPaper}>
         <Stack direction='row' spacing={1} sx={{
           justifyContent: 'center'}}>
-          <Input placeholder="Recording Name" style={{color: 'white'}} value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
+          <Input placeholder="Recording Name" sx={{ color: 'white', 
+                                                '& .MuiInputBase-input::placeholder': {
+                                                    color: 'white',
+                                                    opacity: 1
+                                                  },
+                                                  ':before': { borderBottomColor: 'white' },
+                                                  // underline when selected
+                                                  ':after': { borderBottomColor: 'white' },
+
+                                                  }} 
+                                                value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
         </Stack>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
           <Stack direction='row' spacing={1}
@@ -251,7 +261,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
               alignItems: 'center',
             }}>
               <Tooltip title="Record">
-                <RecordVoiceOver sx={{
+                <RadioButtonChecked sx={{
                   color:'silver',
                   '&:hover': {color: 'white'}}}
                               onClick={() => setRecording(!recording)}/>
@@ -292,13 +302,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
           }/>
           <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
         </Stack>
-        <MyVolSliderTag />
+        <div style={{justifyContent: "center"}}>
+          <MyVolSliderTag />
+        </div>
         <audio 
           className='my-audio' 
           src={audioUrl}
           ref={audioRef} 
           onTimeUpdate={onTimeUpdate}></audio>
-        <Button onClick={goToRecordings}>View All Recordings</Button>
       </Paper>
     </>
   );

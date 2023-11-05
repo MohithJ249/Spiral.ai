@@ -225,16 +225,47 @@ export default function EditingPage() {
         refetchComments();
     }
 
-    const styledCard2LeftPane = {
-        backgroundColor: '#4d4d4d',
+    const styledActionsButtons = {
         display: 'flex',
         justifyContent: 'center',
-        margin: '10px 0px 0px 0px',
         padding: '20px',
-        borderRadius: '15px',
-        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        marginTop: '-7%',
+        marginBottom: '1%',
         '& > :not(style)': { m: 1 }
     }
+    const styledCard2LeftPane = {
+        borderStyle: 'solid',
+        borderWidth: '2px',
+        borderColor: '#d4d2d1',
+        backgroundColor: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '20px',
+        borderRadius: '15px',
+        '& > :not(style)': { m: 1 }
+    }
+
+    const TextfieldStyling = {
+        backgroundColor: 'white',
+        borderRadius: '15px',
+        '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+            borderRadius: '15px',
+        },
+    };
+
+    const FabStyling = {
+        color: 'white',
+        backgroundColor: 'black',
+        '&:hover': { 
+            color: 'white',
+            backgroundColor: '#4d4d4d' 
+        }
+    }
+    const goToRecordings = () => { 
+        window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
+    }   
+
     
     if(scriptid && title && scriptContent !== undefined) {
         return (
@@ -253,11 +284,12 @@ export default function EditingPage() {
                             {notificationText}
                         </Alert>
                     </Snackbar>
+                    {/* <br></br> */}
+                    {/* <Typography variant="h4" sx={{backgroundColor: '#f1efee'}}></Typography> */}
+                    <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
-                    <Typography variant="h3">{title}</Typography>
-
-                    <div style={{ flexGrow: 1 }}>
-                        <Grid sx={{ flexGrow: 1 }} container justifyContent="center" spacing={1}>
+                    <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
+                        <Grid sx={{ flexGrow: 1, width: "100vw", height: '100vh'}} container justifyContent="center" spacing={1}>
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -265,22 +297,17 @@ export default function EditingPage() {
                                         sx={{
                                         height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.2,
-                                        backgroundColor: '#ffffff',
-
+                                        backgroundColor: '#f1efee',
                                         }}>
-
-                                        <Grow in timeout={1300}>
-                                            <div>
+                                        <Grow in timeout={1250}>
+                                            <div style={{marginBottom: '5%'}}>
                                                 <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification}/>
                                             </div>
-                                        </Grow>     
-                                        
-                                        {/* script management card */}
-
-                                        <Grow in timeout={1600}>
-                                            <Box sx={styledCard2LeftPane} flexDirection={'row'}>
+                                        </Grow>  
+                                        <Grow in timeout={1500}>
+                                            <Box sx={styledActionsButtons} flexDirection={'row'}>
                                                 <Tooltip title="Save Script">
-                                                    <Fab size='small' onClick={saveScript} disabled={isSavingScript}>
+                                                    <Fab size='small' onClick={saveScript} disabled={isSavingScript}sx={FabStyling}>
                                                         <Save />
                                                     </Fab>
                                                 </Tooltip>
@@ -290,7 +317,7 @@ export default function EditingPage() {
                                                 </Tooltip>
 
                                                 <Tooltip title='View Version History'>
-                                                    <Fab size='small' onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title}>
+                                                    <Fab sx={FabStyling} size='small' onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title} >
                                                         <History />
                                                     </Fab>
                                                 </Tooltip>
@@ -304,27 +331,35 @@ export default function EditingPage() {
                                                 </Tooltip>
                                             </Box>
                                         </Grow>
+                                        <Grow in timeout={1750}>
+                                            <Fab onClick={goToRecordings} variant='extended' sx={{...FabStyling}}>
+                                                View All Recordings
+                                            </Fab>    
+                                        </Grow>   
+                                        
+                                        {/* script management card */}
 
-                                        <Grow in timeout={1300}>
-                                        <div style={{ overflowY: 'auto', maxHeight: '400px'}}>
-                                            <Box sx={styledCard2LeftPane} flexDirection={'column'}>
-                                                <Typography variant="h5">Comments</Typography>
-                                                {data?.getAllScriptComments?.map(comment => {
-                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
-                                                        return (
-                                                            <Card key={comment.commentid}>
-                                                                <CardContent>
-                                                                    <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
-                                                                    <Typography variant="body1">{comment.text_content}</Typography>
-                                                                    <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
-                                                                </CardContent>
-                                                            </Card>
-                                                        );
-                                                    }
-                                                    return null; // Or any other fallback you want when text_content is undefined or falsy
-                                                })}
-                                            </Box>
-                                        </div>
+
+                                        <Grow in timeout={2000}>
+                                            <div style={{ overflowY: 'auto', maxHeight: '400px', marginTop: '23%'}}>
+                                                <Box sx={styledCard2LeftPane} flexDirection={'column'}>
+                                                    <Typography variant="h5">Comments</Typography>
+                                                    {data?.getAllScriptComments?.map(comment => {
+                                                        if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                            return (
+                                                                <Card key={comment.commentid}>
+                                                                    <CardContent>
+                                                                        <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
+                                                                        <Typography variant="body1">{comment.text_content}</Typography>
+                                                                        <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
+                                                                    </CardContent>
+                                                                </Card>
+                                                            );
+                                                        }
+                                                        return null; // Or any other fallback you want when text_content is undefined or falsy
+                                                    })}
+                                                </Box>
+                                            </div>
                                         </Grow>     
                                     </Paper>
                                 </Grid>
@@ -335,13 +370,11 @@ export default function EditingPage() {
                                     <TextField
                                     id="outlined-multiline-static"
                                     multiline
-                                    // height of 1 row = 56px, so adjust accordingly
-                                    rows={window.innerHeight * 0.8 / 24}
+                                    rows={Math.ceil(window.innerHeight * 0.8 / 24)}
                                     variant="outlined"
                                     sx={{
-                                        height: window.innerHeight * 0.8,
-                                        width: window.innerWidth * 0.5,
-
+                                        width: `${window.innerWidth * 0.5}px`,
+                                        ...TextfieldStyling
                                     }}
                                     value={scriptContent}
                                     onChange={(e) => setScriptContent(e.target.value)}
@@ -349,23 +382,27 @@ export default function EditingPage() {
                                 </Grid>
                             </Grow>
 
-                            <Grow in key='LLMPane' timeout={2000}>
-                                <Grid item>
-                                    <Paper
+                                <Grow in key='LLMPane' timeout={2000}>
+                                    <Grid item>
+                                        <Paper
                                         sx={{
-                                        height: window.innerHeight * 0.8,
-                                        width: window.innerWidth * 0.2,
-                                        backgroundColor: '#fffff',
+                                            height: `${window.innerHeight * 0.8}px`,
+                                            width: `${window.innerWidth * 0.2}px`,
+                                            backgroundColor: '#f1efee', 
+                                            boxSizing: 'border-box', 
                                         }}
                                         elevation={0}
+                                       
                                     >
 
                                         <Stack spacing={2} direction="column">
-                                            <Grow in timeout={2200}>
-                                                <Fab onClick={selectText} variant='extended'>
+                                            <Grow in timeout={2200} >
+                                                <Fab  onClick={selectText} variant='extended' 
+                                                            sx={FabStyling}>
                                                     <Done />
                                                     Highlight & Select Text
                                                 </Fab>
+    
                                             </Grow>
 
                                             <Grow in timeout={2400}>
@@ -375,9 +412,9 @@ export default function EditingPage() {
                                                     multiline
                                                     placeholder='Selected text will appear here.'
                                                     style={disabledBoxStyle}
-                                                    rows={window.innerHeight * 0.2 / 30}
+                                                    rows={window.innerHeight * 0.2 / 28}
                                                     sx={{
-                                                        height: window.innerHeight * 0.2,
+                                                        ...TextfieldStyling
                                                     }}
                                                     />
                                             </Grow>
@@ -389,21 +426,21 @@ export default function EditingPage() {
                                                     multiline
                                                     onChange={(e) => setPromptText(e.target.value)}
                                                     placeholder='Prompt here.'
-                                                    rows={window.innerHeight * 0.2 / 30}
+                                                    rows={window.innerHeight * 0.2 / 28}
                                                     sx={{
-                                                        height: window.innerHeight * 0.2,
+                                                        ...TextfieldStyling
                                                     }}
                                                 />
                                             </Grow>
 
                                             <Grow in timeout={2800}>
                                                 <Stack direction='row' sx={{justifyContent: 'center', '& > :not(style)': { margin: 0.5 }}}>
-                                                    <Fab variant='extended' onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined}>
+                                                    <Fab variant='extended' onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined} sx={FabStyling}>
                                                         <Build />
                                                         Generate
                                                     </Fab>
                                                     
-                                                    <Fab variant='extended' onClick={handleReplaceText} disabled={!generatedText}>
+                                                    <Fab variant='extended' onClick={handleReplaceText} disabled={!generatedText} sx={FabStyling}>
                                                         <Create />
                                                         Replace
                                                     </Fab>
@@ -417,9 +454,9 @@ export default function EditingPage() {
                                                     multiline
                                                     onChange={(e) => setGeneratedText(e.target.value)}
                                                     placeholder='Generated text will appear here.'
-                                                    rows={window.innerHeight * 0.2 / 30}
-                                                    sx={{
-                                                        height: window.innerHeight * 0.2,
+                                                    rows={window.innerHeight * 0.2 / 28}
+                                                    sx={{                                                        
+                                                        ...TextfieldStyling
                                                     }}
                                                 />
                                             </Grow>

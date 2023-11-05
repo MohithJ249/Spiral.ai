@@ -160,7 +160,7 @@ export default function RecordingsPage() {
         }
     
         return (
-          <Box sx={{ width: 200 }}>
+          <Box sx={{backgroundColor: '#f1efee'}}>
             <Stack direction='row' spacing={1}
                 sx={{
                   display : 'flex',
@@ -210,7 +210,7 @@ export default function RecordingsPage() {
         return "00:00";
       }
       const styledPaper = {
-        backgroundColor: '#4d4d4d',
+        backgroundColor: 'black',
         padding: '20px',
         borderRadius: '15px',
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
@@ -247,6 +247,7 @@ export default function RecordingsPage() {
     if(scriptid && recordings!==undefined) {
         return (
             <>
+            <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: 'black', width: '100%', minHeight: '100vh' }}>
                 <Paper sx={styledPaper}>
                   <Typography sx={{color: 'silver'}}>{selectedRecording?.name || 'Select a recording to playback'}</Typography>
                   <Box sx={{display: 'flex', justifyContent: 'center'}}>
@@ -343,13 +344,13 @@ export default function RecordingsPage() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                 </Paper>
+                </Box>
             </>
         );
     }
     else {
         return (
             <>
-                <Typography variant="h4"> Show all scripts and get recordings by script id</Typography>
             </>
         );
     }

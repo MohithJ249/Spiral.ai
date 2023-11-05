@@ -101,6 +101,22 @@ export default function NewScriptPage() {
         console.log(e);
     }
 
+    const TextfieldStyling = {
+        backgroundColor: 'white',
+        borderRadius: '15px',
+        '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+            borderRadius: '15px',
+        },
+    };
+
+    const FabStyling = {
+        color: 'white',
+        backgroundColor: 'black',
+        '&:hover': { 
+            color: 'white',
+            backgroundColor: '#4d4d4d' 
+        }
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -110,12 +126,11 @@ export default function NewScriptPage() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 mt: 8,
+         
             }}
             >
-                <Typography component="h1" variant="h5">
-                    Let your ideas spiral!
-                </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ margin: '10px' }}>
+
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ margin: '10px', backgroundColor: '#f1efee' }}>
                     {errorText && <Alert severity="error">{errorText}</Alert>}
                     <TextField
                     variant="outlined"
@@ -126,7 +141,7 @@ export default function NewScriptPage() {
                     name="title"
                     autoFocus
                     value={title} onChange={(e) => setTitle(e.target.value)}
-                    sx={{ margin: 2, width: window.innerWidth * 0.6 }}
+                    sx={{ margin: 2, width: window.innerWidth * 0.6, ...TextfieldStyling }}
                     />
                     <TextField
                     variant="outlined"
@@ -138,7 +153,7 @@ export default function NewScriptPage() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder='Write a speech about covid'
-                    sx={{ margin: 2, width: window.innerWidth * 0.6 }}
+                    sx={{ margin: 2, width: window.innerWidth * 0.6, ...TextfieldStyling }}
                     />
 
                     <TextField
@@ -149,9 +164,9 @@ export default function NewScriptPage() {
                     rows={window.innerHeight * 0.8 / 48}
                     variant="outlined"
                     sx={{
-                        height: window.innerHeight * 0.4,
                         width: window.innerWidth * 0.6,
-                        margin: 2
+                        margin: 2,
+                        ...TextfieldStyling
                     }}
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
@@ -163,7 +178,7 @@ export default function NewScriptPage() {
                         label="Speech Length"
                         select
                         onChange={(e) => setSpeechTime(Number(e.target.value))}
-                        sx={{margin: 2}}
+                        sx={{margin: 2, ...TextfieldStyling}}
                     >
                         <MenuItem key={1} value={30}>30 Seconds</MenuItem>
                         <MenuItem key={2}value={60}>1 Minute</MenuItem>
@@ -182,8 +197,8 @@ export default function NewScriptPage() {
                     sx={{ mt: 3, mb: 2, width: window.innerWidth * 0.6  }}
                     disabled={loading} onClick={handleSubmit}
                     >
-                    <Create />
-                    Generate Script
+                        <Create />
+                        Generate Script
                     </Fab>
                 </Box>
             </Box>

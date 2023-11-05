@@ -27,17 +27,25 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
     const location = useLocation();
     const currentPath = location.pathname;
 
+    const CardStyle = {
+      borderRadius: '30px',
+      transition: 'transform 0.5s ease', 
+      '&:hover': {
+        transform: "scale(1.1)",
+      }
+    }
+    
 
     return (
-      <Card>
+      <Card sx={CardStyle}>
         {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
         of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/Editing`,search: `?title=${title}&scriptid=${scriptid}`,}}>
           <CardContent sx = {{color: 'black'}}>
-            <Typography variant="h5" noWrap>
+            <Typography variant="h5" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               {title}
             </Typography>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               Last Modified: {lastModified}
             </Typography>
           </CardContent>
@@ -52,7 +60,7 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
     if(data?.getAllUserScripts) {
       return (
         <>
-          <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>
+          <Box sx={{flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>
             <Grid 
               container 
               spacing={3} 

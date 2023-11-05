@@ -55,8 +55,7 @@ export default function SharedPage() {
     if(data?.getAllSharedScripts) {
       return (
         <>
-          <Typography >Welcome {localStorage.getItem('username')}</Typography>
-          <Box sx={{ flexWrap: 'wrap', display: 'flex'}}>
+          <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>
             <Grid 
               container 
               spacing={3} 

@@ -4,7 +4,8 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Typography
+  Typography,
+  Stack
 } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -81,6 +82,8 @@ function HeaderMenu() {
         </Box>
         {/* Spacer to push the menu items to the center */}
         <Box sx={{ flexGrow: 1 }} />
+
+
         {/* Centered list items */}
         <List sx={{ display: 'flex', justifyContent: 'center', flex: 1 }}> {/* Adjusted for centering */}
           <ListItem

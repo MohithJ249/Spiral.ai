@@ -105,7 +105,7 @@ export default function CreateAccountPage() {
               variant="contained"
               color="primary"
               sx={{ mt: 3, mb: 2 }}
-              disabled={loading} onClick={()=> window.location.href = '/'}
+              disabled={loading} onClick={()=> window.location.href = '/Login'}
             >
               Login to Existing Account
             </Button>

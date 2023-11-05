@@ -37,19 +37,29 @@ export const StyledTheme = createTheme({
       MuiButton: {
         styleOverrides: {
           root: {
-            color: "white",
+            color: "black",
             alignContent: "center",
-            backgroundColor: "rgb(167, 11, 40)",
-            borderRadius: 10,
+            borderRadius: "5px",
             height: 55,
             textAlignLast: "center",
             size: "large",
             "&:hover": {
-              color: "black",
+              backgroundColor: '#ddd',
             },
-          },
+            display: "inline-block",
+            marginTop: "20px",
+            padding: "10px 20px",
+            border: "none",
+            fontFamily: 'Copperplate',
+            fontSize: '1.5rem',
+            cursor: 'pointer',
+            transition: "background-color 0.3s",
+            animation: "fadeIn 1s forwards 4s", 
+          }
         },
       },
+
+      
       MuiTypography: {
         styleOverrides: {
           root: {},

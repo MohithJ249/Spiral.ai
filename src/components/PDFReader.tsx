@@ -118,15 +118,24 @@ function PDFReader({ getExtractedText, margin, addtionalInfo, onSetAdditionalInf
     setFileObjs([]);
   }
 
+  const FabStyling = {
+      color: 'white',
+      backgroundColor: '#1976d2',
+      '&:hover': { 
+          color: 'white',
+          backgroundColor: '#1565c0' 
+      }
+  }
+
   return (
     <Box sx={{ margin: margin }}>
       <Stack direction="row" alignItems="center" justifyContent="center" spacing={2} >
-        <Fab variant='extended' component='label'>
+        <Fab variant='extended' component='label' sx={FabStyling}>
           <Upload />
           Upload Files
           <input type="file" onChange={onFileChange} multiple hidden/>
         </Fab>
-        <Fab variant='extended' onClick={trial}>
+        <Fab variant='extended' onClick={trial} sx={FabStyling}>
             <MergeType />
             Extract All
           </Fab>

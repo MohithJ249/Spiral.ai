@@ -17,8 +17,8 @@ const SpiralAnimation: React.FC = () => {
                     align-items: center;
                     height: 100vh;
                     font-family: 'Hello', sans-serif;
-                    background-color: black;
-                    color: white;
+                    background-color: white;
+                    color: #1976d2;
                     margin: 0;
                 }
 
@@ -27,6 +27,8 @@ const SpiralAnimation: React.FC = () => {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    background-color: white;
+                    
                 }
 
                 .spiral {
@@ -68,7 +70,7 @@ const SpiralAnimation: React.FC = () => {
                     margin-top: 20px;
                     padding: 10px 20px;
                     border: none;
-                    background-color: #f1efeeaa;
+                    background-color: lightgrey;
                     color: black;
                     font-family: Copperplate;
                     font-size: 1.5rem;

@@ -94,11 +94,11 @@ function HeaderUserbox() {
         <Avatar variant="rounded" alt={user.name} src={user.avatar} />
         <Hidden mdDown>
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
+            {/* <UserBoxLabel variant="body1">{user.name}</UserBoxLabel> */}
           </UserBoxText>
         </Hidden>
         <Hidden smDown>
-          <ExpandMoreTwoToneIcon sx={{ ml: 1 }} />
+          <ExpandMoreTwoToneIcon sx={{ ml: 1, color: 'black' }} />
         </Hidden>
       </UserBoxButton>
       <Popover
