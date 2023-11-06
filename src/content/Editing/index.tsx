@@ -54,6 +54,18 @@ export default function EditingPage() {
         dangerouslyAllowBrowser: true
     });
 
+    const selectedText = useMemo(() => {
+        if (selectedTextPosition) {
+          const selectionStart = selectedTextPosition[0];
+          const selectionEnd = selectedTextPosition[1] + 1;
+      
+          if(scriptContent) {
+            return scriptContent.slice(selectionStart, selectionEnd);
+          }
+        }
+        return '';
+    }, [scriptContent, selectedTextPosition]);
+
     useEffect(() => {
         populateScriptContent();
         fetchScriptComments({
@@ -150,33 +162,26 @@ export default function EditingPage() {
         if (textField) {
             const selectionStart = textField.selectionStart;
             const selectionEnd = textField.selectionEnd;
+
       
-            if(scriptContent && selectionStart && selectionEnd)
+            if(scriptContent !== undefined && selectionStart !== null && selectionEnd !== null)
             {
-                const indices = indicesOfNonSpacesAroundPosition(scriptContent, selectionStart, selectionEnd)
-                setSelectedTextPosition([indices[0], indices[1]]);
-            }
-        }
-    }
+                var start = selectionStart;
+                var end = selectionEnd - 1;
 
-    const indicesOfNonSpacesAroundPosition = (str: string, start: number, end: number) => {
-        var startIndex = -1;
-        var endIndex = -1;
-        for (let i = start - 1; i >= 0; i--) {
-            if (str[i] !== ' ') {
-                startIndex = i+1;
-                break;
-            }
-        }
+                console.log(scriptContent.charAt(start)+" "+scriptContent.charAt(end));
 
-        for (let i = end; i < str.length; i++) {
-            if (str[i] !== ' ') {
-                endIndex = i;
-                break;
+                while(scriptContent.charAt(start) === ' ') {
+                    start++;
+                }
+
+                while(scriptContent.charAt(end) === ' ') {
+                    end--;
+                }
+
+                setSelectedTextPosition([start, end]);
             }
         }
-        
-        return [startIndex, endIndex]; // Character not found before the selected position
     }
 
     const handleReplaceText = async () => {      
@@ -185,13 +190,7 @@ export default function EditingPage() {
           const selectionEnd = selectedTextPosition[1];
       
           if(scriptContent) {
-              
-            // TODO: need to fix spacing around highlighted text
-            var responseText = ' ' + generatedText;
-            if(scriptContent.charAt(selectionEnd) === ' ')
-                responseText += ' ';
-
-            const newText = scriptContent.slice(0, selectionStart) + responseText + scriptContent.slice(selectionEnd);
+            const newText = scriptContent.slice(0, selectionStart) + generatedText + scriptContent.slice(selectionEnd+1);
             setScriptContent(newText);
             setSelectedTextPosition(undefined);
             setGeneratedText('');
@@ -225,9 +224,7 @@ export default function EditingPage() {
     }
     
     const generateText = async () => {
-        if(selectedTextPosition) {
-            const selectedText = scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim();
-            
+        if(selectedTextPosition) {            
             if(selectedText) {
                 const queryParam = getPromptText(selectedText);
                 console.log(queryParam)
@@ -553,7 +550,6 @@ export default function EditingPage() {
                                             boxSizing: 'border-box', 
                                         }}
                                         elevation={0}
-                                       
                                     >
 
                                         <Stack spacing={2} direction="column">
@@ -563,13 +559,12 @@ export default function EditingPage() {
                                                     <Done />
                                                     Select Text
                                                 </Fab>
-    
                                             </Grow>
 
                                             <Grow in timeout={2400}>
                                                 <TextField
                                                     id='selected-text'
-                                                    value={selectedTextPosition ? scriptContent?.slice(selectedTextPosition[0], selectedTextPosition[1]).trim() : ''}
+                                                    value={selectedText}
                                                     multiline
                                                     placeholder='Selected text will appear here.'
                                                     style={disabledBoxStyle}
