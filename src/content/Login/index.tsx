@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLoginLazyQuery } from '../../generated/graphql';
 import { Button, TextField, Container, Typography, Box, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
-import { ApolloError } from '@apollo/client';
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>('');
@@ -13,8 +12,7 @@ export default function LoginPage() {
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
         window.location.href = '/MyScripts';
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         login({
             variables: { email, password },
         });
@@ -77,12 +75,12 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               sx={{ mt: 3, mb: 2 }}
-              disabled={loading} onClick={handleSubmit}
+              disabled={loading} 
+              onClick={handleSubmit}
             >
               Sign In
             </Button>

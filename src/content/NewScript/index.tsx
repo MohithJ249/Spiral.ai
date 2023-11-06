@@ -14,6 +14,7 @@ export default function NewScriptPage() {
     const [prompt, setPrompt] = useState<string>('');
     const [additionalInfo, setAdditionalInfo] = useState<string>('');
     const [speechTime, setSpeechTime] = useState<number>(30);
+    const [tone, setTone] = useState<string>('Casual');
 
     const [createScript] = useCreateScriptMutation();
     const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +32,8 @@ export default function NewScriptPage() {
         if(title !== '' && prompt !== '') {
             setErrorText(null);
 
-            const content = prompt + ". Make sure to include this information: " + additionalInfo + ". Max limit 128 characters.";
+            const content = prompt + ". Make the script "+speechTime+" seconds long with a "+tone+" tone. Make sure to include this information: " + additionalInfo + ". Max limit 128 characters.";
+            console.log(content);
             
             openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
@@ -185,6 +187,22 @@ export default function NewScriptPage() {
                         <MenuItem key={4} value={180}>3 Minutes</MenuItem>
                         <MenuItem key={5} value={240}>4 Minutes</MenuItem>
                         <MenuItem key={6} value={300}>5 Minutes</MenuItem>
+                    </TextField>
+
+                    <TextField
+                        value={tone}
+                        id='toneSelector'
+                        label="Speech Tone"
+                        select
+                        onChange={(e) => setTone(e.target.value)}
+                        sx={{margin: 2, ...TextfieldStyling}}
+                    >
+                        <MenuItem key={1} value={"Casual"}>Casual</MenuItem>
+                        <MenuItem key={2} value={"Persuasive"}>Persuasive</MenuItem>
+                        <MenuItem key={3} value={"Professional"}>Professional</MenuItem>
+                        <MenuItem key={4} value={"Academic"}>Academic</MenuItem>
+                        <MenuItem key={5} value={"Dramatic"}>Dramatic</MenuItem>
+                        <MenuItem key={6} value={"Humorous"}>Humorous</MenuItem>
                     </TextField>
 
                     <PDFReader getExtractedText={handleExtractedText} addtionalInfo={additionalInfo} onSetAdditionalInfo={setAdditionalInfo} margin={2}/>

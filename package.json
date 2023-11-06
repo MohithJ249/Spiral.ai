@@ -62,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.22.15",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^4.0.1",
