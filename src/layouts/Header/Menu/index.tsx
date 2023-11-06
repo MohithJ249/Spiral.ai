@@ -62,14 +62,6 @@ import { styled } from '@mui/material/styles';
 // );
 
 function HeaderMenu() {
-  const FabStyling = {
-    color: 'white',
-    backgroundColor: 'black',
-    '&:hover': { 
-          color: 'white',
-          backgroundColor: '#4d4d4d' 
-      }
-  }
 
   return (
     <>
@@ -85,7 +77,6 @@ function HeaderMenu() {
           {/* This box will contain the New Script button and will be positioned on the top left */}
           <Fab
             variant="extended"
-            sx={FabStyling}
             component={NavLink}
             to="/NewScript"
           >

@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -6,7 +6,7 @@ import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordi
 import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { Build, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
+import { Build, Close, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 
 export default function EditingPage() {
@@ -267,31 +267,61 @@ export default function EditingPage() {
         marginBottom: '1%',
         '& > :not(style)': { m: 1 }
     }
-    const styledCard2LeftPane = {
-        borderStyle: 'solid',
-        borderWidth: '2px',
-        borderColor: '#d4d2d1',
-        backgroundColor: 'white',
+
+    const commentsStyling = {
+        backgroundColor: '#edf2fa',
         color: 'black',
         display: 'flex',
-        justifyContent: 'center',
-        padding: '20px',
-        borderRadius: '15px',
-        '& > :not(style)': { m: 1 }
-    }
-    const commentsStyling = {
-        backgroundColor: '#4d4d4d',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'column',
         marginLeft: '-5%',
         marginRight: '5%', 
         marginTop: '5%', 
         marginBottom: '5%',
         borderRadius: '15px',
-        // width: '90%',
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-    }
+        '&:hover':{
+            backgroundColor: '#e7edf8'
+        }
+      };
+      
+      const cardContentStyling = {
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+      };
+      
+      const headerStyling = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      };
+      
+      const usernameStyling = {
+        fontWeight: 'bold',
+        color: 'black', // or any other color you prefer
+      };
+      
+      const deleteButtonStyling = {
+        position: 'absolute',
+        top: '8px',
+        right: '8px',
+        color: 'black', // Adjust if needed
+      };
+      
+      const timeSavedStyling = {
+        fontSize: '0.75rem',
+        color: 'black', // Adjust if needed
+        marginBottom: '8px', // Spacing between time and content
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      };
+      
+      const textContentStyling = {
+        color: 'black', // Adjust if needed
+        wordBreak: 'break-word', // To prevent overflow
+      };
+      
 
     const TextfieldStyling = {
         backgroundColor: 'white',
@@ -300,15 +330,6 @@ export default function EditingPage() {
             borderRadius: '15px',
         },
     };
-
-    const FabStyling = {
-        color: 'white',
-        backgroundColor: 'black',
-        '&:hover': { 
-            color: 'white',
-            backgroundColor: '#4d4d4d' 
-        }
-    }
 
     const goToRecordings = () => { 
         window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
@@ -448,7 +469,7 @@ export default function EditingPage() {
                                         <Grow in timeout={1500}>
                                             <Box sx={styledActionsButtons} flexDirection={'row'}>
                                                 <Tooltip title="Save Script">
-                                                    <Fab size='small' onClick={saveScript} disabled={isSavingScript}sx={FabStyling}>
+                                                    <Fab size='small' onClick={saveScript} disabled={isSavingScript}>
                                                         <Save />
                                                     </Fab>
                                                 </Tooltip>
@@ -458,7 +479,7 @@ export default function EditingPage() {
                                                 </Tooltip>
 
                                                 <Tooltip title='View Version History'>
-                                                    <Fab sx={FabStyling} size='small' onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title} >
+                                                    <Fab size='small' onClick={() => window.location.href = '/VersionHistory?scriptid='+scriptid+'&title='+title} >
                                                         <History />
                                                     </Fab>
                                                 </Tooltip>
@@ -466,14 +487,14 @@ export default function EditingPage() {
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
                                                 
                                                 <Tooltip title='Delete Script'>
-                                                    <Fab size='small' color='error' onClick={deleteScript}>
+                                                    <Fab size='small' color='error' onClick={deleteScript} sx={{backgroundColor: 'red'}}>
                                                         <Delete />
                                                     </Fab>
                                                 </Tooltip>
                                             </Box>
                                         </Grow>
                                         <Grow in timeout={1750}>
-                                            <Fab onClick={goToRecordings} variant='extended' sx={{...FabStyling}}>
+                                            <Fab onClick={goToRecordings} variant='extended'>
                                                 View All Recordings
                                             </Fab>    
                                         </Grow>   
@@ -507,18 +528,23 @@ export default function EditingPage() {
                                             component="ul"
                                             >
                                                 {data?.getAllScriptComments?.map(comment => {
-                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
-                                                        return (
-                                                            <Card key={comment.commentid} sx={commentsStyling}>
-                                                                <CardContent>
-                                                                    <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
-                                                                    <Typography variant="body1">{comment.text_content}</Typography>
-                                                                    <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
-                                                                </CardContent>
-                                                            </Card>
-                                                        );
-                                                    }
-                                                    return null; // Or any other fallback you want when text_content is undefined or falsy
+                                                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                    return (
+                                                    <Card key={comment.commentid} sx={commentsStyling}>
+                                                        <CardContent sx={cardContentStyling}>
+                                                        <Box sx={headerStyling}>
+                                                            <Typography variant="subtitle1" sx={usernameStyling}>{comment.username}</Typography>
+                                                            <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonStyling}>
+                                                            <Close />
+                                                            </IconButton>
+                                                        </Box>
+                                                        <Typography variant="caption" sx={timeSavedStyling}>{comment.time_saved}</Typography>
+                                                        <Typography variant="body2" sx={textContentStyling}>{comment.text_content}</Typography>
+                                                        </CardContent>
+                                                    </Card>
+                                                    );
+                                                }
+                                                return null;
                                                 })}
                                             </Paper>
                                         </Grow>     
@@ -559,7 +585,7 @@ export default function EditingPage() {
                                         <Stack spacing={2} direction="column">
                                             <Grow in timeout={2200} >
                                                 <Fab  onClick={selectText} variant='extended' 
-                                                            sx={FabStyling}>
+                                                            >
                                                     <Done />
                                                     Select Text
                                                 </Fab>
@@ -593,12 +619,12 @@ export default function EditingPage() {
 
                                             <Grow in timeout={2800}>
                                                 <Stack direction='row' sx={{justifyContent: 'center', '& > :not(style)': { margin: 0.5 }}}>
-                                                    <Fab variant='extended' onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined} sx={FabStyling}>
+                                                    <Fab variant='extended' onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined} >
                                                         <Build />
                                                         Generate
                                                     </Fab>
                                                     
-                                                    <Fab variant='extended' onClick={handleReplaceText} disabled={!generatedText} sx={FabStyling}>
+                                                    <Fab variant='extended' onClick={handleReplaceText} disabled={!generatedText} >
                                                         <Create />
                                                         Replace
                                                     </Fab>

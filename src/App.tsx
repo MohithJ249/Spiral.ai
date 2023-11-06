@@ -30,11 +30,11 @@ function App() {
   return (
     <div className="App">
        <ApolloProvider client={client}>
-        {/* <ThemeProvider theme={StyledTheme}> */}
+        <ThemeProvider theme={StyledTheme}>
           <CssBaseline />
           {content}
-        {/* </ThemeProvider> */}
-        </ApolloProvider>
+        </ThemeProvider>
+      </ApolloProvider>
     </div>
   );
 }

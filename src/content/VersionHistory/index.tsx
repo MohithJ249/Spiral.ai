@@ -104,14 +104,6 @@ export default function VersionHistory() {
     }
 
     if(scriptid && data?.getScriptVersions) {
-        const FabStyling = {
-            color: 'white',
-            backgroundColor: 'black',
-            '&:hover': { 
-                color: 'white',
-                backgroundColor: '#4d4d4d' 
-            }
-        }
         
         return (
             <>
@@ -131,11 +123,11 @@ export default function VersionHistory() {
                                         }}
                                     >
                                         <Stack direction="column" sx={{'& > :not(style)': { m: 1 }}}>
-                                            <Fab variant="extended" onClick={returnToEditing} sx={FabStyling}>
+                                            <Fab variant="extended" onClick={returnToEditing}>
                                                 <Create />
                                                 Return to Editing
                                             </Fab>
-                                            <Fab variant="extended" onClick={recoverSelectedVersion} disabled={scriptContent === undefined} sx={FabStyling}>
+                                            <Fab variant="extended" onClick={recoverSelectedVersion} disabled={scriptContent === undefined}>
                                                 <PlaylistAddCheck />
                                                 Recover Selected Version
                                             </Fab>

@@ -145,13 +145,13 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   }
   
   const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
-    color: 'white',
+    color: 'black',
     height: 2,
     '&:hover': {
       cursor: 'auto',
     },
     '& .MuiSlider-thumb': {
-      color: 'white',
+      color: 'black',
       width: '14px',
       height: '14px',
       display: otherProps.thumbless ? 'none' : 'block',
@@ -182,14 +182,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
               width: '70%',
               alignItems: 'center',
             }}>         
-            <VolumeDown sx={{color: 'white'}}/>
+            <VolumeDown sx={{color: 'black'}}/>
             <PlayBar
               min={0}
               max={100}
               value={volume}
               onChange={handleVolume}
               />
-            <VolumeUp sx={{color: 'white'}}/>
+            <VolumeUp sx={{color: 'black'}}/>
         </Stack>
       </Box>
     );
@@ -219,7 +219,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   };
   
   const styledPaper = {
-    backgroundColor: 'black',
+    backgroundColor: '#edf2fa',
     padding: '20px',
     borderRadius: '15px',
   };
@@ -229,14 +229,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
       <Paper sx={styledPaper}>
         <Stack direction='row' spacing={1} sx={{
           justifyContent: 'center'}}>
-          <Input placeholder="Recording Name" sx={{ color: 'white', 
+          <Input placeholder="Recording Name" sx={{ color: 'black', 
                                                 '& .MuiInputBase-input::placeholder': {
-                                                    color: 'white',
+                                                    color: 'black',
                                                     opacity: 1
                                                   },
-                                                  ':before': { borderBottomColor: 'white' },
+                                                  ':before': { borderBottomColor: 'black' },
                                                   // underline when selected
-                                                  ':after': { borderBottomColor: 'white' },
+                                                  ':after': { borderBottomColor: 'black' },
 
                                                   }} 
                                                 value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
@@ -251,28 +251,30 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
             }}>
               <Tooltip title="Record">
                 <RadioButtonChecked sx={{
-                  color:'silver',
-                  '&:hover': {color: 'white'}}}
+                  color:'black',
+                  '&:hover': {color: 'red'}}}
                               onClick={() => setRecording(!recording)}/>
               </Tooltip>
 
               <Tooltip title="Play/Pause">
                 {!isPlaying ? (<PlayArrow onClick={togglePlay} sx={{
                               fontSize: '80px',
-                              color:'silver',
-                              '&:hover': {color: 'white'}}}
+                              color:'black',
+                              '&:hover': {color: '#808080'}}}
                             />)
                             : (<Pause onClick={togglePlay} sx={{
                               fontSize: '80px',
-                              color:'silver',
-                              '&:hover': {color: 'white'}}}/>)
+                              color:'black',
+                              '&:hover': {color: '#808080'}}}/>)
                             }
               </Tooltip>
 
               <Tooltip title="Save">
                 <span>
-                  <IconButton onClick={saveRecording} disabled={saveRecordingDisabled()}>
-                    <Save sx={{color:'silver', '&:hover': {color: 'white'}}}/>
+                  <IconButton onClick={saveRecording} disabled={saveRecordingDisabled()} sx ={{'&:hover': {
+                    backgroundColor: 'transparent',
+                  }}}>
+                    <Save sx={{color:'black', '&:hover': {color: '#808080'}}}/>
                   </IconButton>
                 </span>
               </Tooltip>
@@ -283,13 +285,13 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
           width: '100%',
           alignItems: 'center',
         }}>
-          <Typography sx={{color: 'silver'}}>{formatTime(elapsed)}</Typography>
+          <Typography sx={{color: 'black'}}>{formatTime(elapsed)}</Typography>
           <PlayBar thumbless value={elapsed} max={duration} onChange={(e, newValue) => {
             if(audioRef.current)
               audioRef.current.currentTime = newValue as number;
           }
           }/>
-          <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
+          <Typography sx={{color: 'black'}}>{formatTime(duration - elapsed)}</Typography>
         </Stack>
         <div style={{justifyContent: "center"}}>
           <MyVolSliderTag />
