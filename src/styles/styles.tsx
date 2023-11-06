@@ -89,7 +89,7 @@ export const StyledTheme = createTheme({
         styleOverrides: {
             root: {
               color: 'white',
-              backgroundColor: 'black',
+              backgroundColor: '#9d9c9b',
               '&:hover': { 
                   color: 'white',
                   backgroundColor: '#4d4d4d' 

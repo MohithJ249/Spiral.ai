@@ -484,7 +484,7 @@ export default function EditingPage() {
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
                                                 
                                                 <Tooltip title='Delete Script'>
-                                                    <Fab size='small' color='error' onClick={deleteScript} sx={{backgroundColor: 'red'}}>
+                                                    <Fab size='small' color='error' onClick={deleteScript} sx={{backgroundColor: 'red', '&:hover': {backgroundColor: '#ff7276'}}}>
                                                         <Delete />
                                                     </Fab>
                                                 </Tooltip>
@@ -614,7 +614,7 @@ export default function EditingPage() {
 
                                             <Grow in timeout={2800}>
                                                 <Stack direction='row' sx={{justifyContent: 'center', '& > :not(style)': { margin: 0.5 }}}>
-                                                    <Fab variant='extended' onClick={generateText} disabled = {selectedTextPosition===undefined || promptText===undefined} >
+                                                    <Fab variant='extended' disabled = {selectedTextPosition===undefined || promptText===undefined} onClick={generateText}>
                                                         <Build />
                                                         Generate
                                                     </Fab>

@@ -42,19 +42,11 @@ function MakeVersionButton({ scriptContent, scriptid, onShowNotification }: Make
         });
     }
 
-    const FabStyling = {
-        color: 'white',
-        backgroundColor: 'black',
-        '&:hover': { 
-            color: 'white',
-            backgroundColor: '#4d4d4d' 
-        }
-    }
 
     return (
         <div>
             <Tooltip title="Make Version">
-                <Fab size='small' onClick={makeVersion} disabled={isMakingVersion} sx={FabStyling}>
+                <Fab size='small' onClick={makeVersion} disabled={isMakingVersion}>
                 <PostAdd />
                 {/* Make Version */}
                 </Fab>

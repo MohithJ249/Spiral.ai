@@ -93,19 +93,11 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
                     })}
                 </>
     }
-    const FabStyling = {
-        color: 'white',
-        backgroundColor: 'black',
-        '&:hover': { 
-            color: 'white',
-            backgroundColor: '#4d4d4d' 
-        }
-    }
 
   return (
     <div>
         <Tooltip title="Share Script">
-            <Fab size='small' onClick={()=>setModalOpen(true)} sx={FabStyling}>
+            <Fab size='small' onClick={()=>setModalOpen(true)}>
                 <Share />
                 <Modal
                     open={modalOpen}

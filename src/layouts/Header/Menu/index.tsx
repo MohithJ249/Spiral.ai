@@ -79,6 +79,7 @@ function HeaderMenu() {
             variant="extended"
             component={NavLink}
             to="/NewScript"
+            sx={{backgroundColor: 'black'}}
           >
             + New Script
           </Fab>
