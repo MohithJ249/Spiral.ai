@@ -5,83 +5,95 @@ import {
   ListItemButton,
   ListItemText,
   Typography,
-  Stack
+  Stack,
+  Fab
 } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 
-const ListWrapper = styled(Box)(
-  ({ theme }) => `
-        .MuiTouchRipple-root {
-            display: none;
-        }
+// const ListWrapper = styled(Box)(
+//   ({ theme }) => `
+//         .MuiTouchRipple-root {
+//             display: none;
+//         }
         
-        .MuiListItem-root {
-            transition: ${theme.transitions.create(['color', 'fill'])};
+//         .MuiListItem-root {
+//             transition: ${theme.transitions.create(['color', 'fill'])};
             
-            &.MuiListItem-indicators {
-                padding: ${theme.spacing(1, 2)};
+//             &.MuiListItem-indicators {
+//                 padding: ${theme.spacing(1, 2)};
             
-                .MuiListItemText-root {
-                    .MuiTypography-root {
-                        &:before {
-                            height: 4px;
-                            width: 22px;
-                            opacity: 0;
-                            visibility: hidden;
-                            display: block;
-                            position: absolute;
-                            bottom: -10px;
-                            transition: all .2s;
-                            border-radius: 2px;
-                            content: "";
-                            background: ${theme.palette.primary.main};
-                        }
-                    }
-                }
+//                 .MuiListItemText-root {
+//                     .MuiTypography-root {
+//                         &:before {
+//                             height: 4px;
+//                             width: 22px;
+//                             opacity: 0;
+//                             visibility: hidden;
+//                             display: block;
+//                             position: absolute;
+//                             bottom: -10px;
+//                             transition: all .2s;
+//                             border-radius: 2px;
+//                             content: "";
+//                             background: ${theme.palette.primary.main};
+//                         }
+//                     }
+//                 }
 
-                &.active,
-                &:active,
-                &:hover {
-                    background: transparent;
+//                 &.active,
+//                 &:active,
+//                 &:hover {
+//                     background: transparent;
                 
-                    .MuiListItemText-root {
-                        .MuiTypography-root {
-                            &:before {
-                                opacity: 1;
-                                visibility: visible;
-                                bottom: 0px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-`
-);
+//                     .MuiListItemText-root {
+//                         .MuiTypography-root {
+//                             &:before {
+//                                 opacity: 1;
+//                                 visibility: visible;
+//                                 bottom: 0px;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+// `
+// );
 
 function HeaderMenu() {
+  const FabStyling = {
+    color: 'white',
+    backgroundColor: 'black',
+    '&:hover': { 
+          color: 'white',
+          backgroundColor: '#4d4d4d' 
+      }
+  }
+
   return (
     <>
-      <ListWrapper
+      <Box
         sx={{
           display: 'flex',
-          alignItems: 'center', // Align items vertically
-          minHeight: '80px', // Increase the height of the header
+          alignItems: 'center', 
+          minHeight: '80px', // for header
           px: 2, // Padding on the sides
         }}
       >
-        <Box sx={{ p: 1, display: 'flex', alignItems: 'center', border: '1px solid black' }}>
+        <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
           {/* This box will contain the New Script button and will be positioned on the top left */}
-          <ListItemButton
+          <Fab
+            variant="extended"
+            sx={FabStyling}
             component={NavLink}
             to="/NewScript"
           >
             + New Script
-          </ListItemButton>
+          </Fab>
         </Box>
         {/* Spacer to push the menu items to the center */}
-        <Box sx={{ flexGrow: 1 }} />
+        
 
 
         {/* Centered list items */}
@@ -110,22 +122,10 @@ function HeaderMenu() {
               primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
             />
           </ListItem>
-          <ListItem
-            classes={{ root: 'MuiListItem-indicators' }}
-            button
-            component={NavLink}
-            to="/Recordings"
-            sx={{ justifyContent: 'center' }} // Center the list item
-          >
-            <ListItemText
-              primary="Recordings"
-              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
-            />
-          </ListItem>
         </List>
         {/* Spacer to balance the layout */}
         <Box sx={{ flexGrow: 1 }} />
-      </ListWrapper>
+      </Box>
     </>
   );
 }

@@ -126,7 +126,6 @@ export default function NewScriptPage() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 mt: 8,
-         
             }}
             >
 
@@ -189,7 +188,6 @@ export default function NewScriptPage() {
                     </TextField>
 
                     <PDFReader getExtractedText={handleExtractedText} addtionalInfo={additionalInfo} onSetAdditionalInfo={setAdditionalInfo} margin={2}/>
-                    
                     <Fab
                     type="submit"
                     variant="extended"
@@ -200,6 +198,7 @@ export default function NewScriptPage() {
                         <Create />
                         Generate Script
                     </Fab>
+                    
                 </Box>
             </Box>
         </Container>

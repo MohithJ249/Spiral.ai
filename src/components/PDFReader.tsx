@@ -128,6 +128,7 @@ function PDFReader({ getExtractedText, margin, addtionalInfo, onSetAdditionalInf
   }
 
   return (
+    
     <Box sx={{ margin: margin }}>
       <Stack direction="row" alignItems="center" justifyContent="center" spacing={2} >
         <Fab variant='extended' component='label' sx={FabStyling}>
@@ -140,12 +141,6 @@ function PDFReader({ getExtractedText, margin, addtionalInfo, onSetAdditionalInf
             Extract All
           </Fab>
       </Stack>
-      {/* {file && (
-        <div>
-          <Document file={URL.createObjectURL(file)} onLoadSuccess={onDocumentLoadSuccess}>
-          </Document>
-        </div>
-      )} */}
       <Box className='docsUploading' sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <Paper elevation={5} sx={{
           justifyContent: 'center',

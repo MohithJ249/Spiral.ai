@@ -245,6 +245,19 @@ export default function EditingPage() {
         borderRadius: '15px',
         '& > :not(style)': { m: 1 }
     }
+    const commentsStyling = {
+        backgroundColor: '#4d4d4d',
+        color: 'white',
+        display: 'flex',
+        justifyContent: 'center',
+        marginLeft: '-5%',
+        marginRight: '5%', 
+        marginTop: '5%', 
+        marginBottom: '5%',
+        borderRadius: '15px',
+        // width: '90%',
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+    }
 
     const TextfieldStyling = {
         backgroundColor: 'white',
@@ -295,7 +308,7 @@ export default function EditingPage() {
                                     <Paper
                                         elevation={0}
                                         sx={{
-                                        height: window.innerHeight * 0.8,
+                                        height: window.innerHeight * 0.9,
                                         width: window.innerWidth * 0.2,
                                         backgroundColor: '#f1efee',
                                         }}>
@@ -341,25 +354,45 @@ export default function EditingPage() {
 
 
                                         <Grow in timeout={2000}>
-                                            <div style={{ overflowY: 'auto', maxHeight: '400px', marginTop: '23%'}}>
-                                                <Box sx={styledCard2LeftPane} flexDirection={'column'}>
-                                                    <Typography variant="h5">Comments</Typography>
-                                                    {data?.getAllScriptComments?.map(comment => {
-                                                        if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
-                                                            return (
-                                                                <Card key={comment.commentid}>
-                                                                    <CardContent>
-                                                                        <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
-                                                                        <Typography variant="body1">{comment.text_content}</Typography>
-                                                                        <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
-                                                                    </CardContent>
-                                                                </Card>
-                                                            );
-                                                        }
-                                                        return null; // Or any other fallback you want when text_content is undefined or falsy
-                                                    })}
-                                                </Box>
-                                            </div>
+                                            <Paper
+                                            elevation={0}
+                                            sx={{
+                                                flexWrap: 'wrap',
+                                                borderRadius: '5px',
+                                                width: window.innerWidth * 0.2,
+                                                height: window.innerHeight * 0.6,
+                                                overflow: 'auto',
+                                                maxHeight: '40%',
+                                                marginTop: '23%',
+                                                backgroundColor: '#f1efee',
+                                                '&::-webkit-scrollbar': {
+                                                width: '0.5rem', 
+                                                },
+                                                '&::-webkit-scrollbar-thumb': {
+                                                background: 'black', // Color of the scrollbar thumb
+                                                borderRadius: '2px', // Adjust as needed
+                                                },
+                                                '&::-webkit-scrollbar-thumb:hover': {
+                                                background: '#aaa', // Color on hover, adjust as needed
+                                                },
+                                            }}
+                                            component="ul"
+                                            >
+                                                {data?.getAllScriptComments?.map(comment => {
+                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                        return (
+                                                            <Card key={comment.commentid} sx={commentsStyling}>
+                                                                <CardContent>
+                                                                    <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
+                                                                    <Typography variant="body1">{comment.text_content}</Typography>
+                                                                    <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
+                                                                </CardContent>
+                                                            </Card>
+                                                        );
+                                                    }
+                                                    return null; // Or any other fallback you want when text_content is undefined or falsy
+                                                })}
+                                            </Paper>
                                         </Grow>     
                                     </Paper>
                                 </Grid>
@@ -370,7 +403,7 @@ export default function EditingPage() {
                                     <TextField
                                     id="outlined-multiline-static"
                                     multiline
-                                    rows={Math.ceil(window.innerHeight * 0.8 / 24)}
+                                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
                                     variant="outlined"
                                     sx={{
                                         width: `${window.innerWidth * 0.5}px`,
@@ -386,7 +419,7 @@ export default function EditingPage() {
                                     <Grid item>
                                         <Paper
                                         sx={{
-                                            height: `${window.innerHeight * 0.8}px`,
+                                            height: `${window.innerHeight * 0.9}px`,
                                             width: `${window.innerWidth * 0.2}px`,
                                             backgroundColor: '#f1efee', 
                                             boxSizing: 'border-box', 
@@ -412,7 +445,7 @@ export default function EditingPage() {
                                                     multiline
                                                     placeholder='Selected text will appear here.'
                                                     style={disabledBoxStyle}
-                                                    rows={window.innerHeight * 0.2 / 28}
+                                                    rows={window.innerHeight * 0.2 / 24}
                                                     sx={{
                                                         ...TextfieldStyling
                                                     }}
@@ -426,7 +459,7 @@ export default function EditingPage() {
                                                     multiline
                                                     onChange={(e) => setPromptText(e.target.value)}
                                                     placeholder='Prompt here.'
-                                                    rows={window.innerHeight * 0.2 / 28}
+                                                    rows={window.innerHeight * 0.2 / 24}
                                                     sx={{
                                                         ...TextfieldStyling
                                                     }}
@@ -454,7 +487,7 @@ export default function EditingPage() {
                                                     multiline
                                                     onChange={(e) => setGeneratedText(e.target.value)}
                                                     placeholder='Generated text will appear here.'
-                                                    rows={window.innerHeight * 0.2 / 28}
+                                                    rows={window.innerHeight * 0.2 / 24}
                                                     sx={{                                                        
                                                         ...TextfieldStyling
                                                     }}

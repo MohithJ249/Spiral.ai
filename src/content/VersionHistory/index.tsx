@@ -104,50 +104,69 @@ export default function VersionHistory() {
     }
 
     if(scriptid && data?.getScriptVersions) {
-        const styledCard2LeftPane = {
-            backgroundColor: '#ffffff',
-            display: 'flex',
-            justifyContent: 'center',
-            margin: '10px 0px 0px 0px',
-            // padding: '20px',
-            borderRadius: '15px',
-            '& > :not(style)': { m: 1 }
+        const FabStyling = {
+            color: 'white',
+            backgroundColor: 'black',
+            '&:hover': { 
+                color: 'white',
+                backgroundColor: '#4d4d4d' 
+            }
         }
-
+        
         return (
             <>
                 <div>
-                    <Typography variant="h3">Version History for {title}</Typography>
+                    <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>Version History for {title}</Typography>
 
                     <div style={{ flexGrow: 1 }}>
                         <Grid sx={{ flexGrow: 1 }} container justifyContent="center" spacing={4}>
                             
-                            <Grow in key='RecordingPane' timeout={1000}>
+                            <Grow in key='VersionPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
                                         elevation={0}
                                         sx={{
-                                        height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.2,
-                                        backgroundColor: '#ffffff',
+                                        backgroundColor: '#f1efee',
                                         }}
                                     >
                                         <Stack direction="column" sx={{'& > :not(style)': { m: 1 }}}>
-                                            <Fab variant="extended" onClick={returnToEditing}>
+                                            <Fab variant="extended" onClick={returnToEditing} sx={FabStyling}>
                                                 <Create />
                                                 Return to Editing
                                             </Fab>
-                                            <Fab variant="extended" onClick={recoverSelectedVersion} disabled={scriptContent === undefined}>
+                                            <Fab variant="extended" onClick={recoverSelectedVersion} disabled={scriptContent === undefined} sx={FabStyling}>
                                                 <PlaylistAddCheck />
                                                 Recover Selected Version
                                             </Fab>
                                         </Stack>
                                         
-                                        <Scrollbar>
-                                            <Stack direction='column' sx={styledCard2LeftPane}>
+                                        <Paper
+                                        elevation={0}
+                                        sx={{
+                                            flexWrap: 'wrap',
+                                            borderRadius: '5px',
+                                            width: window.innerWidth * 0.2,
+                                            height: window.innerHeight * 0.6,
+                                            overflow: 'auto',
+                                            backgroundColor: '#f1efee',
+                                            '&::-webkit-scrollbar': {
+                                            width: '0.5rem', 
+                                            },
+                                            '&::-webkit-scrollbar-thumb': {
+                                            background: 'black', // Color of the scrollbar thumb
+                                            borderRadius: '2px', // Adjust as needed
+                                            },
+                                            '&::-webkit-scrollbar-thumb:hover': {
+                                            background: '#aaa', // Color on hover, adjust as needed
+                                            },
+                                        }}
+                                        component="ul"
+                                        >
+                                            <Stack direction='column' >
                                                 { data.getScriptVersions.map((item, index) => (
                                                     <Grow in key={index} timeout={1000 + index * 150}>
-                                                    <div>
+                                                    <div style={{marginLeft: '-5%',marginRight: '5%', marginTop: '5%', marginBottom: '5%'}}>
                                                         <Version 
                                                             versionid={item?.versionid} 
                                                             time_saved={item?.time_saved} 
@@ -159,7 +178,7 @@ export default function VersionHistory() {
                                                     ))
                                                 }
                                             </Stack>
-                                        </Scrollbar>
+                                        </Paper>
                                     </Paper>
                                 </Grid>
                             </Grow>
@@ -170,10 +189,9 @@ export default function VersionHistory() {
                                     id="outlined-multiline-static"
                                     multiline
                                     // height of 1 row = 56px, so adjust accordingly
-                                    rows={window.innerHeight * 0.8 / 24}
+                                    rows={window.innerHeight * 0.9 / 28}
                                     variant="outlined"
                                     sx={{
-                                        height: window.innerHeight * 0.8,
                                         width: window.innerWidth * 0.6,
                                         '& fieldset': {
                                             borderRadius: '15px'

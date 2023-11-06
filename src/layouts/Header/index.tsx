@@ -9,7 +9,12 @@ import {
   IconButton,
   Tooltip,
   styled,
-  useTheme
+  useTheme,
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  Grid
 } from '@mui/material';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { SidebarContext } from '../../contexts/SidebarContext';
@@ -19,12 +24,11 @@ import HeaderButtons from './TopRightBox';
 import HeaderUserbox from './TopRightBox/Userbox';
 import HeaderMenu from './Menu';
 import { Outlet } from 'react-router-dom';
+import { Grass, GrassOutlined } from '@mui/icons-material';
 
 const HeaderWrapper = styled(Box)(
   ({ theme }) => `
         height: '100%';
-        padding: ${theme.spacing(0, 2)};
-        right: 0;
         z-index: 6;
         background-color: #1976d2;
         backdrop-filter: blur(3px);
@@ -32,6 +36,10 @@ const HeaderWrapper = styled(Box)(
         justify-content: space-between;
         width: 100%;
         color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: ${theme.spacing(0, 1)};
 `
 );
 
@@ -40,46 +48,48 @@ function getNavbar(sidebarToggle: boolean, toggleSidebar: MouseEventHandler<HTML
     return <></>
   }
   else {
-    return <HeaderWrapper
-      display="flex"
-      alignItems="center"
-      sx={{
-        boxShadow: '0 8px 8px 5px #f1efee'
-      }}
-    >
-      {/* add these two lines to center the menu */}
-      {/* <Stack />
-      <Stack /> */}
-      <Stack
-        direction="row"
-        divider={<Divider orientation="vertical" flexItem />}
-        alignItems="center"
-        spacing={2}
-      >
-        <HeaderMenu />
-      </Stack>
-      <Box display="flex" alignItems="center">
-        <HeaderButtons />
-        <HeaderUserbox />
-        <Box
-          component="span"
-          sx={{
-            ml: 2,
-            display: { lg: 'none', xs: 'inline-block' }
-          }}
-        >
-          <Tooltip arrow title="Toggle Menu">
-            <IconButton color="primary" onClick={toggleSidebar}>
-              {!sidebarToggle ? (
-                <MenuTwoToneIcon fontSize="small" />
-              ) : (
-                <CloseTwoToneIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Tooltip>
+    // center the middle item called grass
+    return (
+      <>
+        <Box sx={{ position: 'relative' }}>
+          <Box sx={{
+              position: 'absolute',
+              marginTop: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 10,
+            }}>
+            <Grass
+              fontSize='large'
+              style={{
+                color: 'white',
+              }}
+              />
+          </Box>
+          <HeaderWrapper
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            margin='auto'
+            zIndex={5}
+            sx={{
+              boxShadow: '0 8px 8px 5px #f1efee',
+              // paddingTop: '48px',
+            }}
+          >
+            <Stack
+              direction="row"
+              alignItems="center"
+            >
+              <HeaderMenu />
+            </Stack>
+            <HeaderButtons />
+            <HeaderUserbox />
+          </HeaderWrapper>
         </Box>
-      </Box>
-    </HeaderWrapper>
+      </>
+      
+    );
   }
 }
 
@@ -99,12 +109,12 @@ function Header() {
           pt: '80px',
           justifyContent: 'center',
           backgroundColor: '#f1efee',
-          height: '100vh',
+          minHeight: '100vh',
           // marginTop: '5%',
           // margin: '0px 0px 0px 40px',
         }}
       >
-        <Box display="block" sx={{ justifyContent : 'center', margin: 'auto'}}>
+        <Box display="block" sx={{ justifyContent : 'center', margin: 'auto' }}>
           <Outlet />
 
         </Box>

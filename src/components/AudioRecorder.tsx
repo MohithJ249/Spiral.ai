@@ -138,20 +138,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
 
   
 
-  // styling audio player
-
-  const styledDiv = {
-    height: '100%',
-    width: '100%',
-    paddingTop: '6px',
-  }
-
-  interface paperProps {
-    theme?: any;
-  }
-
-  
-  
+  // styling audio player 
   interface sliderProps {
     theme?: any;
     thumbless?: boolean;
@@ -167,7 +154,10 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
       color: 'white',
       width: '14px',
       height: '14px',
-      display: otherProps.thumbless ? 'none' : 'block'
+      display: otherProps.thumbless ? 'none' : 'block',
+      '&:before': {
+        display: 'none',
+      },
     }
   }))
   
@@ -214,6 +204,13 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     }
     setIsPlaying(!isPlaying);
   }
+
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+      // console.log("DDDD " + audioRef.current.duration);
+    }
+  };
   
   const onTimeUpdate = () => {
     if (audioRef.current) {
@@ -226,14 +223,6 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     padding: '20px',
     borderRadius: '15px',
   };
-  const FabStyling = {
-    color: 'white',
-    backgroundColor: 'black',
-    '&:hover': { 
-          color: 'white',
-          backgroundColor: '#4d4d4d' 
-      }
-  }
 
   return (
     <>
@@ -309,6 +298,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
           className='my-audio' 
           src={audioUrl}
           ref={audioRef} 
+          onLoadedMetadata={onLoadedMetadata}
           onTimeUpdate={onTimeUpdate}></audio>
       </Paper>
     </>

@@ -98,7 +98,7 @@ function HeaderUserbox() {
           </UserBoxText>
         </Hidden>
         <Hidden smDown>
-          <ExpandMoreTwoToneIcon sx={{ ml: 1, color: 'black' }} />
+          <ExpandMoreTwoToneIcon sx={{ ml: 1, color: 'white' }} />
         </Hidden>
       </UserBoxButton>
       <Popover
