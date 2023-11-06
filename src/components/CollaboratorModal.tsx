@@ -99,31 +99,32 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
         <Tooltip title="Share Script">
             <Fab size='small' onClick={()=>setModalOpen(true)}>
                 <Share />
-                <Modal
-                    open={modalOpen}
-                    onClose={()=>setModalOpen(false)}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                    sx={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                    >
-                    <Grow in={modalOpen} timeout={750}>
-                        <Box sx={modalStyle}>
-                            <Typography>Add a collaborator:</Typography>
-                            <Input placeholder="Enter Email" value={shareScriptInput} onChange={(e) => setShareScriptInput(e.target.value)} />
-                            <Button onClick={addCollaborator} disabled={!shareScriptInput}>Share</Button>
-                            <div>
-                                <Typography sx={{marginTop:2}}>Current Collaborators:</Typography>
-                                {displayCollaborators()}
-                                
-                            </div>
-                        </Box>
-                    </Grow> 
-                </Modal>
-            </Fab>
+                </Fab>
         </Tooltip>
+        <Modal
+            open={modalOpen}
+            onClose={()=>setModalOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+            >
+            <Grow in={modalOpen} timeout={750}>
+                <Box sx={modalStyle}>
+                    <Button onClick={()=>setModalOpen(false)}>X</Button>
+                    <Typography>Add a collaborator:</Typography>
+                    <Input placeholder="Enter Email" value={shareScriptInput} onChange={(e) => setShareScriptInput(e.target.value)} />
+                    <Button onClick={addCollaborator} disabled={!shareScriptInput}>Share</Button>
+                    <div>
+                        <Typography sx={{marginTop:2}}>Current Collaborators:</Typography>
+                        {displayCollaborators()}
+                        
+                    </div>
+                </Box>
+            </Grow> 
+        </Modal>
     </div>
   );
 }

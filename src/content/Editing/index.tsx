@@ -5,9 +5,11 @@ import axios from 'axios';
 import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, useGetAllScriptCommentsLazyQuery, useDeleteCommentMutation } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
+import DeleteModal from '../../components/DeleteModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
 import { Build, Close, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
 import OpenAI from "openai";
+import { set } from 'nprogress';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -28,6 +30,7 @@ export default function EditingPage() {
     const [tone, setTone] = useState<string>('Casual');
     const [textLength, setTextLength] = useState<string>('Increase');
     const [complexity, setComplexity] = useState<string>('Increase');
+    const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [deleteCommentMutation] = useDeleteCommentMutation();
@@ -230,11 +233,13 @@ export default function EditingPage() {
                 console.log(queryParam)
                 
                 try {
+                    setIsGenerating(true);
                     const LLMResponse = await openai.chat.completions.create({
                         model: "gpt-3.5-turbo",
                         messages: [{ role: "user", content: queryParam }],
                     })
                     setGeneratedText(LLMResponse.choices[0].message.content);
+                    setIsGenerating(false);
                 }
                 catch (error) {
                     console.error(`ERROR: ${error}`)
@@ -482,12 +487,7 @@ export default function EditingPage() {
                                                 </Tooltip>
 
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
-                                                
-                                                <Tooltip title='Delete Script'>
-                                                    <Fab size='small' color='error' onClick={deleteScript} sx={{backgroundColor: 'red', '&:hover': {backgroundColor: '#ff7276'}}}>
-                                                        <Delete />
-                                                    </Fab>
-                                                </Tooltip>
+                                                <DeleteModal onDeleteScript={deleteScript}/>
                                             </Box>
                                         </Grow>
                                         <Grow in timeout={1750}>
@@ -614,9 +614,9 @@ export default function EditingPage() {
 
                                             <Grow in timeout={2800}>
                                                 <Stack direction='row' sx={{justifyContent: 'center', '& > :not(style)': { margin: 0.5 }}}>
-                                                    <Fab variant='extended' disabled = {selectedTextPosition===undefined || promptText===undefined} onClick={generateText}>
+                                                    <Fab variant='extended' disabled = {selectedTextPosition===undefined || promptText===undefined || isGenerating} onClick={generateText}>
                                                         <Build />
-                                                        Generate
+                                                        {isGenerating ? 'Generating...' : 'Generate'}
                                                     </Fab>
                                                     
                                                     <Fab variant='extended' onClick={handleReplaceText} disabled={!generatedText} >
