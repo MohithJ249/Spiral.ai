@@ -24,9 +24,10 @@ export default function EditingPage() {
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
     const [customPromptingEnabled, setCustomPromptingEnabled] = useState<boolean>(false);
+    const [selectorType, setSelectorType] = useState<string>('Tone');
     const [tone, setTone] = useState<string>('Casual');
     const [textLength, setTextLength] = useState<string>('Increase');
-    const [selectorType, setSelectorType] = useState<string>('Tone');
+    const [complexity, setComplexity] = useState<string>('Increase');
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [deleteCommentMutation] = useDeleteCommentMutation();
@@ -214,6 +215,14 @@ export default function EditingPage() {
             else if(selectorType === 'Tone') {
                 return 'Change the tone of this text to '+tone+': '+selectedText;
             }
+            else if(selectorType === 'Complexity') {
+                if(complexity === 'Increase') {
+                    return 'Increase the complexity of this text: '+selectedText;
+                }
+                else {
+                    return 'Simplify this text: '+selectedText;
+                }
+            }
         }
 
         return '';
@@ -347,6 +356,21 @@ export default function EditingPage() {
                 </TextField>
             );
         }
+        else if(selectorType === 'Complexity') {
+            return (
+                <TextField
+                    value={complexity}
+                    id='complexitySelector'
+                    label="Customize complexity:"
+                    select
+                    onChange={(e) => setComplexity(e.target.value)}
+                    sx={{margin: 2, ...TextfieldStyling}}
+                >
+                    <MenuItem key={1} value={"Increase"}>Increase</MenuItem>
+                    <MenuItem key={2} value={"Decrease"}>Decrease</MenuItem>
+                </TextField>
+            );
+        }
     }
 
     const getSelections = () => {
@@ -362,6 +386,7 @@ export default function EditingPage() {
                 >
                     <MenuItem key={1} value={"Length"}>Length</MenuItem>
                     <MenuItem key={2} value={"Tone"}>Tone</MenuItem>
+                    <MenuItem key={3} value={"Complexity"}>Complexity</MenuItem>
                 </TextField>
                 {getSelector()}
             </>
