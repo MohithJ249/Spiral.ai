@@ -120,7 +120,6 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
                     <div>
                         <Typography sx={{marginTop:2}}>Current Collaborators:</Typography>
                         {displayCollaborators()}
-                        
                     </div>
                 </Box>
             </Grow> 

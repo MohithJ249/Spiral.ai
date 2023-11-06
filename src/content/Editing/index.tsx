@@ -30,6 +30,7 @@ export default function EditingPage() {
     const [tone, setTone] = useState<string>('Casual');
     const [textLength, setTextLength] = useState<string>('Increase');
     const [complexity, setComplexity] = useState<string>('Increase');
+    const [wording, setWording] = useState<string>('synonym');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
@@ -221,6 +222,9 @@ export default function EditingPage() {
             else if(selectorType === 'Complexity') {
                 return complexity + " the complexity of this text: "+selectedText;
             }
+            else if(selectorType === 'Wording') {
+                return 'Generate a single '+wording+' for this word: '+selectedText;
+            }
         }
 
         return '';
@@ -254,6 +258,7 @@ export default function EditingPage() {
                 commentid: commentid
             }
         });
+        showNotification('success', 'Comment deleted successfully!');
         refetchComments();
     }
 
@@ -405,6 +410,22 @@ export default function EditingPage() {
                 </TextField>
             );
         }
+        else if(selectorType === 'Wording') {
+            return (
+                <TextField
+                    value={wording}
+                    id='wordingSelector'
+                    label="Generate a:"
+                    select
+                    onChange={(e) => setWording(e.target.value)}
+                    sx={{margin: 2, ...TextfieldStyling}}
+                >
+                    <MenuItem key={1} value={"more complex synonym"}>Complex Synonym</MenuItem>
+                    <MenuItem key={2} value={"synonym"}>Synonym</MenuItem>
+                    <MenuItem key={3} value={"less complex synoym"}>Simpler Synonym</MenuItem>
+                </TextField>
+            );
+        }
     }
 
     const getSelections = () => {
@@ -421,6 +442,7 @@ export default function EditingPage() {
                     <MenuItem key={1} value={"Length"}>Length</MenuItem>
                     <MenuItem key={2} value={"Tone"}>Tone</MenuItem>
                     <MenuItem key={3} value={"Complexity"}>Complexity</MenuItem>
+                    <MenuItem key={4} value={"Wording"}>Wording</MenuItem>
                 </TextField>
                 {getSelector()}
             </>
