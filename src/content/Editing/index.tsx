@@ -448,7 +448,7 @@ export default function EditingPage() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
-                        <Grid sx={{ flexGrow: 1, width: "100vw", height: '100vh'}} container justifyContent="center" spacing={1}>
+                        <Grid sx={{ flexGrow: 1, width: "100vw", height: '100vh'}} container justifyContent="center" spacing={2}>
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -515,7 +515,7 @@ export default function EditingPage() {
                                                 width: '0.5rem', 
                                                 },
                                                 '&::-webkit-scrollbar-thumb': {
-                                                background: 'black', // Color of the scrollbar thumb
+                                                background: '#aaa', // Color of the scrollbar thumb
                                                 borderRadius: '2px', // Adjust as needed
                                                 },
                                                 '&::-webkit-scrollbar-thumb:hover': {
@@ -601,7 +601,7 @@ export default function EditingPage() {
                                                     />
                                             </Grow>
 
-                                            <FormGroup>
+                                            <FormGroup sx={{'& > :not(style)': { margin: 0.5 }}}>
                                                 <FormControlLabel control={
                                                     <Switch 
                                                             checked={customPromptingEnabled}

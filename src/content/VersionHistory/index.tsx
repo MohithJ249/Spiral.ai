@@ -146,7 +146,7 @@ export default function VersionHistory() {
                                             width: '0.5rem', 
                                             },
                                             '&::-webkit-scrollbar-thumb': {
-                                            background: 'black', // Color of the scrollbar thumb
+                                            background: '#aaa', // Color of the scrollbar thumb
                                             borderRadius: '2px', // Adjust as needed
                                             },
                                             '&::-webkit-scrollbar-thumb:hover': {

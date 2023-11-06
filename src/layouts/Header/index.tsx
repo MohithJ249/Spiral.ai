@@ -53,7 +53,7 @@ function getNavbar(sidebarToggle: boolean, toggleSidebar: MouseEventHandler<HTML
       <>
         <Box sx={{ position: 'relative' }}>
           <Box sx={{
-              position: 'absolute',
+              position: 'fixed',
               marginTop: '20px',
               left: '50%',
               transform: 'translateX(-50%)',

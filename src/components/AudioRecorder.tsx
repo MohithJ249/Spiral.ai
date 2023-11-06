@@ -251,8 +251,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
             }}>
               <Tooltip title="Record">
                 <RadioButtonChecked sx={{
-                  color:'black',
-                  '&:hover': {color: 'red'}}}
+                  color: recording ? 'red' : 'black'}}
                               onClick={() => setRecording(!recording)}/>
               </Tooltip>
 
