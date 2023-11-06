@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu} from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -194,6 +194,7 @@ export default function EditingPage() {
             const newText = scriptContent.slice(0, selectionStart) + responseText + scriptContent.slice(selectionEnd);
             setScriptContent(newText);
             setSelectedTextPosition(undefined);
+            setGeneratedText('');
             showNotification('success', 'Text replaced successfully!')
           }
         }
@@ -216,12 +217,7 @@ export default function EditingPage() {
                 return 'Change the tone of this text to '+tone+': '+selectedText;
             }
             else if(selectorType === 'Complexity') {
-                if(complexity === 'Increase') {
-                    return 'Increase the complexity of this text: '+selectedText;
-                }
-                else {
-                    return 'Simplify this text: '+selectedText;
-                }
+                return complexity + " the complexity of this text: "+selectedText;
             }
         }
 
@@ -312,7 +308,7 @@ export default function EditingPage() {
                 value={promptText}
                 multiline
                 onChange={(e) => setPromptText(e.target.value)}
-                placeholder="Prompt here."
+                placeholder="Make the tone more casual"
                 rows={window.innerHeight * 0.2 / 28}
                 sx={{
                 ...TextfieldStyling
@@ -366,8 +362,10 @@ export default function EditingPage() {
                     onChange={(e) => setComplexity(e.target.value)}
                     sx={{margin: 2, ...TextfieldStyling}}
                 >
-                    <MenuItem key={1} value={"Increase"}>Increase</MenuItem>
-                    <MenuItem key={2} value={"Decrease"}>Decrease</MenuItem>
+                    <MenuItem key={1} value={"Slightly Increase"}>Slightly Increase</MenuItem>
+                    <MenuItem key={2} value={"Increase"}>Increase</MenuItem>
+                    <MenuItem key={3} value={"Decrease"}>Decrease</MenuItem>
+                    <MenuItem key={4} value={"Slightly Decrease"}>Slightly Decrease</MenuItem>
                 </TextField>
             );
         }
@@ -530,7 +528,7 @@ export default function EditingPage() {
                                                 <Fab  onClick={selectText} variant='extended' 
                                                             sx={FabStyling}>
                                                     <Done />
-                                                    Highlight & Select Text
+                                                    Select Text
                                                 </Fab>
     
                                             </Grow>
