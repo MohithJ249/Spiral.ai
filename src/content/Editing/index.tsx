@@ -273,7 +273,7 @@ export default function EditingPage() {
         padding: '20px',
         marginTop: '-7%',
         marginBottom: '1%',
-        '& > :not(style)': { m: 1 }
+        '& > :not(style)': { m: 0.75 }
     }
 
     const commentsStyling = {
