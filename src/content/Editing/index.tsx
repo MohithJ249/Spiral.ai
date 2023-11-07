@@ -30,7 +30,7 @@ export default function EditingPage() {
     const [tone, setTone] = useState<string>('Casual');
     const [textLength, setTextLength] = useState<string>('Increase');
     const [complexity, setComplexity] = useState<string>('Increase');
-    const [wording, setWording] = useState<string>('synonym');
+    const [synonym, setSynonym] = useState<string>('Alternative Synonym');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
@@ -222,8 +222,8 @@ export default function EditingPage() {
             else if(selectorType === 'Complexity') {
                 return complexity + " the complexity of this text: "+selectedText;
             }
-            else if(selectorType === 'Wording') {
-                return 'Generate a single '+wording+' for this word: '+selectedText;
+            else if(selectorType === 'Synonym') {
+                return 'Generate a single '+synonym+' for this word: '+selectedText;
             }
         }
 
@@ -235,6 +235,7 @@ export default function EditingPage() {
             if(selectedText) {
                 const queryParam = getPromptText(selectedText);
                 console.log(queryParam)
+                setGeneratedText('');
                 
                 try {
                     setIsGenerating(true);
@@ -410,19 +411,19 @@ export default function EditingPage() {
                 </TextField>
             );
         }
-        else if(selectorType === 'Wording') {
+        else if(selectorType === 'Synonym') {
             return (
                 <TextField
-                    value={wording}
-                    id='wordingSelector'
+                    value={synonym}
+                    id='synonymSelector'
                     label="Generate a:"
                     select
-                    onChange={(e) => setWording(e.target.value)}
+                    onChange={(e) => setSynonym(e.target.value)}
                     sx={{margin: 2, ...TextfieldStyling}}
                 >
-                    <MenuItem key={1} value={"more complex synonym"}>Complex Synonym</MenuItem>
-                    <MenuItem key={2} value={"synonym"}>Synonym</MenuItem>
-                    <MenuItem key={3} value={"less complex synoym"}>Simpler Synonym</MenuItem>
+                    <MenuItem key={1} value={"More complex synonym"}>More Complex Synonym</MenuItem>
+                    <MenuItem key={2} value={"Alternative Synonym"}>Alternative Synonym</MenuItem>
+                    <MenuItem key={3} value={"Less complex synonym"}>Simpler Synonym</MenuItem>
                 </TextField>
             );
         }
@@ -442,7 +443,7 @@ export default function EditingPage() {
                     <MenuItem key={1} value={"Length"}>Length</MenuItem>
                     <MenuItem key={2} value={"Tone"}>Tone</MenuItem>
                     <MenuItem key={3} value={"Complexity"}>Complexity</MenuItem>
-                    <MenuItem key={4} value={"Wording"}>Wording</MenuItem>
+                    <MenuItem key={4} value={"Synonym"}>Synonym</MenuItem>
                 </TextField>
                 {getSelector()}
             </>

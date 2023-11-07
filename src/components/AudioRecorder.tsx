@@ -196,13 +196,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   }
   
   const togglePlay = () => {
-    if(!isPlaying) {
+    if(!isPlaying && audioUrl) {
       audioRef.current?.play();
+      setIsPlaying(true);
     }
-    else {
+    else if(isPlaying && audioUrl) {
       audioRef.current?.pause();
+      setIsPlaying(false);
     }
-    setIsPlaying(!isPlaying);
   }
 
   const onLoadedMetadata = () => {
@@ -229,17 +230,19 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
       <Paper sx={styledPaper}>
         <Stack direction='row' spacing={1} sx={{
           justifyContent: 'center'}}>
-          <Input placeholder="Recording Name" sx={{ color: 'black', 
-                                                '& .MuiInputBase-input::placeholder': {
-                                                    color: 'black',
-                                                    opacity: 1
-                                                  },
-                                                  ':before': { borderBottomColor: 'black' },
-                                                  // underline when selected
-                                                  ':after': { borderBottomColor: 'black' },
+          <Input 
+          placeholder="Recording Name *" sx={{ color: 'black', 
+          '& .MuiInputBase-input::placeholder': {
+              color: 'black',
+              opacity: 1
+            },
+            ':before': { borderBottomColor: 'black' },
+            // underline when selected
+            ':after': { borderBottomColor: 'black' },
 
-                                                  }} 
-                                                value={recordingName} onChange={(e) => setRecordingName(e.target.value)} />
+            }} 
+          value={recordingName} 
+          onChange={(e) => setRecordingName(e.target.value)} />
         </Stack>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
           <Stack direction='row' spacing={1}
@@ -251,7 +254,9 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
             }}>
               <Tooltip title="Record">
                 <RadioButtonChecked sx={{
-                  color: recording ? 'red' : 'black'}}
+                  color: recording ? 'red' : 'black',
+                  '&:hover': recording ? { color: '#ff7276' } : {color: '#808080'}
+                }}
                               onClick={() => setRecording(!recording)}/>
               </Tooltip>
 

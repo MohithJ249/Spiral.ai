@@ -1,13 +1,11 @@
-import { Alert, Button, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography, Container, Box, Select, MenuItem, IconButton, Fab } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Alert, TextField, Container, Box, MenuItem, Fab } from '@mui/material';
+import React, { useState } from 'react';
 import { useCreateScriptMutation } from '../../generated/graphql';
-import axios from 'axios';
 import { Storage } from 'aws-amplify';
 import { ApolloError } from '@apollo/client';
 import PDFReader from '../../components/PDFReader';
 import OpenAI from "openai";
-import { Create, FileUploadOutlined } from '@mui/icons-material';
+import { Create } from '@mui/icons-material';
 
 export default function NewScriptPage() {
     const [title, setTitle] = useState<string>('');
@@ -32,7 +30,7 @@ export default function NewScriptPage() {
         if(title !== '' && prompt !== '') {
             setErrorText(null);
 
-            const content = prompt + ". Make the script "+speechTime+" seconds long with a "+tone+" tone. Make sure to include this information: " + additionalInfo + ". Max limit 128 characters.";
+            const content = prompt + ". Make the script "+speechTime+" seconds long with a "+tone+" tone. Make sure to include this information: " + additionalInfo + ".";
             console.log(content);
             
             openai.chat.completions.create({
@@ -82,25 +80,9 @@ export default function NewScriptPage() {
             setLoading(false);
         }
     };
-
-    const handleSubmit2 = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const chatCompletion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: "Say this is a test" }],
-        });
-        
-        console.log(chatCompletion.choices);
-        
-    };
     
     const handleExtractedText = (text: string) => {
         setAdditionalInfo(text);
-    }
-
-    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e);
     }
 
     const TextfieldStyling = {
@@ -110,15 +92,6 @@ export default function NewScriptPage() {
             borderRadius: '15px',
         },
     };
-
-    const FabStyling = {
-        color: 'white',
-        backgroundColor: 'black',
-        '&:hover': { 
-            color: 'white',
-            backgroundColor: '#4d4d4d' 
-        }
-    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -214,9 +187,8 @@ export default function NewScriptPage() {
                     disabled={loading} onClick={handleSubmit}
                     >
                         <Create />
-                        Generate Script
+                        {loading ? 'Generating Script...' : 'Generate Script'}
                     </Fab>
-                    
                 </Box>
             </Box>
         </Container>
