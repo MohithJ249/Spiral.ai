@@ -60,7 +60,7 @@ function HeaderMenu() {
             sx={{ justifyContent: 'center' }} // Center the list item
           >
             <ListItemText
-              primary="Shared"
+              primary="Shared Scripts"
               primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
             />
           </ListItem>
