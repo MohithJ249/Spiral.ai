@@ -473,46 +473,45 @@ export default function EditingPage() {
 
     const displayEditingPane = () => {
         if(mode === 'Editing') {
-            const selectionStyle = {
-                backgroundColor: 'white',
-                border: '1px solid #ccc',
-                padding: '8px',
-                borderRadius: '4px',
-                width: `${window.innerWidth * 0.5}px`,
-              };
-            
-              console.log("Editing pane: ");
-            
-              return (
+            console.log("Editing pane")
+            return (
+                // display script content with black text
                 <Grid item>
-                  <div style={selectionStyle} contentEditable={true}>
-                    <Typography variant='body1' sx={{ color: 'black', textAlign: 'left' }}>
-                      <pre>{scriptContent}</pre>
-                    </Typography>
-                  </div>
-                </Grid>
-              );
+                    <TextField
+                    id="outlined-multiline-static"
+                    multiline
+                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
+                    variant="outlined"
+                    sx={{
+                        width: `${window.innerWidth * 0.5}px`,
+                        ...TextfieldStyling
+                    }}
+                    value={scriptContent}
+                    onChange={(e) => setScriptContent(e.target.value)}
+                    />
+            </Grid>
+            )
         }
         else if(mode === 'Selection') {
-            const selectionStyle = {
-                backgroundColor: 'white',
-                border: '1px solid #ccc',
-                padding: '8px',
-                borderRadius: '4px',
-                width: `${window.innerWidth * 0.5}px`,
-              };
-          
-              console.log("Selection pane: " + selectedText);
-          
-              return (
+            // display before text, selected text, and after text. Before and after should be black. Selected should be blue
+            console.log("Selection pane")
+            return (
                 <Grid item>
-                  <div style={selectionStyle} contentEditable={true}>
-                    <Typography variant='body1' sx={{ color: 'black', textAlign:'left' }}>{beforeText}</Typography>
-                    <Typography variant='body1' sx={{ color: 'red', textAlign:'left' }}>{selectedText}</Typography>
-                    <Typography variant='body1' sx={{ color: 'black', textAlign:'left' }}>{afterText}</Typography>
-                  </div>
+                    <TextField
+                    id="outlined-multiline-static2"
+                    multiline
+                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
+                    variant="outlined"
+                    sx={{
+                        width: `${window.innerWidth * 0.5}px`,
+                        ...TextfieldStyling
+                    }}
+                    value={selectedText}
+                    >
+                        {/* set value to beforeText+selectedText+afterText and ask chatgpt how to make all these texts different colors */}
+                    </TextField>
                 </Grid>
-              );
+            )
         }
         return <></>
     }
