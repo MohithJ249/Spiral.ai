@@ -78,7 +78,7 @@ export default function LoginPage() {
               <Fab
                 variant="extended"
                 color="primary"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
                 disabled={loading} 
                 onClick={handleSubmit}
               >
@@ -88,7 +88,7 @@ export default function LoginPage() {
               <Fab
                 variant="extended"
                 color="primary"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
                 disabled={loading} onClick={() => window.location.href = '/CreateAccount'}
               >
                 <Create />

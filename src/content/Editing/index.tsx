@@ -10,7 +10,7 @@ import MakeVersionButton from '../../components/MakeVersionButton';
 import { Build, Close, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 import { set } from 'nprogress';
-import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
+import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../../styles/styles';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -283,11 +283,6 @@ export default function EditingPage() {
         alignItems: 'center',
     };
     
-    const usernameStyling = {
-        fontWeight: 'bold',
-        color: 'black', // or any other color you prefer
-    };
-    
 
     const goToRecordings = () => { 
         window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
@@ -501,7 +496,7 @@ export default function EditingPage() {
                                                             <Card key={comment.commentid} sx={commentsStyling}>
                                                                 <CardContent sx={cardContentStyling}>
                                                                 <Box sx={headerStyling}>
-                                                                    <Typography variant="subtitle1" sx={usernameStyling}>{comment.username}</Typography>
+                                                                    <Typography variant="subtitle1" sx={usernameCommentsStyling}>{comment.username}</Typography>
                                                                     <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
                                                                     <Close />
                                                                     </IconButton>

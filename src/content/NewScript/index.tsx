@@ -184,7 +184,7 @@ export default function NewScriptPage() {
                     variant="extended"
                     color="primary"
                     sx={{ mt: 3, mb: 2, width: window.innerWidth * 0.6  }}
-                    disabled={loading} onClick={handleSubmit}
+                    disabled={loading || title === '' || prompt === ''} onClick={handleSubmit}
                     >
                         <Create />
                         {loading ? 'Generating Script...' : 'Generate Script'}

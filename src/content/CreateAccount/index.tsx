@@ -95,7 +95,7 @@ export default function CreateAccountPage() {
                 type="submit"
                 variant="extended"
                 color="primary"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
                 disabled={loading} onClick={handleSubmit}
               >
                 <Create />
@@ -104,7 +104,7 @@ export default function CreateAccountPage() {
               <Fab
                 variant="extended"
                 color="primary"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
                 disabled={loading} onClick={()=> window.location.href = '/Login'}
               >
                 <ExitToApp />

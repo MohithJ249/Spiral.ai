@@ -43,6 +43,11 @@ export const textContentCommentsStyling = {
   wordBreak: 'break-word', // To prevent overflow
 };
 
+export const usernameCommentsStyling = {
+  fontWeight: 'bold',
+  color: 'black', // or any other color you prefer
+};
+
 
 
 export const StyledTheme = createTheme({
