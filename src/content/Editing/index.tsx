@@ -434,16 +434,23 @@ export default function EditingPage() {
             )
         }
         else if(mode === 'Selection') {
+
             // display before text, selected text, and after text. Before and after should be black. Selected should be blue
             console.log("Selection pane")
+            console.log(beforeText);
             return (
                 <Grid item>
-                    <div>
+                    <Paper elevation={0}
+                            sx={{ 
+                            height: window.innerHeight * 0.9,
+                            width: window.innerWidth * 0.5,
+                            backgroundColor: '#ffffff',
+                            borderRadius: '15px'}}>
+                    
                         {beforeText}
                         <span style={{color: "red"}}>{selectedText}</span>
                         {afterText}
-                    </div>
-                    {}
+                    </Paper>
                 </Grid>
             )
         }
