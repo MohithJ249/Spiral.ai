@@ -497,19 +497,12 @@ export default function EditingPage() {
             console.log("Selection pane")
             return (
                 <Grid item>
-                    <TextField
-                    id="outlined-multiline-static2"
-                    multiline
-                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
-                    variant="outlined"
-                    sx={{
-                        width: `${window.innerWidth * 0.5}px`,
-                        ...TextfieldStyling
-                    }}
-                    value={selectedText}
-                    >
-                        {/* set value to beforeText+selectedText+afterText and ask chatgpt how to make all these texts different colors */}
-                    </TextField>
+                    <div>
+                        {beforeText}
+                        <span style={{color: "red"}}>{selectedText}</span>
+                        {afterText}
+                    </div>
+                    {}
                 </Grid>
             )
         }
@@ -659,7 +652,7 @@ export default function EditingPage() {
                                                 </Fab>
                                             </Grow>
                                             <Grow in timeout={2200} >
-                                                <Fab  onClick={selectText} variant='extended' 
+                                                <Fab  onClick={selectText} variant='extended' disabled={mode === 'Selection'}
                                                             >
                                                     <Done />
                                                     Select Text
