@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Delete } from '@mui/icons-material';
 
 interface DeleteModalProps {
-  onDeleteScript: () => void;
+  onDelete: () => void;
+  deleteText: string;
 }
 
-function DeleteModal({ onDeleteScript }: DeleteModalProps) {
+function DeleteModal({ onDelete, deleteText }: DeleteModalProps) {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const modalStyle = {
@@ -41,8 +42,8 @@ function DeleteModal({ onDeleteScript }: DeleteModalProps) {
       >
         <Grow in={modalOpen} timeout={750}>
           <Box sx={modalStyle}>
-            <Typography>Are you sure you want to delete this script?</Typography>
-            <Button onClick={onDeleteScript}>Yes</Button>
+            <Typography>{deleteText}</Typography>
+            <Button onClick={onDelete}>Yes</Button>
             <Button onClick={() => setModalOpen(false)}>No</Button>
           </Box>
         </Grow>

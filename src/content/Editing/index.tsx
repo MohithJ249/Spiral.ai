@@ -491,7 +491,7 @@ export default function EditingPage() {
                                                 </Tooltip>
 
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
-                                                <DeleteModal onDeleteScript={deleteScript}/>
+                                                <DeleteModal onDelete={deleteScript} deleteText='Are you sure you want to delete this script?'/>
                                             </Box>
                                         </Grow>
                                         <Grow in timeout={1750}>

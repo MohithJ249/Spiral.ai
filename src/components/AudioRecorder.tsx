@@ -32,11 +32,18 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
 
 
   useEffect(() => {
-    if (mode==='Viewing' && viewingAudioUrl) {
+    if (mode==='Viewing' && viewingAudioUrl !== undefined && viewingAudioUrl !== '') {
       setAudioUrl(viewingAudioUrl);
       if(audioRef.current)
         audioRef.current.src = viewingAudioUrl;
     } 
+    else if(mode === 'Viewing') {
+      setAudioUrl(viewingAudioUrl);
+      if(audioRef.current)
+        audioRef.current.src = '';
+      setDuration(0);
+      setElapsed(0);
+    }
   }, [viewingAudioUrl]);
   
   useEffect(() => {

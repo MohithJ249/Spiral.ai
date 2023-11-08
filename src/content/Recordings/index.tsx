@@ -1,10 +1,10 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TablePagination, Stack, Box, styled, Slider, Tooltip, Button, Alert, Snackbar } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TablePagination, Stack, Box, styled, Slider, Tooltip, Button, Alert, Snackbar, Fab, Grow, Modal } from '@mui/material';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
 import { useGetScriptRecordingsLazyQuery, useDeleteRecordingMutation } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
-import { Pause, PlayArrow, VolumeDown, VolumeUp } from '@mui/icons-material';
+import { Delete, Pause, PlayArrow, VolumeDown, VolumeUp } from '@mui/icons-material';
 
 interface Column {
     id: 'name' | 'time_saved' | 'audio_url' | 'delete';
@@ -15,10 +15,9 @@ interface Column {
 }
   
 const columns: readonly Column[] = [
-    { id: 'name', label: 'Name', minWidth: 170 },
+    { id: 'name', label: 'Recording Name', minWidth: 170 },
     { id: 'time_saved', label: 'Time Saved', minWidth: 100 },
-    { id: 'audio_url', label: 'Audio URL', minWidth: 100 },
-    { id: 'delete', label: 'Delete', minWidth: 100 },
+    { id: 'delete', label: '', minWidth: 100 },
 ];
   
 interface Recording {
@@ -33,7 +32,7 @@ function createRecording(
     time_saved: string,
     audio_url: string
   ): Recording {
-    return { name, time_saved, audio_url, delete: "X" };
+    return { name, time_saved, audio_url, delete: "Delete" };
   }
   
 
@@ -51,9 +50,23 @@ export default function RecordingsPage() {
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     const [fetchScriptCollaborators, { data, refetch: refetchScriptCollaborators }] = useGetScriptRecordingsLazyQuery();
     const [deleteRecordingMutation] = useDeleteRecordingMutation();
+
+    const modalStyle = {
+      position: 'absolute' as 'absolute',
+      top: '40%',
+      left: '40%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+      margin: 'auto',
+    };
 
     useEffect(() => {
         fetchScriptCollaborators({
@@ -103,12 +116,13 @@ export default function RecordingsPage() {
         setSelectedRecording(row);
     }
 
-      const deleteRecording = async (row: Recording) => {
-        const fileName = "userid-" + localStorage.getItem('userid') + "/scriptid-" + scriptid + "/recordings/" + row.name + ".wav";
+    const deleteRecording = async () => {
+      if(selectedRecording) {
+        const fileName = "userid-" + localStorage.getItem('userid') + "/scriptid-" + scriptid + "/recordings/" + selectedRecording.name + ".wav";
         await Storage.remove(fileName);
         await deleteRecordingMutation({
           variables: {
-            title: row.name,
+            title: selectedRecording.name,
             scriptid: scriptid || '',
           }
         });
@@ -116,11 +130,19 @@ export default function RecordingsPage() {
             title: title || '',
             userid: localStorage.getItem('userid') || '',
         });
+        setModalOpen(false);
+        deselectAudio();
       }
+    }
+
+    const deselectAudio = () => {
+      setSelectedRecording(undefined);
+    }
 
       const handleItemClick = (row: Recording, column: Column) => {
         if(column.id === 'delete') {
-          deleteRecording(row);
+          changeSelectedAudio(row);
+          setModalOpen(true);
         }
         else {
           changeSelectedAudio(row)
@@ -140,6 +162,24 @@ export default function RecordingsPage() {
     if(scriptid && recordings!==undefined) {
         return (
             <>
+            <Modal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Grow in={modalOpen} timeout={750}>
+                <Box sx={modalStyle}>
+                  <Typography>{"Are you sure you want to delete this recording?"}</Typography>
+                  <Button onClick={deleteRecording}>Yes</Button>
+                  <Button onClick={() => setModalOpen(false)}>No</Button>
+                </Box>
+              </Grow>
+            </Modal>
             <Snackbar
               open={isNotificationOpen}
               autoHideDuration={6000}
@@ -153,13 +193,16 @@ export default function RecordingsPage() {
                   {notificationText}
               </Alert>
             </Snackbar>
-            <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: 'black', width: '100%', minHeight: '100vh' }}>
-                <Paper>
-                  <AudioRecorder scriptid={scriptid} recordingTitle={selectedRecording?.name} onShowNotification={showNotification} mode='Viewing' viewingAudioUrl={selectedRecording?.audio_url}/>
+            <Box sx={{ flexWrap: 'wrap', backgroundColor: '#f1efee', display: 'flex', width: '100%', minHeight: '100vh' }}>
+                <Paper elevation={0} sx={{
+                  height: window.innerHeight * 0.9,
+                  width: window.innerWidth * 0.2,
+                  backgroundColor: '#f1efee',
+                  }}>
+                  <AudioRecorder scriptid={scriptid} recordingTitle={selectedRecording?.name || 'Select a recording to playback.'} onShowNotification={showNotification} mode='Viewing' viewingAudioUrl={selectedRecording?.audio_url || ''}/>
                   <Button onClick={goToEditingPage}>Return to Script</Button>
                 </Paper>
 
-                <Typography variant="h4"> Recordings </Typography>
                 <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                     <TableContainer sx={{ maxHeight: 440 }}>
                     <Table stickyHeader aria-label="sticky table">
