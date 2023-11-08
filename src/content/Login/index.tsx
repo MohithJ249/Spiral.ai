@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLoginLazyQuery } from '../../generated/graphql';
-import { Button, TextField, Container, Typography, Box, Alert } from '@mui/material';
-import { Lock as LockIcon } from '@mui/icons-material';
+import { Fab, TextField, Container, Typography, Box, Alert, Stack } from '@mui/material';
+import { Create, Lock as LockIcon, Login } from '@mui/icons-material';
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>('');
@@ -74,25 +74,27 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading} 
-              onClick={handleSubmit}
-            >
-              Sign In
-            </Button>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading} onClick={() => window.location.href = '/CreateAccount'}
-            >
-              Create Account
-            </Button>
+            <Stack direction='column'>
+              <Fab
+                variant="extended"
+                color="primary"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={loading} 
+                onClick={handleSubmit}
+              >
+                <Login />
+                Sign In
+              </Fab>
+              <Fab
+                variant="extended"
+                color="primary"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={loading} onClick={() => window.location.href = '/CreateAccount'}
+              >
+                <Create />
+                Create Account
+              </Fab>
+            </Stack>
           </Box>
         </Box>
       </Container>
