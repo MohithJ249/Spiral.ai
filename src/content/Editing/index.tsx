@@ -32,6 +32,10 @@ export default function EditingPage() {
     const [complexity, setComplexity] = useState<string>('Increase');
     const [synonym, setSynonym] = useState<string>('Alternative Synonym');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
+    const [mode, setMode] = useState<string>('Editing');
+
+    const [beforeText, setBeforeText] = useState<string>('');
+    const [afterText, setAfterText] = useState<string>('');
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [deleteCommentMutation] = useDeleteCommentMutation();
@@ -183,9 +187,19 @@ export default function EditingPage() {
                     end--;
                 }
 
+                setBeforeText(scriptContent.slice(0, start));
                 setSelectedTextPosition([start, end]);
+                setAfterText(scriptContent.slice(end+1));
+                setMode('Selection')
             }
         }
+    }
+
+    const unselectText = () => {
+        setSelectedTextPosition(undefined);
+        setGeneratedText('');
+        setScriptContent(beforeText+selectedText+afterText);
+        setMode('Editing');
     }
 
     const handleReplaceText = async () => {      
@@ -199,6 +213,9 @@ export default function EditingPage() {
             setSelectedTextPosition(undefined);
             setGeneratedText('');
             showNotification('success', 'Text replaced successfully!')
+            setMode('Editing')
+            setBeforeText('');
+            setAfterText('');
           }
         }
     }
@@ -453,6 +470,52 @@ export default function EditingPage() {
     const displayPromptOrSelections = () => {
         return customPromptingEnabled ? getCustomPrompting() : getSelections();
     }
+
+    const displayEditingPane = () => {
+        if(mode === 'Editing') {
+            const selectionStyle = {
+                backgroundColor: 'white',
+                border: '1px solid #ccc',
+                padding: '8px',
+                borderRadius: '4px',
+                width: `${window.innerWidth * 0.5}px`,
+              };
+            
+              console.log("Editing pane: ");
+            
+              return (
+                <Grid item>
+                  <div style={selectionStyle} contentEditable={true}>
+                    <Typography variant='body1' sx={{ color: 'black', textAlign: 'left' }}>
+                      <pre>{scriptContent}</pre>
+                    </Typography>
+                  </div>
+                </Grid>
+              );
+        }
+        else if(mode === 'Selection') {
+            const selectionStyle = {
+                backgroundColor: 'white',
+                border: '1px solid #ccc',
+                padding: '8px',
+                borderRadius: '4px',
+                width: `${window.innerWidth * 0.5}px`,
+              };
+          
+              console.log("Selection pane: " + selectedText);
+          
+              return (
+                <Grid item>
+                  <div style={selectionStyle} contentEditable={true}>
+                    <Typography variant='body1' sx={{ color: 'black', textAlign:'left' }}>{beforeText}</Typography>
+                    <Typography variant='body1' sx={{ color: 'red', textAlign:'left' }}>{selectedText}</Typography>
+                    <Typography variant='body1' sx={{ color: 'black', textAlign:'left' }}>{afterText}</Typography>
+                  </div>
+                </Grid>
+              );
+        }
+        return <></>
+    }
     
     if(scriptid && title && scriptContent !== undefined) {
         return (
@@ -573,20 +636,7 @@ export default function EditingPage() {
                             </Grow>
 
                             <Grow in key='EditingPane' timeout={1500}>
-                                <Grid item>
-                                    <TextField
-                                    id="outlined-multiline-static"
-                                    multiline
-                                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
-                                    variant="outlined"
-                                    sx={{
-                                        width: `${window.innerWidth * 0.5}px`,
-                                        ...TextfieldStyling
-                                    }}
-                                    value={scriptContent}
-                                    onChange={(e) => setScriptContent(e.target.value)}
-                                    />
-                                </Grid>
+                                {displayEditingPane()}
                             </Grow>
 
                                 <Grow in key='LLMPane' timeout={2000}>
@@ -602,6 +652,13 @@ export default function EditingPage() {
                                     >
 
                                         <Stack spacing={2} direction="column">
+                                            <Grow in timeout={2200} >
+                                                <Fab onClick={unselectText} variant='extended' disabled={mode === 'Editing'}
+                                                            >
+                                                    <Close />
+                                                    Unselect Text
+                                                </Fab>
+                                            </Grow>
                                             <Grow in timeout={2200} >
                                                 <Fab  onClick={selectText} variant='extended' 
                                                             >
