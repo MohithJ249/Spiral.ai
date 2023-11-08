@@ -3,6 +3,8 @@ import { Box, Button, Chip, Container, Fab, FormHelperText, IconButton, ListItem
 import { all } from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import JSZip from 'jszip';
+
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -11,6 +13,15 @@ interface PDFReaderProps {
   margin: number
   addtionalInfo: string,
   onSetAdditionalInfo: (text: string) => void
+}
+
+function getTextFromNodes(node: Document, tagName: string, namespaceURI: string) {
+  let text = '';
+  const textNodes = node.getElementsByTagNameNS(namespaceURI, tagName);
+  for (let i = 0; i < textNodes.length; i++) {
+    text += textNodes[i].textContent + ' ';
+  }
+  return text.trim();
 }
 
 function PDFReader({ getExtractedText, margin, addtionalInfo, onSetAdditionalInfo } : PDFReaderProps) {
@@ -24,19 +35,51 @@ function PDFReader({ getExtractedText, margin, addtionalInfo, onSetAdditionalInf
   const [textLoading, setTextLoading] = useState<boolean>(false);
 
   const onFileChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
+
     const selectedFiles = event.target.files;
 
     if(selectedFiles) {
       const selectedFilesList: File[] = Array.from(selectedFiles);
-
+      const isPDF = selectedFilesList[0].name.endsWith('pdf')
       // get number of pages from each file
       var buildFileObjs : {file : File, numPages : number}[] = [];
       for(let i = 0; i < selectedFiles.length; i++) {
-        const buffer = await selectedFiles[i].arrayBuffer();
-        const pdf = await pdfjs.getDocument(buffer!).promise;
-        const numPages = await pdf.numPages;
+          const buffer = await selectedFiles[i].arrayBuffer();
 
-        buildFileObjs.push({file : selectedFilesList[i], numPages});
+          const zip = new JSZip();
+          await zip.loadAsync(buffer);
+
+          const aNamespace = "http://schemas.openxmlformats.org/drawingml/2006/main";
+          let text = '';
+          
+          let slideIndex = 1;
+          while (true) {
+            const slideFile = zip.file(`ppt/slides/slide${slideIndex}.xml`);
+            
+            if (!slideFile) break;
+            
+            const slideXmlStr = await slideFile.async('text');
+            
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(slideXmlStr, 'application/xml');
+            
+            text += getTextFromNodes(xmlDoc, "t", aNamespace) + ' ';
+            
+            slideIndex++;
+          }
+          console.log(text.trim())
+          // return text.trim();
+        // }
+        // else {
+          var numPages = 1
+          if (isPDF) {
+
+            const pdf = await pdfjs.getDocument(buffer!).promise;
+            numPages = await pdf.numPages;
+          }
+          buildFileObjs.push({file : selectedFilesList[i], numPages});
+        // }
+
       }
 
       setFileObjs([...fileObjs, ...buildFileObjs]);
@@ -67,14 +110,42 @@ function PDFReader({ getExtractedText, margin, addtionalInfo, onSetAdditionalInf
         promises.push(
           (async () => {
             const buffer = await obj.file?.arrayBuffer();
-            const pdf = await pdfjs.getDocument(buffer!).promise;
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-
-            const pageText = textContent.items
+            var pageText = "";
+            if (obj.file.name.endsWith('pdf')) {
+              const pdf = await pdfjs.getDocument(buffer!).promise;
+              const page = await pdf.getPage(i);  
+              const textContent = await page.getTextContent();
+              pageText = textContent.items
               .map((textItem) => ('str' in textItem ? textItem.str : ''))
               .join(' ');
 
+            }
+            else {
+              const zip = new JSZip();
+              await zip.loadAsync(buffer);
+              const aNamespace = "http://schemas.openxmlformats.org/drawingml/2006/main";
+              let text = '';
+              
+              let slideIndex = 1;
+              while (true) {
+                const slideFile = zip.file(`ppt/slides/slide${slideIndex}.xml`);
+                
+                if (!slideFile) break;
+                
+                const slideXmlStr = await slideFile.async('text');
+                
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(slideXmlStr, 'application/xml');
+                
+                text += getTextFromNodes(xmlDoc, "t", aNamespace) + ' ';
+                
+                slideIndex++;
+              }
+              console.log(text.trim())
+              pageText = text.trim()
+          }
+
+            
             return pageText;
           })()
         );
