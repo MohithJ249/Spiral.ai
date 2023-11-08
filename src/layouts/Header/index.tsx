@@ -110,7 +110,6 @@ function Header() {
           justifyContent: 'center',
           backgroundColor: '#f1efee',
           minHeight: '100vh',
-          minWidth: '100vw',
           // marginTop: '5%',
           // margin: '0px 0px 0px 40px',
         }}

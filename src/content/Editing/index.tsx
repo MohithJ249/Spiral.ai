@@ -395,6 +395,45 @@ export default function EditingPage() {
     const displayPromptOrSelections = () => {
         return customPromptingEnabled ? getCustomPrompting() : getSelections();
     }
+
+    const displayComments = () => {
+        if(data?.getAllScriptComments?.length) {
+            return data.getAllScriptComments.map((comment, index) => {
+                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                    return (
+                        <Grow in key={index} timeout={2000 + index * 300}>
+                            <Card key={comment.commentid} sx={commentsStyling}>
+                                <CardContent sx={cardContentStyling}>
+                                <Box sx={headerStyling}>
+                                    <Typography variant="subtitle1" sx={usernameCommentsStyling}>{comment.username}</Typography>
+                                    <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
+                                    <Close />
+                                    </IconButton>
+                                </Box>
+                                <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                <Typography variant="body2" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grow>
+                    );
+                }
+                return null;
+            })
+        }
+        else {
+            return (
+                <>
+                    <Card sx={commentsStyling}>
+                        <CardContent sx={cardContentStyling}>
+                        <Box sx={headerStyling}>
+                        </Box>
+                        <Typography variant="body2" sx={textContentCommentsStyling}>{"You have no comments at this time."}</Typography>
+                        </CardContent>
+                    </Card>
+                </>
+            )
+        }
+    }
     
     if(scriptid && title && scriptContent !== undefined) {
         return (
@@ -418,7 +457,7 @@ export default function EditingPage() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
-                        <Grid sx={{ flexGrow: 1, width: "100vw", height: '100vh'}} container justifyContent="center" spacing={2}>
+                        <Grid sx={{ flexGrow: 1, height: '100vh'}} container justifyContent="center" spacing={2}>
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -430,7 +469,7 @@ export default function EditingPage() {
                                         }}>
                                         <Grow in timeout={1250}>
                                             <div style={{marginBottom: '5%'}}>
-                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification}/>
+                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification} mode="Editing"/>
                                             </div>
                                         </Grow>  
                                         <Grow in timeout={1500}>
@@ -452,7 +491,7 @@ export default function EditingPage() {
                                                 </Tooltip>
 
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
-                                                <DeleteModal onDeleteScript={deleteScript}/>
+                                                <DeleteModal onDelete={deleteScript} deleteText='Are you sure you want to delete this script?'/>
                                             </Box>
                                         </Grow>
                                         <Grow in timeout={1750}>
@@ -489,27 +528,7 @@ export default function EditingPage() {
                                             }}
                                             component="ul"
                                             >
-                                                {data?.getAllScriptComments?.map((comment, index) => {
-                                                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
-                                                    return (
-                                                        <Grow in key={index} timeout={2000 + index * 300}>
-                                                            <Card key={comment.commentid} sx={commentsStyling}>
-                                                                <CardContent sx={cardContentStyling}>
-                                                                <Box sx={headerStyling}>
-                                                                    <Typography variant="subtitle1" sx={usernameCommentsStyling}>{comment.username}</Typography>
-                                                                    <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
-                                                                    <Close />
-                                                                    </IconButton>
-                                                                </Box>
-                                                                <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
-                                                                <Typography variant="body2" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
-                                                                </CardContent>
-                                                            </Card>
-                                                        </Grow>
-                                                    );
-                                                }
-                                                return null;
-                                                })}
+                                            {displayComments()}
                                             </Paper>
                                         </Grow>     
                                     </Paper>
