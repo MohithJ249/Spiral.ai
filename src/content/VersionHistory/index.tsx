@@ -4,6 +4,7 @@ import { Storage } from 'aws-amplify';
 import { useGetScriptVersionsQuery, useCreateScriptVersionMutation } from '../../generated/graphql';
 import { Create, PlaylistAddCheck } from '@mui/icons-material';
 import Scrollbar from '../../components/scrollbar';
+import { commentsStyling, cardContentStyling, usernameCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
 
 interface VersionProps {
     time_saved?: string;
@@ -30,23 +31,15 @@ function Version({time_saved, versionid, scriptid, onSetScriptContent}: VersionP
         });
     }
 
-    const styledCard2LeftPane = {
-        backgroundColor: '#4d4d4d',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'center',
-        // margin: '10px 0px 0px 0px',
-        borderRadius: '15px',
-        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-        '& > :not(style)': { m: 1 }
-    }
-
     return (
-        <Card sx={styledCard2LeftPane}>
+        <Card sx={commentsStyling}>
             <CardActionArea onClick={populateScriptContent}>
-                <CardContent>
-                <Typography variant="subtitle1" noWrap>
-                    Time Saved: {time_saved}
+                <CardContent sx={cardContentStyling}>
+                <Typography variant="subtitle1" sx={usernameCommentsStyling}>
+                    Time Saved
+                </Typography>
+                <Typography variant="subtitle1" sx={{justifyContent:'center'}}>
+                    {time_saved}
                 </Typography>
                 </CardContent>
             </CardActionArea>
@@ -111,7 +104,7 @@ export default function VersionHistory() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>Version History for {title}</Typography>
 
                     <div style={{ flexGrow: 1 }}>
-                        <Grid sx={{ flexGrow: 1 }} container justifyContent="center" spacing={4}>
+                        <Grid sx={{ flexGrow: 1 }} container justifyContent="center" spacing={8}>
                             
                             <Grow in key='VersionPane' timeout={1000}>
                                 <Grid item>
@@ -158,14 +151,14 @@ export default function VersionHistory() {
                                             <Stack direction='column' >
                                                 { data.getScriptVersions.map((item, index) => (
                                                     <Grow in key={index} timeout={1000 + index * 150}>
-                                                    <div style={{marginLeft: '-5%',marginRight: '5%', marginTop: '5%', marginBottom: '5%'}}>
-                                                        <Version 
-                                                            versionid={item?.versionid} 
-                                                            time_saved={item?.time_saved} 
-                                                            onSetScriptContent={setScriptContent}
-                                                            scriptid={scriptid}
-                                                            />
-                                                    </div>
+                                                        <div style={{marginLeft: '-5%',marginRight: '5%', marginTop: '5%', marginBottom: '5%'}}>
+                                                            <Version 
+                                                                versionid={item?.versionid} 
+                                                                time_saved={item?.time_saved} 
+                                                                onSetScriptContent={setScriptContent}
+                                                                scriptid={scriptid}
+                                                                />
+                                                        </div>
                                                     </Grow>
                                                     ))
                                                 }

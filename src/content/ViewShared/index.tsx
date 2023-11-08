@@ -1,9 +1,10 @@
-import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box, TextField, Paper, Fab, Stack } from '@mui/material';
+import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box, TextField, Paper, Fab, Stack, IconButton } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../../generated/graphql';
-import { Create, PlaylistAddCheck } from '@mui/icons-material';
+import { Close, Create, PlaylistAddCheck } from '@mui/icons-material';
 import Scrollbar from '../../components/scrollbar';
+import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
 
 export default function ViewShared() {
     const url = window.location.search;
@@ -44,6 +45,12 @@ export default function ViewShared() {
         pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
     };
 
+    const headerStyling = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    };
+
     const postComment = async () => {
         if(commentText) {
             await postCommentMutation({
@@ -71,19 +78,20 @@ export default function ViewShared() {
         return (
             <>
                 <div>
-                    <Typography variant="h3">{title}</Typography>
+                    {/* <Typography variant="h3">{title}</Typography> */}
+                    <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
-                    <div style={{ flexGrow: 1 }}>
-                        <Grid sx={{ flexGrow: 1 }} container justifyContent="center" spacing={4}>
+                    <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
+                        <Grid sx={{ flexGrow: 1, width: '100vw', height: '100vh' }} container justifyContent="center" spacing={8}>
                             
-                            <Grow in key='RecordingPane' timeout={1000}>
+                            <Grow in key='CommentingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
                                         elevation={0}
                                         sx={{
-                                        height: window.innerHeight * 0.8,
+                                        height: window.innerHeight * 0.9,
                                         width: window.innerWidth * 0.2,
-                                        backgroundColor: '#ffffff',
+                                        backgroundColor: '#f1efee',
                                         }}
                                     >
                                         <Stack direction="column" sx={{'& > :not(style)': { m: 1 }}}>
@@ -93,46 +101,80 @@ export default function ViewShared() {
                                             </Fab>
                                             <TextField
                                             multiline
-                                            rows={window.innerHeight * 0.8 / 100}
+                                            rows={window.innerHeight * 0.9 / 100}
                                             value={commentText}
                                             onChange={(e) => setCommentText(e.target.value)}
                                             >
                                             </TextField>
-                                            {data?.getAllScriptComments?.map(comment => {
-                                                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
-                                                    return (
-                                                        <Card key={comment.commentid}>
-                                                            <CardContent>
-                                                            <Typography variant="h6">Posted by {comment.username} at {comment.time_saved}</Typography>
-                                                            <Typography variant="body1">{comment.text_content}</Typography>
-                                                            {comment.userid === localStorage.getItem('userid') ? (
-                                                                <Button onClick={() => deleteComment(comment.commentid)}>X</Button>
-                                                            ) : null}
-                                                            </CardContent>
-                                                        </Card>
-                                                    );
-                                                }
-                                                return null; // Or any other fallback you want when text_content is undefined or falsy
-                                            })}
+
                                         </Stack>
+
+                                        <Grow in timeout={1500}>
+
+                                            <Paper
+                                            elevation={0}
+                                            sx={{
+                                                flexWrap: 'wrap',
+                                                borderRadius: '5px',
+                                                width: window.innerWidth * 0.2,
+                                                height: window.innerHeight * 0.6,
+                                                overflow: 'auto',
+                                                maxHeight: '60%',
+                                                marginTop: '1%',
+                                                backgroundColor: '#f1efee',
+                                                '&::-webkit-scrollbar': {
+                                                width: '0.5rem', 
+                                                },
+                                                '&::-webkit-scrollbar-thumb': {
+                                                background: '#aaa', // Color of the scrollbar thumb
+                                                borderRadius: '2px', // Adjust as needed
+                                                },
+                                                '&::-webkit-scrollbar-thumb:hover': {
+                                                background: '#aaa', // Color on hover, adjust as needed
+                                                },
+                                            }}
+                                            component="ul"
+                                            >
+
+                                                {data?.getAllScriptComments?.map((comment, index) => {
+                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                        return (
+                                                            <Grow in key={index} timeout={1500 + index * 300}>
+                                                                <Card key={comment.commentid} sx={commentsStyling}>
+                                                                    <CardContent sx={cardContentStyling}>
+                                                                        <Box sx={headerStyling}>
+                                                                            <Typography variant="h6">Posted by {comment.username}</Typography>
+                                                                            {comment.userid === localStorage.getItem('userid') ? (<IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
+                                                                                <Close />
+                                                                            </IconButton>
+                                                                            ) : null}
+                                                                        </Box>
+                                                                        <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                                                        <Typography variant="body1" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
+                                                                    </CardContent>
+                                                                </Card>
+                                                            </Grow>
+                                                        );
+                                                    }
+                                                    return null; // Or any other fallback you want when text_content is undefined or falsy
+                                                })}
+                                            </Paper>
+                                        </Grow>
                                     </Paper>
                                 </Grid>
                             </Grow>
 
-                            <Grow in key='EditingPane' timeout={1500}>
+                            <Grow in key='ViewScriptPane' timeout={1500}>
                                 <Grid item>
                                     <TextField
                                     id="outlined-multiline-static"
                                     multiline
                                     // height of 1 row = 56px, so adjust accordingly
-                                    rows={window.innerHeight * 0.8 / 24}
+                                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
                                     variant="outlined"
                                     sx={{
-                                        height: window.innerHeight * 0.8,
-                                        width: window.innerWidth * 0.6,
-                                        '& fieldset': {
-                                            borderRadius: '15px'
-                                        }
+                                        width: `${window.innerWidth * 0.6}px`,
+                                        
                                     }}
                                     value={scriptContent}
                                     style={textStyle}

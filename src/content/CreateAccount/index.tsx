@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useCreateUserMutation } from '../../generated/graphql';
-import { Button, FormControl, Input, InputLabel, Alert } from '@mui/material';
+import { Button, FormControl, Input, InputLabel, Alert, Fab, Stack } from '@mui/material';
 import {  TextField, Container, Typography, Box } from '@mui/material';
-import { Lock as LockIcon } from '@mui/icons-material';
+import { Create, ExitToApp, Lock as LockIcon } from '@mui/icons-material';
 import { ApolloError } from '@apollo/client';
 
 export default function CreateAccountPage() {
@@ -90,25 +90,27 @@ export default function CreateAccountPage() {
               autoComplete="current-password"
               value={password} onChange={(e) => setPassword(e.target.value)}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading} onClick={handleSubmit}
-            >
-              Create Account
-            </Button>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading} onClick={()=> window.location.href = '/Login'}
-            >
-              Login to Existing Account
-            </Button>
+            <Stack direction='column'>
+              <Fab
+                type="submit"
+                variant="extended"
+                color="primary"
+                sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
+                disabled={loading} onClick={handleSubmit}
+              >
+                <Create />
+                Create Account
+              </Fab>
+              <Fab
+                variant="extended"
+                color="primary"
+                sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
+                disabled={loading} onClick={()=> window.location.href = '/Login'}
+              >
+                <ExitToApp />
+                Login to Existing Account
+              </Fab>
+            </Stack>
           </Box>
         </Box>
       </Container>

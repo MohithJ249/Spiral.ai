@@ -60,15 +60,16 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
     if(data?.getAllUserScripts) {
       return (
         <>
-          <Box sx={{flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>
+          <Box sx={{flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee' }}>
             <Grid 
               container 
               spacing={3} 
               direction='row' 
               justifyContent='flex-start'
-              padding={2}>
+              padding={4}
+              >
                 { data.getAllUserScripts.map((item, index) => (
-                  <Grid xs={12} sm={6} md={3} item>
+                  <Grid item>
                     <Grow in key={index} timeout={1000 + index * 150}>
                       <div>
                         <CustomCard title={item?.title} lastModified={item?.last_modified} scriptid={item?.scriptid}/>

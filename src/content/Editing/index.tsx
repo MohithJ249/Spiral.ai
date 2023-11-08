@@ -10,6 +10,7 @@ import MakeVersionButton from '../../components/MakeVersionButton';
 import { Build, Close, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 import { set } from 'nprogress';
+import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../../styles/styles';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -290,71 +291,15 @@ export default function EditingPage() {
         padding: '20px',
         marginTop: '-7%',
         marginBottom: '1%',
-        '& > :not(style)': { m: 1 }
+        '& > :not(style)': { m: 0.75 }
     }
-
-    const commentsStyling = {
-        backgroundColor: '#edf2fa',
-        color: 'black',
-        display: 'flex',
-        flexDirection: 'column',
-        marginLeft: '-5%',
-        marginRight: '5%', 
-        marginTop: '5%', 
-        marginBottom: '5%',
-        borderRadius: '15px',
-        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-        '&:hover':{
-            backgroundColor: '#e7edf8'
-        }
-      };
       
-      const cardContentStyling = {
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-      };
-      
-      const headerStyling = {
+    const headerStyling = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-      };
-      
-      const usernameStyling = {
-        fontWeight: 'bold',
-        color: 'black', // or any other color you prefer
-      };
-      
-      const deleteButtonStyling = {
-        position: 'absolute',
-        top: '8px',
-        right: '8px',
-        color: 'black', // Adjust if needed
-      };
-      
-      const timeSavedStyling = {
-        fontSize: '0.75rem',
-        color: 'black', // Adjust if needed
-        marginBottom: '8px', // Spacing between time and content
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      };
-      
-      const textContentStyling = {
-        color: 'black', // Adjust if needed
-        wordBreak: 'break-word', // To prevent overflow
-      };
-      
-
-    const TextfieldStyling = {
-        backgroundColor: 'white',
-        borderRadius: '15px',
-        '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-            borderRadius: '15px',
-        },
     };
+    
 
     const goToRecordings = () => { 
         window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
@@ -369,9 +314,6 @@ export default function EditingPage() {
                 onChange={(e) => setPromptText(e.target.value)}
                 placeholder="Make the tone more casual"
                 rows={window.innerHeight * 0.2 / 28}
-                sx={{
-                ...TextfieldStyling
-                }}
             />
         );
     }
@@ -385,7 +327,7 @@ export default function EditingPage() {
                     label="Customize Length:"
                     select
                     onChange={(e) => setTextLength(e.target.value)}
-                    sx={{margin: 2, ...TextfieldStyling}}
+                    sx={{margin: 2}}
                 >
                     <MenuItem key={1} value={"Increase"}>Increase</MenuItem>
                     <MenuItem key={2} value={"Decrease"}>Decrease</MenuItem>
@@ -400,7 +342,7 @@ export default function EditingPage() {
                     label="Convert tone to:"
                     select
                     onChange={(e) => setTone(e.target.value)}
-                    sx={{margin: 2, ...TextfieldStyling}}
+                    sx={{margin: 2}}
                 >
                     <MenuItem key={1} value={"Casual"}>Casual</MenuItem>
                     <MenuItem key={2} value={"Persuasive"}>Persuasive</MenuItem>
@@ -419,7 +361,7 @@ export default function EditingPage() {
                     label="Customize complexity:"
                     select
                     onChange={(e) => setComplexity(e.target.value)}
-                    sx={{margin: 2, ...TextfieldStyling}}
+                    sx={{margin: 2}}
                 >
                     <MenuItem key={1} value={"Slightly Increase"}>Slightly Increase</MenuItem>
                     <MenuItem key={2} value={"Increase"}>Increase</MenuItem>
@@ -436,7 +378,7 @@ export default function EditingPage() {
                     label="Generate a:"
                     select
                     onChange={(e) => setSynonym(e.target.value)}
-                    sx={{margin: 2, ...TextfieldStyling}}
+                    sx={{margin: 2}}
                 >
                     <MenuItem key={1} value={"More complex synonym"}>More Complex Synonym</MenuItem>
                     <MenuItem key={2} value={"Alternative Synonym"}>Alternative Synonym</MenuItem>
@@ -455,7 +397,7 @@ export default function EditingPage() {
                     label="What would you like to modify"
                     select
                     onChange={(e) => setSelectorType(e.target.value)}
-                    sx={{margin: 2, ...TextfieldStyling}}
+                    sx={{margin: 2}}
                 >
                     <MenuItem key={1} value={"Length"}>Length</MenuItem>
                     <MenuItem key={2} value={"Tone"}>Tone</MenuItem>
@@ -484,7 +426,6 @@ export default function EditingPage() {
                     variant="outlined"
                     sx={{
                         width: `${window.innerWidth * 0.5}px`,
-                        ...TextfieldStyling
                     }}
                     value={scriptContent}
                     onChange={(e) => setScriptContent(e.target.value)}
@@ -602,21 +543,23 @@ export default function EditingPage() {
                                             }}
                                             component="ul"
                                             >
-                                                {data?.getAllScriptComments?.map(comment => {
+                                                {data?.getAllScriptComments?.map((comment, index) => {
                                                 if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
                                                     return (
-                                                    <Card key={comment.commentid} sx={commentsStyling}>
-                                                        <CardContent sx={cardContentStyling}>
-                                                        <Box sx={headerStyling}>
-                                                            <Typography variant="subtitle1" sx={usernameStyling}>{comment.username}</Typography>
-                                                            <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonStyling}>
-                                                            <Close />
-                                                            </IconButton>
-                                                        </Box>
-                                                        <Typography variant="caption" sx={timeSavedStyling}>{comment.time_saved}</Typography>
-                                                        <Typography variant="body2" sx={textContentStyling}>{comment.text_content}</Typography>
-                                                        </CardContent>
-                                                    </Card>
+                                                        <Grow in key={index} timeout={2000 + index * 300}>
+                                                            <Card key={comment.commentid} sx={commentsStyling}>
+                                                                <CardContent sx={cardContentStyling}>
+                                                                <Box sx={headerStyling}>
+                                                                    <Typography variant="subtitle1" sx={usernameCommentsStyling}>{comment.username}</Typography>
+                                                                    <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
+                                                                    <Close />
+                                                                    </IconButton>
+                                                                </Box>
+                                                                <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                                                <Typography variant="body2" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </Grow>
                                                     );
                                                 }
                                                 return null;
@@ -667,9 +610,6 @@ export default function EditingPage() {
                                                     placeholder='Selected text will appear here.'
                                                     style={disabledBoxStyle}
                                                     rows={window.innerHeight * 0.2 / 24}
-                                                    sx={{
-                                                        ...TextfieldStyling
-                                                    }}
                                                     />
                                             </Grow>
 
@@ -706,9 +646,6 @@ export default function EditingPage() {
                                                     onChange={(e) => setGeneratedText(e.target.value)}
                                                     placeholder='Generated text will appear here.'
                                                     rows={window.innerHeight * 0.2 / 24}
-                                                    sx={{                                                        
-                                                        ...TextfieldStyling
-                                                    }}
                                                 />
                                             </Grow>
                                         </Stack>

@@ -28,8 +28,17 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   function CustomCard({title, scriptid, userid, owner_username, last_modified}: CustomCardProps) {
     const location = useLocation();
     const currentPath = location.pathname;
+
+    const CardStyle = {
+      borderRadius: '30px',
+      transition: 'transform 0.5s ease', 
+      '&:hover': {
+        transform: "scale(1.1)",
+      }
+    }
+
     return (
-      <Card>
+      <Card sx={CardStyle}>
         {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
         of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/ViewShared`,search: `?title=${title}&scriptid=${scriptid}&ownerid=${userid}`,}}>
@@ -61,7 +70,8 @@ export default function SharedPage() {
               spacing={3} 
               direction='row' 
               justifyContent='flex-start'
-              alignItems='flex-start'>
+              padding={4}
+              >
                 { data.getAllSharedScripts.map((item, index) => (
                   <Grid xs={12} sm={6} md={3} item>
                     <Grow in key={index} timeout={1000 + index * 150}>
