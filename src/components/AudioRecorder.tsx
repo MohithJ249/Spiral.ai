@@ -9,9 +9,12 @@ interface AudioRecorderProps {
   scriptid: string;
   scriptTitle?: string;
   onShowNotification: (severity: 'success' | 'info' | 'warning' | 'error', text: string) => void;
+  mode: 'Editing' | 'Viewing';
+  recordingTitle?: string;
+  viewingAudioUrl?: string;
 }
 
-function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecorderProps) {
+function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, recordingTitle, viewingAudioUrl }: AudioRecorderProps) {
   const [stream, setStream] = useState<MediaStream>();
   const [recording, setRecording] = useState(false);
   const [recordingName, setRecordingName] = useState<string>();
@@ -27,6 +30,15 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
   const [elapsed, setElapsed] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
 
+
+  useEffect(() => {
+    if (mode==='Viewing' && viewingAudioUrl) {
+      setAudioUrl(viewingAudioUrl);
+      if(audioRef.current)
+        audioRef.current.src = viewingAudioUrl;
+    } 
+  }, [viewingAudioUrl]);
+  
   useEffect(() => {
     if (recording) {
       startRecording();
@@ -225,12 +237,65 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
     borderRadius: '15px',
   };
 
+  const getRecordButton = () => {
+    if(mode==='Editing') {
+      return (
+                <Tooltip title="Record">
+                <RadioButtonChecked sx={{
+                  color: recording ? 'red' : 'black',
+                  '&:hover': recording ? { color: '#ff7276' } : {color: '#808080'}
+                }}
+                onClick={() => setRecording(!recording)}/>
+              </Tooltip>
+              )
+    }
+    else 
+      return <></>
+    }
+
+
+    const getSaveButton = () => {
+      if(mode === 'Editing') {
+        return (
+          <Tooltip title="Save">
+            <span>
+              <IconButton onClick={saveRecording} disabled={saveRecordingDisabled()} sx ={{'&:hover': {
+                backgroundColor: 'transparent',
+              }}}>
+                <Save sx={{color:'black', '&:hover': {color: '#808080'}}}/>
+              </IconButton>
+            </span>
+          </Tooltip>
+        );
+      }
+      else {
+        return <></>
+      }
+  }
+
+  const getPlayButton = () => {
+    return (
+        <Tooltip title="Play/Pause">
+        {!isPlaying ? (<PlayArrow onClick={togglePlay} sx={{
+                      fontSize: '80px',
+                      color:'black',
+                      '&:hover': {color: '#808080'}}}
+                    />)
+                    : (<Pause onClick={togglePlay} sx={{
+                      fontSize: '80px',
+                      color:'black',
+                      '&:hover': {color: '#808080'}}}/>)
+                    }
+      </Tooltip>
+    )
+  }
+  
   return (
     <>
       <Paper sx={styledPaper}>
         <Stack direction='row' spacing={1} sx={{
           justifyContent: 'center'}}>
-          <Input 
+          {mode === 'Editing' ? (<Input 
           placeholder="Recording Name *" sx={{ color: 'black', 
           '& .MuiInputBase-input::placeholder': {
               color: 'black',
@@ -242,7 +307,11 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
 
             }} 
           value={recordingName} 
-          onChange={(e) => setRecordingName(e.target.value)} />
+          onChange={(e) => setRecordingName(e.target.value)} />)
+          : 
+          (<Typography sx={{color: 'black'}}>{recordingTitle}</Typography>)
+
+          }
         </Stack>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
           <Stack direction='row' spacing={1}
@@ -252,36 +321,9 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification }: AudioRecor
               width: '40%',
               alignItems: 'center',
             }}>
-              <Tooltip title="Record">
-                <RadioButtonChecked sx={{
-                  color: recording ? 'red' : 'black',
-                  '&:hover': recording ? { color: '#ff7276' } : {color: '#808080'}
-                }}
-                              onClick={() => setRecording(!recording)}/>
-              </Tooltip>
-
-              <Tooltip title="Play/Pause">
-                {!isPlaying ? (<PlayArrow onClick={togglePlay} sx={{
-                              fontSize: '80px',
-                              color:'black',
-                              '&:hover': {color: '#808080'}}}
-                            />)
-                            : (<Pause onClick={togglePlay} sx={{
-                              fontSize: '80px',
-                              color:'black',
-                              '&:hover': {color: '#808080'}}}/>)
-                            }
-              </Tooltip>
-
-              <Tooltip title="Save">
-                <span>
-                  <IconButton onClick={saveRecording} disabled={saveRecordingDisabled()} sx ={{'&:hover': {
-                    backgroundColor: 'transparent',
-                  }}}>
-                    <Save sx={{color:'black', '&:hover': {color: '#808080'}}}/>
-                  </IconButton>
-                </span>
-              </Tooltip>
+              {getRecordButton()}      
+              {getPlayButton()}
+              {getSaveButton()}
           </Stack>
         </Box>
         <Stack spacing={1} direction='row' sx={{

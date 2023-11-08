@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TablePagination, Stack, Box, styled, Slider, Tooltip, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TablePagination, Stack, Box, styled, Slider, Tooltip, Button, Alert, Snackbar } from '@mui/material';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -46,13 +46,11 @@ export default function RecordingsPage() {
     const title = useMemo(() => searchParams.get('title'), [searchParams]);
     const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
     const [recordings, setRecordings] = useState([] as Recording[]);
-      // for audio player
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const [audioUrl, setAudioUrl] = useState<string>();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [elapsed, setElapsed] = useState<number>(0);
-    const [duration, setDuration] = useState<number>(0);
+
     const [selectedRecording, setSelectedRecording] = useState<Recording>();
+    const [notificationText, setNotificationText] = useState<string>();
+    const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
+    const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
 
     const [fetchScriptCollaborators, { data, refetch: refetchScriptCollaborators }] = useGetScriptRecordingsLazyQuery();
     const [deleteRecordingMutation] = useDeleteRecordingMutation();
@@ -100,121 +98,10 @@ export default function RecordingsPage() {
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
-
-    var getDuration = function (url: any, next: any) {
-      var _player = new Audio(url);
-      _player.addEventListener("durationchange", function (e) {
-          if (this.duration!=Infinity) {
-            var duration = this.duration
-            _player.remove();
-            next(duration);
-          };
-      }, false);      
-      _player.load();
-      _player.currentTime = 24*60*60;
-      _player.volume = 0;
-    };
-
-    useEffect(() => {
-      getDuration (audioUrl, function (duration: any) {
-        setDuration(duration)
-    });
-    }, [audioUrl]);
-
+   
     const changeSelectedAudio = (row: Recording) => {
-        audioRef.current?.pause();
-        setIsPlaying(false);
-        setAudioUrl(row.audio_url);
-        if(audioRef.current)
-            audioRef.current.src = row.audio_url;
         setSelectedRecording(row);
     }
-  
-    interface sliderProps {
-      theme?: any;
-      thumbless?: boolean;
-    }
-  
-    const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
-      color: 'silver',
-      height: 2,
-      '&:hover': {
-        cursor: 'auto',
-      },
-      '& .MuiSlider-thumb': {
-        width: '14px',
-        height: '14px',
-        display: otherProps.thumbless ? 'none' : 'block'
-      }
-    }))
-
-    const MyVolSliderTag = () => {
-        const [volume, setVolume] = useState(70);
-        const handleVolume = (e: Event, newValue: number | number[]): void => {
-          // const { value } = e.target;
-          let currVolume = Number(newValue);
-          if(audioRef.current) {
-            audioRef.current.volume = currVolume / 100;
-            setVolume(currVolume);
-          }
-        }
-    
-        return (
-          <Box sx={{backgroundColor: '#f1efee'}}>
-            <Stack direction='row' spacing={1}
-                sx={{
-                  display : 'flex',
-                  justifyContent: 'flex-start',
-                  width: '70%',
-                  alignItems: 'center',
-                }}>         
-                <VolumeDown />
-                <PlayBar
-                  min={0}
-                  max={100}
-                  value={volume}
-                  onChange={handleVolume}
-                  defaultValue={70}
-                  />
-                <VolumeUp />
-            </Stack>
-          </Box>
-        );
-      }
-    
-      const togglePlay = () => {
-        if(selectedRecording) {
-          if(!isPlaying) {
-            audioRef.current?.play();
-          }
-          else {
-            audioRef.current?.pause();
-          }
-          setIsPlaying(!isPlaying);
-        }
-      }
-    
-      const onTimeUpdate = () => {
-        if (audioRef.current) {
-          setElapsed(audioRef.current.currentTime);
-        }
-      };
-
-      const formatTime = (time: number) => {
-        if(time && !isNaN(time) && isFinite(time)) {
-          const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
-          const seconds = Math.floor(time % 60) < 10 ? `0${Math.floor(time % 60)}` : Math.floor(time % 60);
-    
-          return `${minutes}:${seconds}`;
-        }
-        return "00:00";
-      }
-      const styledPaper = {
-        backgroundColor: 'black',
-        padding: '20px',
-        borderRadius: '15px',
-        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-      };
 
       const deleteRecording = async (row: Recording) => {
         const fileName = "userid-" + localStorage.getItem('userid') + "/scriptid-" + scriptid + "/recordings/" + row.name + ".wav";
@@ -244,54 +131,31 @@ export default function RecordingsPage() {
         window.location.href = "/Editing?title=" + title + "&scriptid=" + scriptid;
       }
 
+      const showNotification = (severity: 'success' | 'info' | 'warning' | 'error', text: string) => {
+        setNotificationSeverity(severity);
+        setNotificationText(text);
+        setIsNotificationOpen(true);
+    }
+
     if(scriptid && recordings!==undefined) {
         return (
             <>
+            <Snackbar
+              open={isNotificationOpen}
+              autoHideDuration={6000}
+              onClose={() => setIsNotificationOpen(false)}
+              >
+              <Alert
+                  onClose={() => setIsNotificationOpen(false)}
+                  severity={notificationSeverity}
+                  sx={{ width: '100%' }}
+              >
+                  {notificationText}
+              </Alert>
+            </Snackbar>
             <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: 'black', width: '100%', minHeight: '100vh' }}>
-                <Paper sx={styledPaper}>
-                  <Typography sx={{color: 'silver'}}>{selectedRecording?.name || 'Select a recording to playback'}</Typography>
-                  <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                    <Stack direction='row' spacing={1}
-                      sx={{
-                        display : 'flex',
-                        justifyContent: 'center',
-                        width: '40%',
-                        alignItems: 'center',
-                      }}>
-                        <Tooltip title="Play/Pause">
-                          {!isPlaying ? (<PlayArrow onClick={togglePlay} sx={{
-                                        fontSize: '80px',
-                                        color:'silver',
-                                        '&:hover': {color: 'white'}}}
-                                      />)
-                                      : (<Pause onClick={togglePlay} sx={{
-                                        fontSize: '80px',
-                                        color:'silver',
-                                        '&:hover': {color: 'white'}}}/>)
-                                      }
-                        </Tooltip>
-                    </Stack>
-                  </Box>
-                  <Stack spacing={1} direction='row' sx={{
-                    display : 'flex',
-                    width: '100%',
-                    alignItems: 'center',
-                  }}>
-                  <Typography sx={{color: 'silver'}}>{formatTime(elapsed)}</Typography>
-                  <PlayBar thumbless value={elapsed} max={duration} onChange={(e, newValue) => {
-                    if(audioRef.current)
-                      audioRef.current.currentTime = newValue as number;
-                  }
-                  }/>
-                  <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
-                  </Stack>
-                  <MyVolSliderTag />
-                  <audio 
-                    className='my-audio' 
-                    src={audioUrl}
-                    ref={audioRef} 
-                    onTimeUpdate={onTimeUpdate}>
-                  </audio>
+                <Paper>
+                  <AudioRecorder scriptid={scriptid} recordingTitle={selectedRecording?.name} onShowNotification={showNotification} mode='Viewing' viewingAudioUrl={selectedRecording?.audio_url}/>
                   <Button onClick={goToEditingPage}>Return to Script</Button>
                 </Paper>
 

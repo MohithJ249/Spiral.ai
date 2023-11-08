@@ -457,7 +457,7 @@ export default function EditingPage() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
-                        <Grid sx={{ flexGrow: 1, width: "100vw", height: '100vh'}} container justifyContent="center" spacing={2}>
+                        <Grid sx={{ flexGrow: 1, height: '100vh'}} container justifyContent="center" spacing={2}>
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -469,7 +469,7 @@ export default function EditingPage() {
                                         }}>
                                         <Grow in timeout={1250}>
                                             <div style={{marginBottom: '5%'}}>
-                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification}/>
+                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification} mode="Editing"/>
                                             </div>
                                         </Grow>  
                                         <Grow in timeout={1500}>
