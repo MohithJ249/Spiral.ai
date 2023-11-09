@@ -7,7 +7,7 @@ import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import DeleteModal from '../../components/DeleteModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { Build, Close, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
+import { Build, Close, Create, Delete, Done, History, PostAdd, QueueMusic, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 import { set } from 'nprogress';
 import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../../styles/styles';
@@ -496,6 +496,7 @@ export default function EditingPage() {
                                         </Grow>
                                         <Grow in timeout={1750}>
                                             <Fab onClick={goToRecordings} variant='extended'>
+                                                <QueueMusic />
                                                 View All Recordings
                                             </Fab>    
                                         </Grow>   
