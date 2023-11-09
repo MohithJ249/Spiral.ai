@@ -566,8 +566,8 @@ export default function EditingPage() {
 
                                         <Stack spacing={2} direction="column">
                                             <Grow in timeout={2200} >
-                                                <Fab  onClick={selectText} variant='extended' 
-                                                            >
+                                                <Fab  onClick={selectText} variant='extended' disabled={isGenerating}
+                                                            > 
                                                     <Done />
                                                     Select Text
                                                 </Fab>
