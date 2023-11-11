@@ -13,6 +13,28 @@ interface AudioRecorderProps {
   recordingTitle?: string;
   viewingAudioUrl?: string;
 }
+  // styling audio player 
+interface sliderProps {
+  theme?: any;
+  thumbless?: boolean;
+}
+
+const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
+  color: 'black',
+  height: 2,
+  '&:hover': {
+    cursor: 'auto',
+  },
+  '& .MuiSlider-thumb': {
+    color: 'black',
+    width: '14px',
+    height: '14px',
+    display: otherProps.thumbless ? 'none' : 'block',
+    '&:before': {
+      display: 'none',
+    },
+  }
+}))
 
 function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, recordingTitle, viewingAudioUrl }: AudioRecorderProps) {
   const [stream, setStream] = useState<MediaStream>();
@@ -22,13 +44,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
   const mediaRecorderRef = useRef<MediaRecorder>();
   const audioChunks = useRef<Blob[]>([]);
   const [saveRecordingInDatabase, { loading, error }] = useSaveRecordingMutation();
-
+  
   // for audio player
   const audioRef = useRef<HTMLAudioElement>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
+  const [volume, setVolume] = useState(70);
 
 
   useEffect(() => {
@@ -155,63 +178,15 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     return !audioUrl || recordingName === undefined || recordingName === '' || loading;
   }
 
-  
 
-  // styling audio player 
-  interface sliderProps {
-    theme?: any;
-    thumbless?: boolean;
-  }
-  
-  const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
-    color: 'black',
-    height: 2,
-    '&:hover': {
-      cursor: 'auto',
-    },
-    '& .MuiSlider-thumb': {
-      color: 'black',
-      width: '14px',
-      height: '14px',
-      display: otherProps.thumbless ? 'none' : 'block',
-      '&:before': {
-        display: 'none',
-      },
+
+  const handleVolume = (e: Event, newValue: number | number[]): void => {
+    // const { value } = e.target;
+    let currVolume = Number(newValue);
+    if(audioRef.current) {
+      audioRef.current.volume = currVolume / 100;
+      setVolume(currVolume);
     }
-  }))
-  
-  
-  const MyVolSliderTag = () => {
-    const [volume, setVolume] = useState(70);
-    const handleVolume = (e: Event, newValue: number | number[]): void => {
-      // const { value } = e.target;
-      let currVolume = Number(newValue);
-      if(audioRef.current) {
-        audioRef.current.volume = currVolume / 100;
-        setVolume(currVolume);
-      }
-    }
-    
-    return (
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center'  }}>
-        <Stack direction='row' spacing={1}
-            sx={{
-              display : 'flex',
-              justifyContent: 'flex-start',
-              width: '70%',
-              alignItems: 'center',
-            }}>         
-            <VolumeDown sx={{color: 'black'}}/>
-            <PlayBar
-              min={0}
-              max={100}
-              value={volume}
-              onChange={handleVolume}
-              />
-            <VolumeUp sx={{color: 'black'}}/>
-        </Stack>
-      </Box>
-    );
   }
   
   const togglePlay = () => {
@@ -347,7 +322,24 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
           <Typography sx={{color: 'black'}}>{formatTime(duration - elapsed)}</Typography>
         </Stack>
         <div style={{justifyContent: "center"}}>
-          <MyVolSliderTag />
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center'  }}>
+            <Stack direction='row' spacing={1}
+                sx={{
+                  display : 'flex',
+                  justifyContent: 'flex-start',
+                  width: '70%',
+                  alignItems: 'center',
+                }}>         
+                <VolumeDown sx={{color: 'black'}}/>
+                <PlayBar
+                  min={0}
+                  max={100}
+                  value={volume}
+                  onChange={handleVolume}
+                  />
+                <VolumeUp sx={{color: 'black'}}/>
+            </Stack>
+          </Box>
         </div>
         <audio 
           className='my-audio' 
