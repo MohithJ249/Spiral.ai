@@ -4,7 +4,7 @@ import { Storage } from 'aws-amplify';
 import axios from 'axios';
 import { useGetScriptRecordingsLazyQuery, useDeleteRecordingMutation } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
-import { Delete, KeyboardReturn, Pause, PlayArrow, VolumeDown, VolumeUp } from '@mui/icons-material';
+import { Check, Close, Delete, KeyboardReturn, Pause, PlayArrow, VolumeDown, VolumeUp } from '@mui/icons-material';
 
 interface Column {
     id: 'name' | 'time_saved' | 'audio_url' | 'delete';
@@ -15,9 +15,9 @@ interface Column {
 }
   
 const columns: readonly Column[] = [
+    { id: 'delete', label: '', minWidth: 10 },
     { id: 'name', label: 'Recording Name', minWidth: 170 },
     { id: 'time_saved', label: 'Time Saved', minWidth: 100 },
-    { id: 'delete', label: '', minWidth: 100 },
 ];
   
 interface Recording {
@@ -174,9 +174,11 @@ export default function RecordingsPage() {
             >
               <Grow in={modalOpen} timeout={750}>
                 <Box sx={modalStyle}>
-                  <Typography>{"Are you sure you want to delete this recording?"}</Typography>
-                  <Button onClick={deleteRecording}>Yes</Button>
-                  <Button onClick={() => setModalOpen(false)}>No</Button>
+                  <Typography sx={{ textAlign: 'center', marginBottom: '5%'}}>{"Are you sure you want to delete this recording?"}</Typography>
+                  <Stack direction='row' spacing={2} justifyContent={'center'}>
+                    <Fab variant='extended' onClick={deleteRecording} sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: '#ff7276' } }}><Check />Yes</Fab>
+                    <Fab variant='extended' onClick={() => setModalOpen(false)}><Close />No</Fab>
+                  </Stack>
                 </Box>
               </Grow>
             </Modal>
@@ -211,7 +213,7 @@ export default function RecordingsPage() {
                     </Grow>
 
                     <Grow in timeout={1500}>
-                      <Paper sx={{ width: '100%', overflow: 'hidden', margin: '15% 10% 10% 10%' }}>
+                      <Paper sx={{ width: '60%', overflow: 'hidden', margin: '15% 10% 10% 10%' }}>
                           <TableContainer sx={{ maxHeight: 440 }}>
                           <Table stickyHeader aria-label="sticky table">
                               <TableHead>
@@ -229,24 +231,27 @@ export default function RecordingsPage() {
                               </TableHead>
                               <TableBody>
                               {recordings
-                                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                  .map((row) => {
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row) => {
                                   return (
-                                      <TableRow hover role="checkbox" tabIndex={-1}>
+                                    <TableRow hover role="checkbox" tabIndex={-1}>
                                       {columns.map((column) => {
-                                          const value = row[column.id];
-                                          return (
+                                        const value = row[column.id];
+                                        return (
                                           <TableCell key={column.id} align={column.align} onClick={() => handleItemClick(row, column)}>
-                                              {column.format && typeof value === 'number'
-                                              ? column.format(value)
-                                              : value}
+                                            {column.id === 'delete' ? (
+                                              <Fab size='small' variant='extended' sx={{ marginLeft: '25%', marginTop: '-1%',backgroundColor: 'red', '&:hover': { backgroundColor: '#ff7276' } }}><Close />Delete</Fab>
+                                            ) : (
+                                              column.format && typeof value === 'number' ? column.format(value) : value
+                                            )}
                                           </TableCell>
-                                          );
+                                        );
                                       })}
-                                      </TableRow>
+                                    </TableRow>
                                   );
-                                  })}
-                              </TableBody>
+                                })}
+                            </TableBody>
+
                           </Table>
                           </TableContainer>
                           <TablePagination
