@@ -61,7 +61,16 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
 export default function SharedPage() {
     const { data } = useGetAllSharedScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
 
-    if(data?.getAllSharedScripts) {
+    if(data?.getAllSharedScripts?.length===0) {
+      return (
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+          <Typography variant="h4" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
+            You have no shared scripts
+          </Typography>
+        </Box>
+      )
+    }
+    else if(data?.getAllSharedScripts) {
       return (
         <>
           <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>
