@@ -1,3 +1,5 @@
+import { Create, Login } from '@mui/icons-material';
+import { Fab, Grow, Stack } from '@mui/material';
 import React from 'react';
 
 const SpiralAnimation: React.FC = () => {
@@ -105,8 +107,17 @@ const SpiralAnimation: React.FC = () => {
                     <span>l</span>
                 </div>
                 <br /><br />
-                <button className="login-btn" onClick={() => window.location.href = '/Login'} >Login</button>
-                <button className="login-btn" onClick={() => window.location.href = '/CreateAccount'} >Create Account</button>
+                <Grow in timeout={5000}>
+                    <Stack direction='column' spacing={2}>
+
+                        <Fab variant='extended' color="primary"
+                                        sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}}
+                                        onClick={() => window.location.href = '/Login'} >
+                                            <Login />Login</Fab>
+                        <Fab variant='extended' color="primary" sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' }}} 
+                                                                onClick={() => window.location.href = '/CreateAccount'} ><Create />Create Account</Fab>
+                    </Stack>
+                </Grow>
 
             </div>
 
