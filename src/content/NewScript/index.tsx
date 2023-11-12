@@ -1,5 +1,5 @@
 import { Alert, TextField, Container, Box, MenuItem, Fab } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCreateScriptMutation } from '../../generated/graphql';
 import { Storage } from 'aws-amplify';
 import { ApolloError } from '@apollo/client';
@@ -22,7 +22,7 @@ export default function NewScriptPage() {
         apiKey: process.env.REACT_APP_API_KEY,
         dangerouslyAllowBrowser: true
     });
-    
+      
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -83,6 +83,15 @@ export default function NewScriptPage() {
     
     const handleExtractedText = (text: string) => {
         setAdditionalInfo(text);
+    }
+
+    const onSetAdditionalInfo = (text: string) => {
+        if (additionalInfo === "") {
+            setAdditionalInfo(text);
+        }
+        else {
+            setAdditionalInfo(additionalInfo + "\n\n\n" + text)
+        }
     }
 
     const TextfieldStyling = {
@@ -178,7 +187,7 @@ export default function NewScriptPage() {
                         <MenuItem key={6} value={"Humorous"}>Humorous</MenuItem>
                     </TextField>
 
-                    <PDFReader getExtractedText={handleExtractedText} addtionalInfo={additionalInfo} onSetAdditionalInfo={setAdditionalInfo} margin={2}/>
+                    <PDFReader getExtractedText={handleExtractedText} addtionalInfo={additionalInfo} onSetAdditionalInfo={onSetAdditionalInfo} margin={2}/>
                     <Fab
                     type="submit"
                     variant="extended"
