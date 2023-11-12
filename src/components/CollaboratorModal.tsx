@@ -96,9 +96,10 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
                                     <CardContent sx={cardContentStyling}>
                                         <Box sx={headerStyling}>
                                             <Typography variant="subtitle1" sx={usernameCommentsStyling}>{collaborator.username}</Typography>
-                                            <IconButton onClick={()=>removeCollaborator(collaborator.email)} sx={{ marginTop: '-2%', ...deleteButtonCommentsStyling }}>
+                                            {/* <IconButton onClick={()=>removeCollaborator(collaborator.email)} sx={{ marginTop: '-2%', ...deleteButtonCommentsStyling }}>
                                                 <Close />
-                                            </IconButton>
+                                            </IconButton> */}
+                                            <Fab variant='extended' onClick={()=>removeCollaborator(collaborator.email)} sx={{ backgroundColor: 'red', alignItems: 'center', '&:hover': { backgroundColor: '#ff7276' } }}>Remove</Fab>
                                         </Box>
                                         <Typography variant="body2" sx={textContentCommentsStyling}>{collaborator.email}</Typography>
                                     </CardContent>
@@ -149,7 +150,7 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
                         sx={{
                             flexWrap: 'wrap',
                             borderRadius: '5px',
-                            width: window.innerWidth * 0.2,
+                            width: '100%',
                             height: window.innerHeight * 0.2,
                             overflow: 'auto',
                             maxHeight: '40%',

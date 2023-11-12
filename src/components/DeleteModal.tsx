@@ -1,6 +1,6 @@
-import { Button, Typography, Modal, Box, Grow, Fab, Tooltip } from '@mui/material';
+import { Button, Typography, Modal, Box, Grow, Fab, Tooltip, Stack } from '@mui/material';
 import { useState } from 'react';
-import { Delete } from '@mui/icons-material';
+import { Check, Close, Delete } from '@mui/icons-material';
 
 interface DeleteModalProps {
   onDelete: () => void;
@@ -42,9 +42,11 @@ function DeleteModal({ onDelete, deleteText }: DeleteModalProps) {
       >
         <Grow in={modalOpen} timeout={750}>
           <Box sx={modalStyle}>
-            <Typography>{deleteText}</Typography>
-            <Button onClick={onDelete}>Yes</Button>
-            <Button onClick={() => setModalOpen(false)}>No</Button>
+            <Typography sx={{ textAlign: 'center', marginBottom: '5%'}}>{deleteText}</Typography>
+            <Stack direction='row' spacing={2} justifyContent={'center'}>
+              <Fab variant='extended' onClick={onDelete} sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: '#ff7276' } }}><Check />Yes</Fab>
+              <Fab variant='extended' onClick={() => setModalOpen(false)}><Close />No</Fab>
+            </Stack>
           </Box>
         </Grow>
       </Modal>

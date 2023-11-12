@@ -43,13 +43,13 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
         of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/ViewShared`,search: `?title=${title}&scriptid=${scriptid}&ownerid=${userid}`,}}>
           <CardContent>
-            <Typography variant="h5" noWrap>
+            <Typography variant="h5" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               {title}
             </Typography>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               Owner: {owner_username}
             </Typography>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               Last Modified: {last_modified}
             </Typography>
           </CardContent>
