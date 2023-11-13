@@ -18,7 +18,7 @@ export default function EditingPage() {
     const title = useMemo(() => searchParams.get('title'), [searchParams]);
     const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
 
-    const [scriptContent, setScriptContent] = useState<string>();
+    const [scriptContent, setScriptContent] = useState<string>('');
     const [plagiarismScore, setPlagiarismScore] = useState(0);
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [generatedText, setGeneratedText] = useState<string | null>('');
@@ -298,6 +298,7 @@ export default function EditingPage() {
         params.append('data', scriptContent);
     
         try {
+            console.log("ifnvwoienvoiwevoi")
             const response = await axios.post(apiUrl, params, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -482,7 +483,7 @@ export default function EditingPage() {
                                                 View All Recordings
                                             </Fab> */}
                                             <Fab onClick={getPlagiarismScore} variant='extended'>
-                                                plagiarismScore
+                                                Check Plagiarism
                                             </Fab>     
                                         </Grow>   
                                         
