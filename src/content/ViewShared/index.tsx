@@ -2,7 +2,7 @@ import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../../generated/graphql';
-import { Close, Create, PlaylistAddCheck } from '@mui/icons-material';
+import { Close, Create, Done, PlaylistAddCheck } from '@mui/icons-material';
 import Scrollbar from '../../components/scrollbar';
 import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
 
@@ -15,9 +15,15 @@ export default function ViewShared() {
 
     const [commentText, setCommentText] = useState<string>('');
     const [scriptContent, setScriptContent] = useState<string>();
+    const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [postCommentMutation] = usePostCommentMutation();
     const [deleteCommentMutation] = useDeleteCommentMutation();
+
+    const disabledBoxStyle = {
+        color: 'initial',
+        pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
+    };
 
     useEffect(() => {
         if(scriptid) {
@@ -40,9 +46,21 @@ export default function ViewShared() {
         }
     }, [scriptid]);
 
+    const selectedText = useMemo(() => {
+        if (selectedTextPosition) {
+          const selectionStart = selectedTextPosition[0];
+          const selectionEnd = selectedTextPosition[1] + 1;
+      
+          if(scriptContent) {
+            return scriptContent.slice(selectionStart, selectionEnd);
+          }
+        }
+        return '';
+    }, [scriptContent, selectedTextPosition]);
+
     const textStyle = {
         color: 'initial',
-        pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
+        pointerEvents: 'auto' as React.CSSProperties["pointerEvents"]
     };
 
     const headerStyling = {
@@ -74,6 +92,34 @@ export default function ViewShared() {
         refetchComments();
     }
 
+    const selectText = () => {
+        const textField = document.getElementById('outlined-multiline-static') as HTMLInputElement;
+      
+        if (textField) {
+            const selectionStart = textField.selectionStart;
+            const selectionEnd = textField.selectionEnd;
+
+      
+            if(scriptContent !== undefined && selectionStart !== null && selectionEnd !== null)
+            {
+                var start = selectionStart;
+                var end = selectionEnd - 1;
+
+                console.log(scriptContent.charAt(start)+" "+scriptContent.charAt(end));
+
+                while(scriptContent.charAt(start) === ' ') {
+                    start++;
+                }
+
+                while(scriptContent.charAt(end) === ' ') {
+                    end--;
+                }
+
+                setSelectedTextPosition([start, end]);
+            }
+        }
+    }
+
     if(scriptid) {
         return (
             <>
@@ -95,15 +141,28 @@ export default function ViewShared() {
                                         }}
                                     >
                                         <Stack direction="column" sx={{'& > :not(style)': { m: 1 }}}>
+                                            <Fab  onClick={selectText} variant='extended'> 
+                                                <Done />
+                                                Select Text
+                                            </Fab>
+                                            <TextField
+                                                id='selected-text'
+                                                value={selectedText}
+                                                multiline
+                                                placeholder='Selected text will appear here.'
+                                                style={disabledBoxStyle}
+                                                rows={window.innerHeight * 0.2 / 24}
+                                            />
                                             <Fab variant="extended" onClick={postComment} disabled={!commentText}>
                                                 <Create />
                                                 Post Comment
                                             </Fab>
                                             <TextField
-                                            multiline
-                                            rows={window.innerHeight * 0.9 / 100}
-                                            value={commentText}
-                                            onChange={(e) => setCommentText(e.target.value)}
+                                                multiline
+                                                rows={window.innerHeight * 0.9 / 100}
+                                                value={commentText}
+                                                onChange={(e) => setCommentText(e.target.value)}
+                                                placeholder='Enter comment here.'
                                             >
                                             </TextField>
 

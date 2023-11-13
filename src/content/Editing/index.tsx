@@ -540,7 +540,7 @@ export default function EditingPage() {
                                         <Grow in timeout={1750}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Fab onClick={getPlagiarismScore} variant='extended' disabled={isCalculatingPlagiarism} sx={{marginBottom: '3%'}}>
-                                                    {isCalculatingPlagiarism ? 'Calculating Plagiarism...' : 'Recalculate Plagiarism'}
+                                                    {isCalculatingPlagiarism ? 'Calculating Plagiarism...' : 'Calculate Plagiarism'}
                                                 </Fab>     
                                                 <CircularProgressValue value={plagiarismScore || 0} />
                                             </div>
