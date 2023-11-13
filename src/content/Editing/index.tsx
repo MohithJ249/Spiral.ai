@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton } from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton, InputAdornment } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import DeleteModal from '../../components/DeleteModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { Build, Close, Create, Delete, Done, History, PostAdd, QueueMusic, Save } from '@mui/icons-material';
+import { Add, Build, Close, Create, Delete, Done, History, PostAdd, QueueMusic, Remove, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 import { set } from 'nprogress';
 import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling, textContentStylingItalic } from '../../styles/styles';
@@ -36,6 +36,10 @@ export default function EditingPage() {
     const [complexity, setComplexity] = useState<string>('Increase');
     const [synonym, setSynonym] = useState<string>('Alternative Synonym');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
+
+
+    // for editing textfield text sizing
+    const [fontSize, setFontSize] = useState<number>(15);
 
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [deleteCommentMutation] = useDeleteCommentMutation();
@@ -280,8 +284,7 @@ export default function EditingPage() {
     const styledActionsButtons = {
         display: 'flex',
         justifyContent: 'center',
-        padding: '20px',
-        marginTop: '-7%',
+        marginTop: '1%',
         marginBottom: '1%',
         '& > :not(style)': { m: 0.75 }
     }
@@ -335,7 +338,15 @@ export default function EditingPage() {
                 rows={window.innerHeight * 0.2 / 28}
             />
         );
-    }
+    };
+
+    const handleIncreaseFontSize = () => {
+        setFontSize((prevSize) => Math.min(prevSize + 2, 30));
+    };
+
+    const handleDecreaseFontSize = () => {
+        setFontSize((prevSize) => Math.max(prevSize - 2, 15)); // Ensure font size doesn't go below 1
+    };
 
     const getSelector = () => {
         if(selectorType === 'Length') {
@@ -473,6 +484,8 @@ export default function EditingPage() {
     }
     
     if(scriptid && title && scriptContent !== undefined) {
+        console.log(window.innerHeight);
+        console.log(Math.ceil(window.innerHeight * 0.9 / 24));
         return (
             <>
                 <div>
@@ -494,7 +507,7 @@ export default function EditingPage() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
-                        <Grid sx={{ flexGrow: 1, height: '100vh'}} container justifyContent="center" spacing={2}>
+                        <Grid sx={{ flexGrow: 1, minHeight: '100vh'}} container justifyContent="center" spacing={2}>
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -539,12 +552,22 @@ export default function EditingPage() {
                                         </Grow>
 
                                         <Grow in timeout={1750}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Stack direction='row' spacing={2} sx={{marginBottom: '2%'}}>
+                                                <Fab variant="extended" onClick={handleIncreaseFontSize}>
+                                                    <Add /> Increase Font Size
+                                                </Fab>
+                                                <Fab variant="extended" onClick={handleDecreaseFontSize}>
+                                                    <Remove /> Decrease Font Size
+                                                </Fab>
+                                            </Stack>
+                                        </Grow>
+                                        <Grow in timeout={1825}>
+                                            <Stack spacing={2} direction='row' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Fab onClick={getPlagiarismScore} variant='extended' disabled={isCalculatingPlagiarism} sx={{marginBottom: '3%'}}>
                                                     {isCalculatingPlagiarism ? 'Calculating Plagiarism...' : 'Calculate Plagiarism'}
                                                 </Fab>     
                                                 <CircularProgressValue value={plagiarismScore || 0} />
-                                            </div>
+                                            </Stack>
                                         </Grow>   
                                         
                                         {/* script management card */}
@@ -560,7 +583,7 @@ export default function EditingPage() {
                                                 height: window.innerHeight * 0.6,
                                                 overflow: 'auto',
                                                 maxHeight: '40%',
-                                                marginTop: '23%',
+                                                marginTop: '5%',
                                                 backgroundColor: '#f1efee',
                                                 '&::-webkit-scrollbar': {
                                                 width: '0.5rem', 
@@ -582,21 +605,59 @@ export default function EditingPage() {
                                 </Grid>
                             </Grow>
 
-                            <Grow in key='EditingPane' timeout={1500}>
+                            <Grow in key="EditingPane" timeout={1500}>
+                                {/** make sure this textfield is not chaning size vertically */}
                                 <Grid item>
                                     <TextField
-                                    id="outlined-multiline-static"
-                                    multiline
-                                    rows={Math.ceil(window.innerHeight * 0.9 / 24)}
-                                    variant="outlined"
-                                    sx={{
-                                        width: `${window.innerWidth * 0.5}px`,
-                                    }}
-                                    value={scriptContent}
-                                    onChange={(e) => setScriptContent(e.target.value)}
+                                        id="outlined-multiline-static"
+                                        multiline
+                                        rows={window.innerHeight / 24}
+                                        variant="outlined"
+                                        sx={{
+                                            width: `${window.innerWidth * 0.5}px`,
+                                            minHeight: `${window.innerHeight / 24 * 23}px`,
+                                            maxHeight: `${window.innerHeight / 24 * 23}px`,
+                                            overflow: 'auto',
+                                            overflowY: 'hidden',
+                                            display: 'flex',
+                                            '& label.Mui-focused': {
+                                                'color': 'white'
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '&.Mui-focused fieldset': {
+                                                    'borderColor': 'white'
+                                                },
+                                                '&:hover fieldset': {
+                                                    'borderColor': 'white'
+                                                },
+                                                '& fieldset': {
+                                                    'borderColor': 'white'
+                                                }
+                                            },
+                                            '&::-webkit-scrollbar': {
+                                                width: '0.2rem', 
+                                            },
+                                            '&::-webkit-scrollbar-thumb': {
+                                                background: '#aaa', // Color of the scrollbar thumb
+                                                borderRadius: '2px', // Adjust as needed
+                                            },
+                                            '&::-webkit-scrollbar-thumb:hover': {
+                                                background: '#aaa', // Color on hover, adjust as needed
+                                            },
+                                        }}
+                                        value={scriptContent}
+                                        onChange={(e) => setScriptContent(e.target.value)}
+                                        InputProps={{
+                                            style: {
+                                                fontSize: fontSize,
+                                                lineHeight: 1.4,
+                                                // flex: 1
+                                            }
+                                        }}
                                     />
                                 </Grid>
                             </Grow>
+
 
                                 <Grow in key='LLMPane' timeout={2000}>
                                     <Grid item>
