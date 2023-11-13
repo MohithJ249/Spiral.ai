@@ -484,8 +484,8 @@ export default function EditingPage() {
     }
     
     if(scriptid && title && scriptContent !== undefined) {
-        console.log(window.innerHeight);
-        console.log(Math.ceil(window.innerHeight * 0.9 / 24));
+        // console.log(window.innerHeight);
+        // console.log(Math.ceil(window.innerHeight * 0.9 / 24));
         return (
             <>
                 <div>
@@ -552,12 +552,13 @@ export default function EditingPage() {
                                         </Grow>
 
                                         <Grow in timeout={1750}>
-                                            <Stack direction='row' spacing={2} sx={{marginBottom: '2%'}}>
-                                                <Fab variant="extended" onClick={handleIncreaseFontSize}>
-                                                    <Add /> Increase Font Size
+                                            <Stack direction='row' spacing={2} sx={{marginBottom: '2%', justifyContent: 'center', alignItems: 'center'}}>
+                                                <Fab size='small' onClick={handleDecreaseFontSize}>
+                                                    <Remove /> 
                                                 </Fab>
-                                                <Fab variant="extended" onClick={handleDecreaseFontSize}>
-                                                    <Remove /> Decrease Font Size
+                                                <Typography variant='h6' sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>Font Size</Typography>
+                                                <Fab size='small' onClick={handleIncreaseFontSize}>
+                                                    <Add /> 
                                                 </Fab>
                                             </Stack>
                                         </Grow>
@@ -618,22 +619,7 @@ export default function EditingPage() {
                                             minHeight: `${window.innerHeight / 24 * 23}px`,
                                             maxHeight: `${window.innerHeight / 24 * 23}px`,
                                             overflow: 'auto',
-                                            overflowY: 'hidden',
                                             display: 'flex',
-                                            '& label.Mui-focused': {
-                                                'color': 'white'
-                                            },
-                                            '& .MuiOutlinedInput-root': {
-                                                '&.Mui-focused fieldset': {
-                                                    'borderColor': 'white'
-                                                },
-                                                '&:hover fieldset': {
-                                                    'borderColor': 'white'
-                                                },
-                                                '& fieldset': {
-                                                    'borderColor': 'white'
-                                                }
-                                            },
                                             '&::-webkit-scrollbar': {
                                                 width: '0.2rem', 
                                             },
@@ -651,7 +637,7 @@ export default function EditingPage() {
                                             style: {
                                                 fontSize: fontSize,
                                                 lineHeight: 1.4,
-                                                // flex: 1
+                                                flex: 1
                                             }
                                         }}
                                     />
