@@ -13,7 +13,7 @@ const Loader = (Component : any) => (props: any) =>
 
 // Pages
 
-const Landing = Loader(lazy(() => import('./content/Landing')))
+const Landing = Loader(lazy(() => import('./content/Error/Landing')))
 
 const MainPage = Loader(lazy(() => import('./content/MainPage')));
 

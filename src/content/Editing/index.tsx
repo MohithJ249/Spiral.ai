@@ -19,6 +19,7 @@ export default function EditingPage() {
     const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
 
     const [scriptContent, setScriptContent] = useState<string>();
+    const [plagiarismScore, setPlagiarismScore] = useState(0);
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [generatedText, setGeneratedText] = useState<string | null>('');
     const [promptText, setPromptText] = useState<string>('');
@@ -288,6 +289,27 @@ export default function EditingPage() {
         window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
     }   
 
+    const getPlagiarismScore = async () => {
+        const apiKey = '7be95795bdeca695de83eb8434ea72b9'; // Replace with your actual API key
+        const apiUrl = 'https://www.prepostseo.com/apis/checkPlag';
+    
+        const params = new URLSearchParams();
+        params.append('key', apiKey);
+        params.append('data', scriptContent);
+    
+        try {
+            const response = await axios.post(apiUrl, params, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+    
+            console.log(response.data); // Process the response data as needed
+        } catch (error) {
+            console.error('Error calling plagiarism API:', error);
+        }
+    };
+
     const getCustomPrompting = () => {
         return (
             <TextField
@@ -456,9 +478,12 @@ export default function EditingPage() {
                                             </Box>
                                         </Grow>
                                         <Grow in timeout={1750}>
-                                            <Fab onClick={goToRecordings} variant='extended'>
+                                            {/* <Fab onClick={goToRecordings} variant='extended'>
                                                 View All Recordings
-                                            </Fab>    
+                                            </Fab> */}
+                                            <Fab onClick={getPlagiarismScore} variant='extended'>
+                                                plagiarismScore
+                                            </Fab>     
                                         </Grow>   
                                         
                                         {/* script management card */}
