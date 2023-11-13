@@ -20,7 +20,8 @@ export default function EditingPage() {
     const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
 
     const [scriptContent, setScriptContent] = useState<string>('');
-    const [plagiarismScore, setPlagiarismScore] = useState(0);
+    const [plagiarismScore, setPlagiarismScore] = useState(10);
+    const [isCalculatingPlagiarism, setIsCalculatingPlagiarism] = useState<boolean>(false);
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [generatedText, setGeneratedText] = useState<string | null>('');
     const [promptText, setPromptText] = useState<string>('');
@@ -299,13 +300,14 @@ export default function EditingPage() {
         params.append('data', scriptContent);
     
         try {
+            setIsCalculatingPlagiarism(true);
             const response = await axios.post(apiUrl, params, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
-    
             setPlagiarismScore(response.data.plagPercent);
+            setIsCalculatingPlagiarism(false);
         } catch (error) {
             console.error('Error calling plagiarism API:', error);
         }
@@ -513,23 +515,21 @@ export default function EditingPage() {
                                                     </Fab>
                                                 </Tooltip>
 
+                                                <Tooltip title='View All Recordings'>
+                                                    <Fab size='small' onClick={goToRecordings} >
+                                                        <QueueMusic />
+                                                    </Fab>
+                                                </Tooltip>
+
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
                                                 <DeleteModal onDelete={deleteScript} deleteText='Are you sure you want to delete this script?'/>
                                             </Box>
                                         </Grow>
-                                        <Grow in timeout={1750}>
-                                            <div style={{marginBottom: '5%'}}>
-                                                <Fab onClick={goToRecordings} variant='extended'>
-                                                    <QueueMusic />
-                                                    View All Recordings
-                                                </Fab>
-                                            </div>
-                                        </Grow>   
 
                                         <Grow in timeout={1750}>
-                                            <div>
-                                                <Fab onClick={getPlagiarismScore} variant='extended'>
-                                                    Calculate Plagiarism
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Fab onClick={getPlagiarismScore} variant='extended' disabled={isCalculatingPlagiarism} sx={{marginBottom: '3%'}}>
+                                                    {isCalculatingPlagiarism ? 'Calculating Plagiarism...' : 'Recalculate Plagiarism'}
                                                 </Fab>     
                                                 <CircularProgressValue value={plagiarismScore} />
                                             </div>
