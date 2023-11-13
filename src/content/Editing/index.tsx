@@ -20,7 +20,7 @@ export default function EditingPage() {
     const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
 
     const [scriptContent, setScriptContent] = useState<string>('');
-    const [plagiarismScore, setPlagiarismScore] = useState(10);
+    const [plagiarismScore, setPlagiarismScore] = useState<number>();
     const [isCalculatingPlagiarism, setIsCalculatingPlagiarism] = useState<boolean>(false);
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [generatedText, setGeneratedText] = useState<string | null>('');
@@ -82,6 +82,12 @@ export default function EditingPage() {
             }
         });
     }, []);
+
+    // useEffect(() => {
+    //     if(scriptContent && plagiarismScore === undefined) {
+    //         getPlagiarismScore();
+    //     }
+    // }, [plagiarismScore, scriptContent])
 
     // Add ctrl+s shortcut to save script
     useEffect(() => {
@@ -306,6 +312,11 @@ export default function EditingPage() {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
+
+            if(response.data.error) {
+                showNotification('error', 'API Error: '+response.data.error);
+            }
+            console.log(response.data);
             setPlagiarismScore(response.data.plagPercent);
             setIsCalculatingPlagiarism(false);
         } catch (error) {
@@ -531,7 +542,7 @@ export default function EditingPage() {
                                                 <Fab onClick={getPlagiarismScore} variant='extended' disabled={isCalculatingPlagiarism} sx={{marginBottom: '3%'}}>
                                                     {isCalculatingPlagiarism ? 'Calculating Plagiarism...' : 'Recalculate Plagiarism'}
                                                 </Fab>     
-                                                <CircularProgressValue value={plagiarismScore} />
+                                                <CircularProgressValue value={plagiarismScore || 0} />
                                             </div>
                                         </Grow>   
                                         
