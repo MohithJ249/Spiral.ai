@@ -2,7 +2,7 @@ import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import { useGetScriptVersionsQuery, useCreateScriptVersionMutation } from '../../generated/graphql';
-import { Create, PlaylistAddCheck } from '@mui/icons-material';
+import { Create, KeyboardReturn, PlaylistAddCheck } from '@mui/icons-material';
 import Scrollbar from '../../components/scrollbar';
 import { commentsStyling, cardContentStyling, usernameCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
 
@@ -117,7 +117,7 @@ export default function VersionHistory() {
                                     >
                                         <Stack direction="column" sx={{'& > :not(style)': { m: 1 }}}>
                                             <Fab variant="extended" onClick={returnToEditing}>
-                                                <Create />
+                                                <KeyboardReturn />
                                                 Return to Editing
                                             </Fab>
                                             <Fab variant="extended" onClick={recoverSelectedVersion} disabled={scriptContent === undefined}>

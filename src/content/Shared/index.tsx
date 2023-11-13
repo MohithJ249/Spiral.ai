@@ -43,13 +43,13 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
         of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/ViewShared`,search: `?title=${title}&scriptid=${scriptid}&ownerid=${userid}`,}}>
           <CardContent>
-            <Typography variant="h5" noWrap>
+            <Typography variant="h5" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               {title}
             </Typography>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               Owner: {owner_username}
             </Typography>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
               Last Modified: {last_modified}
             </Typography>
           </CardContent>
@@ -61,7 +61,16 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
 export default function SharedPage() {
     const { data } = useGetAllSharedScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
 
-    if(data?.getAllSharedScripts) {
+    if(data?.getAllSharedScripts?.length===0) {
+      return (
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+          <Typography variant="h4" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
+            You have no shared scripts
+          </Typography>
+        </Box>
+      )
+    }
+    else if(data?.getAllSharedScripts) {
       return (
         <>
           <Box sx={{ flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee', width: '100%', minHeight: '100vh' }}>

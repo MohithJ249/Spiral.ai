@@ -1,8 +1,9 @@
-import { Button, Typography, Modal, Box, Input, Grow, Fab, Tooltip } from '@mui/material';
+import { Button, Typography, Modal, Box, Input, Grow, Fab, Tooltip, TableContainer, Paper, Table, TableBody, TableRow, TableCell, Card, CardContent, IconButton, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import {useAddCollaboratorMutation, useRemoveCollaboratorMutation, useGetAllScriptCollaboratorsLazyQuery } from '../generated/graphql';
 import { ApolloError } from '@apollo/client';
-import { Share } from '@mui/icons-material';
+import { Check, Close, Share } from '@mui/icons-material';
+import { cardContentStyling, commentsStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../styles/styles';
 
 interface CollaboratorModalProps {
   scriptid: string;
@@ -83,12 +84,27 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
     }
 
     const displayCollaborators = () => {
+        const headerStyling = {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        };
         return <>{data?.getAllScriptCollaborators?.map(collaborator => {
                         if(collaborator?.email && collaborator?.username) {
-                            return  <div style={{ display: 'flex' }}>
-                                        <Typography>{collaborator.username} ({collaborator.email})</Typography>
-                                        <Button onClick={()=>removeCollaborator(collaborator.email)} sx={{color: 'red'}}>X</Button>
-                                    </div>
+                            return (
+                                <Card key={collaborator.username} sx={{width: ' 100%', ...commentsStyling}}>
+                                    <CardContent sx={cardContentStyling}>
+                                        <Box sx={headerStyling}>
+                                            <Typography variant="subtitle1" sx={usernameCommentsStyling}>{collaborator.username}</Typography>
+                                            {/* <IconButton onClick={()=>removeCollaborator(collaborator.email)} sx={{ marginTop: '-2%', ...deleteButtonCommentsStyling }}>
+                                                <Close />
+                                            </IconButton> */}
+                                            <Fab variant='extended' onClick={()=>removeCollaborator(collaborator.email)} sx={{ backgroundColor: 'red', alignItems: 'center', '&:hover': { backgroundColor: '#ff7276' } }}>Remove</Fab>
+                                        </Box>
+                                        <Typography variant="body2" sx={textContentCommentsStyling}>{collaborator.email}</Typography>
+                                    </CardContent>
+                                </Card>
+                            );
                         }
                     })}
                 </>
@@ -109,18 +125,50 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
             sx={{
                 justifyContent: 'center',
                 alignItems: 'center',
+                display: 'flex',
+                margin: 'auto',
+                top: '-20%'
             }}
             >
             <Grow in={modalOpen} timeout={750}>
                 <Box sx={modalStyle}>
-                    <Button onClick={()=>setModalOpen(false)}>X</Button>
-                    <Typography>Add a collaborator:</Typography>
-                    <Input placeholder="Enter Email" value={shareScriptInput} onChange={(e) => setShareScriptInput(e.target.value)} />
-                    <Button onClick={addCollaborator} disabled={!shareScriptInput}>Share</Button>
-                    <div>
-                        <Typography sx={{marginTop:2}}>Current Collaborators:</Typography>
+                    <IconButton onClick={() => setModalOpen(false)} sx={{ marginTop: '-2%', ...deleteButtonCommentsStyling }}>
+                        <Close />
+                    </IconButton>
+                    <Stack direction="column" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography sx={{ textAlign: 'center', marginBottom: '3%' }}>Add a collaborator:</Typography>
+                        <Input placeholder="Enter Email" sx={{marginBottom: '3%', width: '70%'}} value={shareScriptInput} onChange={(e) => setShareScriptInput(e.target.value)} />
+                        <Fab variant="extended" sx={{marginBottom: '3%'}} onClick={addCollaborator} disabled={!shareScriptInput}>
+                            <Check />
+                            Share
+                        </Fab>
+                    </Stack>
+                    <Typography sx={{ marginTop: 2, textAlign: 'center' }}>Current Collaborators:</Typography>
+
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            flexWrap: 'wrap',
+                            borderRadius: '5px',
+                            width: '100%',
+                            height: window.innerHeight * 0.2,
+                            overflow: 'auto',
+                            maxHeight: '40%',
+                            '&::-webkit-scrollbar': {
+                            width: '0.5rem', 
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                            background: '#aaa', // Color of the scrollbar thumb
+                            borderRadius: '2px', // Adjust as needed
+                            },
+                            '&::-webkit-scrollbar-thumb:hover': {
+                            background: '#aaa', // Color on hover, adjust as needed
+                            },
+                        }}
+                        component="ul"
+                        >
                         {displayCollaborators()}
-                    </div>
+                    </Paper>
                 </Box>
             </Grow> 
         </Modal>

@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton} from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -7,10 +7,11 @@ import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import DeleteModal from '../../components/DeleteModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { Build, Close, Create, Delete, Done, History, PostAdd, Save } from '@mui/icons-material';
+import { Build, Close, Create, Delete, Done, History, PostAdd, QueueMusic, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 import { set } from 'nprogress';
 import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../../styles/styles';
+import CircularProgressValue from '../../components/CircularProgressValue';
 
 export default function EditingPage() {
     const url = window.location.search;
@@ -290,7 +291,7 @@ export default function EditingPage() {
     }   
 
     const getPlagiarismScore = async () => {
-        const apiKey = '7be95795bdeca695de83eb8434ea72b9'; // Replace with your actual API key
+        const apiKey = '7be95795bdeca695de83eb8434ea72b9';
         const apiUrl = 'https://www.prepostseo.com/apis/checkPlag';
     
         const params = new URLSearchParams();
@@ -298,14 +299,13 @@ export default function EditingPage() {
         params.append('data', scriptContent);
     
         try {
-            console.log("ifnvwoienvoiwevoi")
             const response = await axios.post(apiUrl, params, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
     
-            console.log(response.data); // Process the response data as needed
+            setPlagiarismScore(response.data.plagPercent);
         } catch (error) {
             console.error('Error calling plagiarism API:', error);
         }
@@ -418,6 +418,45 @@ export default function EditingPage() {
     const displayPromptOrSelections = () => {
         return customPromptingEnabled ? getCustomPrompting() : getSelections();
     }
+
+    const displayComments = () => {
+        if(data?.getAllScriptComments?.length) {
+            return data.getAllScriptComments.map((comment, index) => {
+                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                    return (
+                        <Grow in key={index} timeout={2000 + index * 300}>
+                            <Card key={comment.commentid} sx={commentsStyling}>
+                                <CardContent sx={cardContentStyling}>
+                                <Box sx={headerStyling}>
+                                    <Typography variant="subtitle1" sx={usernameCommentsStyling}>{comment.username}</Typography>
+                                    <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
+                                    <Close />
+                                    </IconButton>
+                                </Box>
+                                <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                <Typography variant="body2" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grow>
+                    );
+                }
+                return null;
+            })
+        }
+        else {
+            return (
+                <>
+                    <Card sx={commentsStyling}>
+                        <CardContent sx={cardContentStyling}>
+                        <Box sx={headerStyling}>
+                        </Box>
+                        <Typography variant="body2" sx={textContentCommentsStyling}>{"You have no comments at this time."}</Typography>
+                        </CardContent>
+                    </Card>
+                </>
+            )
+        }
+    }
     
     if(scriptid && title && scriptContent !== undefined) {
         return (
@@ -441,7 +480,7 @@ export default function EditingPage() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
-                        <Grid sx={{ flexGrow: 1, width: "100vw", height: '100vh'}} container justifyContent="center" spacing={2}>
+                        <Grid sx={{ flexGrow: 1, height: '100vh'}} container justifyContent="center" spacing={2}>
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -453,7 +492,7 @@ export default function EditingPage() {
                                         }}>
                                         <Grow in timeout={1250}>
                                             <div style={{marginBottom: '5%'}}>
-                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification}/>
+                                                <AudioRecorder scriptid={scriptid} scriptTitle={title} onShowNotification={showNotification} mode="Editing"/>
                                             </div>
                                         </Grow>  
                                         <Grow in timeout={1500}>
@@ -475,16 +514,25 @@ export default function EditingPage() {
                                                 </Tooltip>
 
                                                 <CollaboratorModal scriptid={scriptid} onShowNotification={showNotification}/>
-                                                <DeleteModal onDeleteScript={deleteScript}/>
+                                                <DeleteModal onDelete={deleteScript} deleteText='Are you sure you want to delete this script?'/>
                                             </Box>
                                         </Grow>
                                         <Grow in timeout={1750}>
-                                            {/* <Fab onClick={goToRecordings} variant='extended'>
-                                                View All Recordings
-                                            </Fab> */}
-                                            <Fab onClick={getPlagiarismScore} variant='extended'>
-                                                Check Plagiarism
-                                            </Fab>     
+                                            <div style={{marginBottom: '5%'}}>
+                                                <Fab onClick={goToRecordings} variant='extended'>
+                                                    <QueueMusic />
+                                                    View All Recordings
+                                                </Fab>
+                                            </div>
+                                        </Grow>   
+
+                                        <Grow in timeout={1750}>
+                                            <div>
+                                                <Fab onClick={getPlagiarismScore} variant='extended'>
+                                                    Calculate Plagiarism
+                                                </Fab>     
+                                                <CircularProgressValue value={plagiarismScore} />
+                                            </div>
                                         </Grow>   
                                         
                                         {/* script management card */}
@@ -515,27 +563,7 @@ export default function EditingPage() {
                                             }}
                                             component="ul"
                                             >
-                                                {data?.getAllScriptComments?.map((comment, index) => {
-                                                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
-                                                    return (
-                                                        <Grow in key={index} timeout={2000 + index * 300}>
-                                                            <Card key={comment.commentid} sx={commentsStyling}>
-                                                                <CardContent sx={cardContentStyling}>
-                                                                <Box sx={headerStyling}>
-                                                                    <Typography variant="subtitle1" sx={usernameCommentsStyling}>{comment.username}</Typography>
-                                                                    <IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
-                                                                    <Close />
-                                                                    </IconButton>
-                                                                </Box>
-                                                                <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
-                                                                <Typography variant="body2" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
-                                                                </CardContent>
-                                                            </Card>
-                                                        </Grow>
-                                                    );
-                                                }
-                                                return null;
-                                                })}
+                                            {displayComments()}
                                             </Paper>
                                         </Grow>     
                                     </Paper>
@@ -572,8 +600,8 @@ export default function EditingPage() {
 
                                         <Stack spacing={2} direction="column">
                                             <Grow in timeout={2200} >
-                                                <Fab  onClick={selectText} variant='extended' 
-                                                            >
+                                                <Fab  onClick={selectText} variant='extended' disabled={isGenerating}
+                                                            > 
                                                     <Done />
                                                     Select Text
                                                 </Fab>

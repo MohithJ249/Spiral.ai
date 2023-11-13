@@ -57,7 +57,16 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   export default function MyScripts() {
     const { data } = useGetAllUserScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
 
-    if(data?.getAllUserScripts) {
+    if(data?.getAllUserScripts?.length===0) {
+      return (
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+          <Typography variant="h4" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
+            You have no scripts
+          </Typography>
+        </Box>
+      )
+    }
+    else if(data?.getAllUserScripts) {
       return (
         <>
           <Box sx={{flexWrap: 'wrap', display: 'flex', bgcolor: '#f1efee' }}>
