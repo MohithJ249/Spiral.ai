@@ -6,5 +6,6 @@ query GetAllScriptComments($scriptid: ID!) {
     time_saved
     userid
     username
+    text_ref
   }
 }

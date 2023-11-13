@@ -22,6 +22,7 @@ export type Comment = {
   commentid: Scalars['ID']['output'];
   scriptid: Scalars['ID']['output'];
   text_content: Scalars['String']['output'];
+  text_ref: Scalars['String']['output'];
   time_saved: Scalars['String']['output'];
   userid: Scalars['ID']['output'];
   username?: Maybe<Scalars['String']['output']>;
@@ -92,6 +93,7 @@ export type MutationDeleteUserArgs = {
 export type MutationPostCommentArgs = {
   scriptid: Scalars['ID']['input'];
   text_content: Scalars['String']['input'];
+  text_ref: Scalars['String']['input'];
   userid: Scalars['ID']['input'];
 };
 
@@ -265,6 +267,7 @@ export type PostCommentMutationVariables = Exact<{
   scriptid: Scalars['ID']['input'];
   userid: Scalars['ID']['input'];
   textContent: Scalars['String']['input'];
+  textRef: Scalars['String']['input'];
 }>;
 
 
@@ -306,7 +309,7 @@ export type GetAllScriptCommentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllScriptCommentsQuery = { __typename?: 'Query', getAllScriptComments?: Array<{ __typename?: 'Comment', commentid: string, scriptid: string, text_content: string, time_saved: string, userid: string, username?: string | null } | null> | null };
+export type GetAllScriptCommentsQuery = { __typename?: 'Query', getAllScriptComments?: Array<{ __typename?: 'Comment', commentid: string, scriptid: string, text_content: string, time_saved: string, userid: string, username?: string | null, text_ref: string } | null> | null };
 
 export type GetAllSharedScriptsQueryVariables = Exact<{
   userid: Scalars['ID']['input'];
@@ -617,8 +620,13 @@ export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutati
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const PostCommentDocument = gql`
-    mutation PostComment($scriptid: ID!, $userid: ID!, $textContent: String!) {
-  postComment(scriptid: $scriptid, userid: $userid, text_content: $textContent)
+    mutation PostComment($scriptid: ID!, $userid: ID!, $textContent: String!, $textRef: String!) {
+  postComment(
+    scriptid: $scriptid
+    userid: $userid
+    text_content: $textContent
+    text_ref: $textRef
+  )
 }
     `;
 export type PostCommentMutationFn = Apollo.MutationFunction<PostCommentMutation, PostCommentMutationVariables>;
@@ -639,6 +647,7 @@ export type PostCommentMutationFn = Apollo.MutationFunction<PostCommentMutation,
  *      scriptid: // value for 'scriptid'
  *      userid: // value for 'userid'
  *      textContent: // value for 'textContent'
+ *      textRef: // value for 'textRef'
  *   },
  * });
  */
@@ -799,6 +808,7 @@ export const GetAllScriptCommentsDocument = gql`
     time_saved
     userid
     username
+    text_ref
   }
 }
     `;

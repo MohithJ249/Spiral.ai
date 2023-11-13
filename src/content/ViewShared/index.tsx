@@ -4,7 +4,7 @@ import { Storage } from 'aws-amplify';
 import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../../generated/graphql';
 import { Close, Create, Done, PlaylistAddCheck } from '@mui/icons-material';
 import Scrollbar from '../../components/scrollbar';
-import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
+import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, textContentStylingItalic } from '../../styles/styles';
 
 export default function ViewShared() {
     const url = window.location.search;
@@ -75,7 +75,8 @@ export default function ViewShared() {
                 variables: {
                     scriptid: scriptid || '',
                     userid: localStorage.getItem('userid') || '',
-                    textContent: commentText
+                    textContent: commentText,
+                    textRef: selectedText
                 }
             });
             setCommentText('');
@@ -153,7 +154,7 @@ export default function ViewShared() {
                                                 style={disabledBoxStyle}
                                                 rows={window.innerHeight * 0.2 / 24}
                                             />
-                                            <Fab variant="extended" onClick={postComment} disabled={!commentText}>
+                                            <Fab variant="extended" onClick={postComment} disabled={!commentText || !selectedText}>
                                                 <Create />
                                                 Post Comment
                                             </Fab>
@@ -196,7 +197,7 @@ export default function ViewShared() {
                                             >
 
                                                 {data?.getAllScriptComments?.map((comment, index) => {
-                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
+                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved && comment?.text_ref) {
                                                         return (
                                                             <Grow in key={index} timeout={1500 + index * 300}>
                                                                 <Card key={comment.commentid} sx={commentsStyling}>
@@ -209,6 +210,7 @@ export default function ViewShared() {
                                                                             ) : null}
                                                                         </Box>
                                                                         <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                                                        <Typography variant="body1" sx={textContentStylingItalic}>{comment.text_ref}</Typography>
                                                                         <Typography variant="body1" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
                                                                     </CardContent>
                                                                 </Card>

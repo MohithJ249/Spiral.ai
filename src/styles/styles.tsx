@@ -43,12 +43,17 @@ export const textContentCommentsStyling = {
   wordBreak: 'break-word', // To prevent overflow
 };
 
+export const textContentStylingItalic = {
+  color: 'black', // Adjust if needed
+  wordBreak: 'break-word', // To prevent overflow
+  fontStyle: 'italic',
+  marginBottom: '8px',
+};
+
 export const usernameCommentsStyling = {
   fontWeight: 'bold',
   color: 'black', // or any other color you prefer
 };
-
-
 
 export const StyledTheme = createTheme({
     typography: {

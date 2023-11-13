@@ -10,7 +10,7 @@ import MakeVersionButton from '../../components/MakeVersionButton';
 import { Build, Close, Create, Delete, Done, History, PostAdd, QueueMusic, Save } from '@mui/icons-material';
 import OpenAI from "openai";
 import { set } from 'nprogress';
-import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../../styles/styles';
+import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling, textContentStylingItalic } from '../../styles/styles';
 import CircularProgressValue from '../../components/CircularProgressValue';
 
 export default function EditingPage() {
@@ -447,6 +447,7 @@ export default function EditingPage() {
                                     </IconButton>
                                 </Box>
                                 <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                <Typography variant="body2" sx={textContentStylingItalic}>{comment.text_ref}</Typography>
                                 <Typography variant="body2" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
                                 </CardContent>
                             </Card>

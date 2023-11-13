@@ -1,3 +1,3 @@
-mutation PostComment($scriptid: ID!, $userid: ID!, $textContent: String!) {
-  postComment(scriptid: $scriptid, userid: $userid, text_content: $textContent)
+mutation PostComment($scriptid: ID!, $userid: ID!, $textContent: String!, $textRef: String!) {
+  postComment(scriptid: $scriptid, userid: $userid, text_content: $textContent, text_ref: $textRef)
 }
