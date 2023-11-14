@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton, InputAdornment } from '@mui/material';
+import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton, InputAdornment, Slide } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -345,7 +345,7 @@ export default function EditingPage() {
     };
 
     const handleDecreaseFontSize = () => {
-        setFontSize((prevSize) => Math.max(prevSize - 2, 15)); // Ensure font size doesn't go below 1
+        setFontSize((prevSize) => Math.max(prevSize - 2, 15)); 
     };
 
     const getSelector = () => {
@@ -493,11 +493,19 @@ export default function EditingPage() {
                         open={isNotificationOpen}
                         autoHideDuration={6000}
                         onClose={() => setIsNotificationOpen(false)}
+                        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                        sx={{marginTop: '5%'}}
+                        TransitionComponent={Slide}
                         >
                         <Alert
                             onClose={() => setIsNotificationOpen(false)}
                             severity={notificationSeverity}
-                            sx={{ width: '100%' }}
+                            sx={{ 
+                                width: '100%',
+                                ".MuiButtonBase-root": {
+                                    marginTop: '-10%',
+                                }
+                            }}
                         >
                             {notificationText}
                         </Alert>

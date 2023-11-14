@@ -39,7 +39,7 @@ const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
 function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, recordingTitle, viewingAudioUrl }: AudioRecorderProps) {
   const [stream, setStream] = useState<MediaStream>();
   const [recording, setRecording] = useState(false);
-  const [recordingName, setRecordingName] = useState<string>();
+  const [recordingName, setRecordingName] = useState<string>('');
   const [audioUrl, setAudioUrl] = useState<string>();
   const mediaRecorderRef = useRef<MediaRecorder>();
   const audioChunks = useRef<Blob[]>([]);
@@ -162,7 +162,9 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
           level: 'public',
         }).then(() => {
           setRecordingName('');
-          setAudioUrl('');         
+          setAudioUrl('');   
+          setDuration(0);      
+          setElapsed(0);
           onShowNotification('success', 'Recording saved successfully.'); 
         }).catch((error) => {
           onShowNotification('error', 'Error saving recording: ' + error.message);
@@ -241,10 +243,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
         return (
           <Tooltip title="Save">
             <span>
-              <IconButton onClick={saveRecording} disabled={saveRecordingDisabled()} sx ={{'&:hover': {
+              <IconButton onClick={audioUrl !== undefined ? saveRecording : undefined} sx ={{'&:hover': {
                 backgroundColor: 'transparent',
               }}}>
-                <Save sx={{color:'black', '&:hover': {color: '#808080'}}}/>
+                <Save sx={{color:'black', '&:hover': {color: '#808080'}}} onClick={() => {
+                  if(saveRecordingDisabled()) {
+                    onShowNotification('error', 'Either the recording or the name for it does not exist.');
+                  }
+                }}/>
               </IconButton>
             </span>
           </Tooltip>
@@ -289,7 +295,9 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
 
             }} 
           value={recordingName} 
-          onChange={(e) => setRecordingName(e.target.value)} />)
+          onChange={(e) => {
+            setRecordingName(e.target.value)}
+          }   />)
           : 
           (<Typography sx={{color: 'black'}}>{recordingTitle}</Typography>)
 
