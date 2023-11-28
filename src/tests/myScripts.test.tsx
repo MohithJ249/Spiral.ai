@@ -3,16 +3,16 @@ import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
 import MyScripts from '../content/MyScripts'; // Import your LoginPage component
 import { useGetAllUserScriptsQuery } from '../generated/graphql'; // Import the hook to be mocked
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 jest.mock('../generated/graphql', () => ({
     useGetAllUserScriptsQuery: () => {
       return {
         data: {
             getAllUserScripts: [{
-                title: 'test',
-                lastModified: '300000',
-                scriptid: 'test'
+                title: 'testTitle',
+                last_modified: '300000',
+                scriptid: 'testId'
             }]
         },
       };
@@ -20,7 +20,6 @@ jest.mock('../generated/graphql', () => ({
 }));
 
 jest.mock('react-router-dom', () => ({
-    NavLink: () => <div />,
     useLocation: () => ({
       pathname: '/MyScripts',
       search: '',
@@ -37,5 +36,14 @@ describe('My Scripts Page component', () => {
         <MyScripts />
       </MockedProvider>
     );
+
+    const titleField = screen.getByText('testTitle');
+    expect(titleField).toBeInTheDocument();
+
+    const lastModifiedField = screen.getByText('Last Modified: 300000');
+    expect(lastModifiedField).toBeInTheDocument();
+
+    const scriptidField = screen.queryByText('testId');
+    expect(scriptidField).not.toBeInTheDocument();
   });
 });

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
 import EditingPage from '../content/Editing'; // Import your LoginPage component
 import { useGetAllScriptCommentsLazyQuery, useDeleteCommentMutation, useDeleteScriptMutation, useGetScriptRecordingsQuery, useGetScriptVersionsQuery } from '../generated/graphql'; // Import the hook to be mocked
+import axios from 'axios';
 
 jest.mock('../generated/graphql', () => ({
   useGetAllScriptCommentsLazyQuery: () => [jest.fn(), { data: mockData, refetch: jest.fn() }],
@@ -10,6 +11,7 @@ jest.mock('../generated/graphql', () => ({
   useDeleteScriptMutation: () => [jest.fn()],
   useGetScriptRecordingsQuery: () => { return {data: {}};},
   useGetScriptVersionsQuery: () => { return {data: {}};},
+  axios: jest.fn(() => ({ data: {} })),
 }));
 
 const mockData = {
