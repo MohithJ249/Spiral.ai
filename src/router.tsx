@@ -15,8 +15,6 @@ const Loader = (Component : any) => (props: any) =>
 
 const Landing = Loader(lazy(() => import('./content/Error/Landing')))
 
-const MainPage = Loader(lazy(() => import('./content/MainPage')));
-
 const MyScripts = Loader(lazy(() => import('./content/MyScripts')));
 
 const NewScript = Loader(lazy(() => import('./content/NewScript')));
@@ -52,10 +50,6 @@ const routes: RouteObject[] = [
     path: '',
     element: <Header />,
     children: [
-      {
-        path: '/MainPage',
-        element: <MainPage />
-      },
       {
         path: 'MyScripts',
         element: <MyScripts />

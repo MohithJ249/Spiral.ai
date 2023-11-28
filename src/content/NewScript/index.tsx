@@ -125,6 +125,7 @@ export default function NewScriptPage() {
                     autoFocus
                     value={title} onChange={(e) => setTitle(e.target.value)}
                     sx={{ margin: 2, width: window.innerWidth * 0.6, ...TextfieldStyling }}
+                    data-testid="titleInput"
                     />
                     <TextField
                     variant="outlined"
@@ -137,6 +138,7 @@ export default function NewScriptPage() {
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder='Write a speech about covid'
                     sx={{ margin: 2, width: window.innerWidth * 0.6, ...TextfieldStyling }}
+                    data-testid="promptInput"
                     />
 
                     <TextField
@@ -153,6 +155,7 @@ export default function NewScriptPage() {
                     }}
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
+                    data-testid="additionalInformation"
                     />
 
                     <TextField
@@ -162,6 +165,7 @@ export default function NewScriptPage() {
                         select
                         onChange={(e) => setSpeechTime(Number(e.target.value))}
                         sx={{margin: 2, ...TextfieldStyling}}
+                        data-testid="speechLength"
                     >
                         <MenuItem key={1} value={30}>30 Seconds</MenuItem>
                         <MenuItem key={2}value={60}>1 Minute</MenuItem>
@@ -178,6 +182,7 @@ export default function NewScriptPage() {
                         select
                         onChange={(e) => setTone(e.target.value)}
                         sx={{margin: 2, ...TextfieldStyling}}
+                        data-testid="speechTone"
                     >
                         <MenuItem key={1} value={"Casual"}>Casual</MenuItem>
                         <MenuItem key={2} value={"Persuasive"}>Persuasive</MenuItem>
