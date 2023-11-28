@@ -32,7 +32,7 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
       transition: 'transform 0.5s ease', 
       '&:hover': {
         transform: "scale(1.1)",
-      }
+      },
     }
     
 
@@ -78,7 +78,7 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
               padding={4}
               >
                 { data.getAllUserScripts.map((item, index) => (
-                  <Grid item>
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <Grow in key={index} timeout={1000 + index * 150}>
                       <div>
                         <CustomCard title={item?.title} lastModified={item?.last_modified} scriptid={item?.scriptid}/>

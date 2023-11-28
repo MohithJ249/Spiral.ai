@@ -82,7 +82,7 @@ export default function SharedPage() {
               padding={4}
               >
                 { data.getAllSharedScripts.map((item, index) => (
-                  <Grid xs={12} sm={6} md={3} item>
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <Grow in key={index} timeout={1000 + index * 150}>
                       <div>
                         <CustomCard title={item?.title} userid={item?.userid} scriptid={item?.scriptid} owner_username={item?.owner_username} last_modified={item?.last_modified}/>

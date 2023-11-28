@@ -129,7 +129,7 @@ export default function ViewShared() {
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
-                        <Grid sx={{ flexGrow: 1, width: '100vw', height: '100vh' }} container justifyContent="center" spacing={8}>
+                        <Grid sx={{ flexGrow: 1, minHeight: '100vh' }} container justifyContent="center" spacing={2}>
                             
                             <Grow in key='CommentingPane' timeout={1000}>
                                 <Grid item>
@@ -169,58 +169,6 @@ export default function ViewShared() {
 
                                         </Stack>
 
-                                        <Grow in timeout={1500}>
-
-                                            <Paper
-                                            elevation={0}
-                                            sx={{
-                                                flexWrap: 'wrap',
-                                                borderRadius: '5px',
-                                                width: window.innerWidth * 0.2,
-                                                height: window.innerHeight * 0.6,
-                                                overflow: 'auto',
-                                                maxHeight: '60%',
-                                                marginTop: '1%',
-                                                backgroundColor: '#f1efee',
-                                                '&::-webkit-scrollbar': {
-                                                width: '0.5rem', 
-                                                },
-                                                '&::-webkit-scrollbar-thumb': {
-                                                background: '#aaa', // Color of the scrollbar thumb
-                                                borderRadius: '2px', // Adjust as needed
-                                                },
-                                                '&::-webkit-scrollbar-thumb:hover': {
-                                                background: '#aaa', // Color on hover, adjust as needed
-                                                },
-                                            }}
-                                            component="ul"
-                                            >
-
-                                                {data?.getAllScriptComments?.map((comment, index) => {
-                                                    if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved && comment?.text_ref) {
-                                                        return (
-                                                            <Grow in key={index} timeout={1500 + index * 300}>
-                                                                <Card key={comment.commentid} sx={commentsStyling}>
-                                                                    <CardContent sx={cardContentStyling}>
-                                                                        <Box sx={headerStyling}>
-                                                                            <Typography variant="h6">Posted by {comment.username}</Typography>
-                                                                            {comment.userid === localStorage.getItem('userid') ? (<IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
-                                                                                <Close />
-                                                                            </IconButton>
-                                                                            ) : null}
-                                                                        </Box>
-                                                                        <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
-                                                                        <Typography variant="body1" sx={textContentStylingItalic}>{comment.text_ref}</Typography>
-                                                                        <Typography variant="body1" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
-                                                                    </CardContent>
-                                                                </Card>
-                                                            </Grow>
-                                                        );
-                                                    }
-                                                    return null; // Or any other fallback you want when text_content is undefined or falsy
-                                                })}
-                                            </Paper>
-                                        </Grow>
                                     </Paper>
                                 </Grid>
                             </Grow>
@@ -234,12 +182,69 @@ export default function ViewShared() {
                                     rows={Math.ceil(window.innerHeight * 0.9 / 24)}
                                     variant="outlined"
                                     sx={{
-                                        width: `${window.innerWidth * 0.6}px`,
+                                        width: `${window.innerWidth * 0.5}px`,
                                         
                                     }}
                                     value={scriptContent}
                                     style={textStyle}
                                     />
+                                </Grid>
+                            </Grow>
+                            <Grow in key='CommentsPane' timeout={1750}>
+                                <Grid item>
+                                    <Grow in timeout={1500}>
+
+                                        <Paper
+                                        elevation={0}
+                                        sx={{
+                                            flexWrap: 'wrap',
+                                            borderRadius: '5px',
+                                            width: window.innerWidth * 0.2,
+                                            height: window.innerHeight * 0.9,
+                                            overflow: 'auto',
+                                            maxHeight: '100%',
+                                            marginTop: '0%',
+                                            backgroundColor: '#f1efee',
+                                            '&::-webkit-scrollbar': {
+                                            width: '0.5rem', 
+                                            },
+                                            '&::-webkit-scrollbar-thumb': {
+                                            background: '#aaa', // Color of the scrollbar thumb
+                                            borderRadius: '2px', // Adjust as needed
+                                            },
+                                            '&::-webkit-scrollbar-thumb:hover': {
+                                            background: '#aaa', // Color on hover, adjust as needed
+                                            },
+                                        }}
+                                        component="ul"
+                                        >
+
+                                            {data?.getAllScriptComments?.map((comment, index) => {
+                                                if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved && comment?.text_ref) {
+                                                    return (
+                                                        <Grow in key={index} timeout={1500 + index * 300}>
+                                                            <Card key={comment.commentid} sx={commentsStyling}>
+                                                                <CardContent sx={cardContentStyling}>
+                                                                    <Box sx={headerStyling}>
+                                                                        <Typography variant="h6">Posted by {comment.username}</Typography>
+                                                                        {comment.userid === localStorage.getItem('userid') ? (<IconButton onClick={() => deleteComment(comment.commentid)} sx={deleteButtonCommentsStyling}>
+                                                                            <Close />
+                                                                        </IconButton>
+                                                                        ) : null}
+                                                                    </Box>
+                                                                    <Typography variant="caption" sx={timeSavedCommentsStyling}>{comment.time_saved}</Typography>
+                                                                    <Typography variant="body1" sx={textContentStylingItalic}>{comment.text_ref}</Typography>
+                                                                    <Typography variant="body1" sx={textContentCommentsStyling}>{comment.text_content}</Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </Grow>
+                                                    );
+                                                }
+                                                return null; // Or any other fallback you want when text_content is undefined or falsy
+                                            })}
+                                        </Paper>
+                                    </Grow>
+                                    
                                 </Grid>
                             </Grow>
                         </Grid>
