@@ -1,7 +1,6 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TablePagination, Stack, Box, styled, Slider, Tooltip, Button, Alert, Snackbar, Fab, Grow, Modal, Grid } from '@mui/material';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
-import axios from 'axios';
 import { useGetScriptRecordingsLazyQuery, useDeleteRecordingMutation } from '../../generated/graphql';
 import AudioRecorder from '../../components/AudioRecorder';
 import { Check, Close, Delete, KeyboardReturn, Pause, PlayArrow, VolumeDown, VolumeUp } from '@mui/icons-material';

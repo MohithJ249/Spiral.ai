@@ -20,8 +20,8 @@ jest.mock('react-router-dom', () => ({
     }),
 }));
 
-describe('My Scripts Page component', () => {
-  it('renders the My Scripts Page component with mock data', async () => {
+describe('New Script Page component', () => {
+  it('renders the New Script Page component with mock data', async () => {
     render(
       <MockedProvider addTypename={false}>
         <NewScriptPage />
