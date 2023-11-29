@@ -373,6 +373,7 @@ export default function EditingPage() {
                     select
                     onChange={(e) => setTone(e.target.value)}
                     sx={{margin: 2}}
+                    data-testid='toneDropdown'
                 >
                     <MenuItem key={1} value={"Casual"}>Casual</MenuItem>
                     <MenuItem key={2} value={"Persuasive"}>Persuasive</MenuItem>
@@ -428,6 +429,7 @@ export default function EditingPage() {
                     select
                     onChange={(e) => setSelectorType(e.target.value)}
                     sx={{margin: 2}}
+                    data-testid='modifyDropdown'
                 >
                     <MenuItem key={1} value={"Length"}>Length</MenuItem>
                     <MenuItem key={2} value={"Tone"}>Tone</MenuItem>
@@ -682,6 +684,7 @@ export default function EditingPage() {
                                                     placeholder='Selected text will appear here.'
                                                     style={disabledBoxStyle}
                                                     rows={window.innerHeight * 0.2 / 24}
+                                                    data-testid='selectedTextField'
                                                     />
                                             </Grow>
 
@@ -718,6 +721,7 @@ export default function EditingPage() {
                                                     onChange={(e) => setGeneratedText(e.target.value)}
                                                     placeholder='Generated text will appear here.'
                                                     rows={window.innerHeight * 0.2 / 24}
+                                                    data-testid='generatedTextField'
                                                 />
                                             </Grow>
                                         </Stack>

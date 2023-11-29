@@ -196,13 +196,6 @@ export default function VersionHistory() {
         );
     }
     else {
-        return <>
-            <div>
-                ScriptId: {scriptid}
-            </div>
-            <div>
-                Versions Defined: {data?.getScriptVersions ? 'true' : 'false'}
-            </div>
-        </>
+        return <></>
     }
 }
