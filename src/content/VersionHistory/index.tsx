@@ -185,6 +185,7 @@ export default function VersionHistory() {
                                     value={scriptContent}
                                     defaultValue='Please select a version.'
                                     style={textStyle}
+                                    data-testid='scriptContent'
                                     />
                                 </Grid>
                             </Grow>
@@ -195,6 +196,13 @@ export default function VersionHistory() {
         );
     }
     else {
-        return <></>
+        return <>
+            <div>
+                ScriptId: {scriptid}
+            </div>
+            <div>
+                Versions Defined: {data?.getScriptVersions ? 'true' : 'false'}
+            </div>
+        </>
     }
 }
