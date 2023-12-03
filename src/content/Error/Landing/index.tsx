@@ -3,6 +3,7 @@ import { Fab, Grow, Stack } from '@mui/material';
 import React from 'react';
 
 const SpiralAnimation: React.FC = () => {
+    // if user is already logged in or comes back in a new session, redirect to MyScripts page
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
         window.location.href = '/MyScripts';
     return (

@@ -36,16 +36,6 @@ const CreateAccount = Loader(lazy(() => import('./content/CreateAccount')));
 const VersionHistory = Loader(lazy(() => import('./content/VersionHistory')));
 
 const routes: RouteObject[] = [
-  // {
-  //   path: '',
-  //   element: <BaseLayout />,
-  //   children: [
-  //     {
-  //       path: '/',
-  //       element: <Login />
-  //     }
-  //   ]
-  // },
   {
     path: '',
     element: <Header />,

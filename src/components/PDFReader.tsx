@@ -73,6 +73,7 @@ function PDFReader({
                     const pdf = await pdfjs.getDocument(buffer!).promise;
                     numPages = await pdf.numPages;
                 }
+                // add each file and number of pages to be parsed when the extract button is clicked
                 buildFileObjs.push({ file: selectedFilesList[i], numPages });
             }
 
@@ -80,6 +81,7 @@ function PDFReader({
         }
     };
 
+    // when extract button is clicked, then all of the files stored in buildFileObjs should be parsed.
     const loadDocs = async (obj: { file: File; numPages: number }) => {
         const arrText: string[] = [];
         const promises: Promise<string>[] = [];
@@ -90,6 +92,7 @@ function PDFReader({
                     const buffer = await obj.file?.arrayBuffer();
                     var pageText = "";
                     var fileName = "name" in obj.file ? obj.file.name : "";
+                    // pdfs are parsed differently compared to Powerpoints
                     if (fileName.endsWith("pdf")) {
                         const pdf = await pdfjs.getDocument(buffer!).promise;
                         const page = await pdf.getPage(i);
@@ -138,26 +141,32 @@ function PDFReader({
         const pageTexts = await Promise.all(promises);
         arrText.push(...pageTexts);
 
-        const getAllText = arrText.join(" ");
+        const getAllText = arrText.join("\n");
         if (localText === "") {
+            // if there was nothing to begin with, just add file's content
             setLocalText(getAllText);
         } else {
+            // make sure to add in addition to what already exists
             setLocalText(localText + "\n\n\n" + getAllText);
         }
     };
 
+
+    // helper functions to handle file deletion and extracting shown on the UI
     const handleDelete = (fileToBeDeleted: File) => () => {
         setFileObjs(fileObjs.filter((obj) => obj.file !== fileToBeDeleted));
     };
 
     const handleExtractAll = () => {
+        // extract each file
         fileObjs.map((obj) => {
             loadDocs(obj);
         });
 
+        // clear fileObjs after extracting all of the previously parsed files
         setFileObjs([]);
         setLocalText("");
-        console.log(localText)
+        // console.log(localText)
     };
 
     const FabStyling = {

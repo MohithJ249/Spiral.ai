@@ -1,30 +1,15 @@
-import { MouseEventHandler, useContext } from 'react';
 
 import {
   Box,
-  alpha,
   Stack,
-  lighten,
-  Divider,
-  IconButton,
-  Tooltip,
   styled,
-  useTheme,
-  AppBar,
-  Toolbar,
-  Button,
-  Typography,
-  Grid
 } from '@mui/material';
-import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
-import { SidebarContext } from '../../contexts/SidebarContext';
-import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 
 import HeaderButtons from './TopRightBox';
 import HeaderUserbox from './TopRightBox/Userbox';
 import HeaderMenu from './Menu';
 import { Outlet } from 'react-router-dom';
-import { Grass, GrassOutlined } from '@mui/icons-material';
+import { Grass } from '@mui/icons-material';
 
 const HeaderWrapper = styled(Box)(
   ({ theme }) => `
@@ -43,12 +28,12 @@ const HeaderWrapper = styled(Box)(
 `
 );
 
-function getNavbar(sidebarToggle: boolean, toggleSidebar: MouseEventHandler<HTMLButtonElement> | undefined) {
+// returns layout of header
+function getNavbar() {
   if(localStorage.getItem('userid') === null || localStorage.getItem('username') === null) {
     return <></>
   }
   else {
-    // center the middle item called grass
     return (
       <>
         <Box sx={{ position: 'relative' }}>
@@ -94,11 +79,10 @@ function getNavbar(sidebarToggle: boolean, toggleSidebar: MouseEventHandler<HTML
 }
 
 function Header() {
-  const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
 
   return (
     <>
-      {getNavbar(sidebarToggle, toggleSidebar)}
+      {getNavbar()}
       
       <Box
         sx={{
@@ -115,6 +99,7 @@ function Header() {
         }}
       >
         <Box display="block" sx={{ justifyContent : 'center', margin: 'auto' }}>
+          {/* all other pages will fall under outlet */}
           <Outlet />
 
         </Box>

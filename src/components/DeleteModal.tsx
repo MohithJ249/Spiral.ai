@@ -1,4 +1,4 @@
-import { Button, Typography, Modal, Box, Grow, Fab, Tooltip, Stack } from '@mui/material';
+import { Typography, Modal, Box, Grow, Fab, Tooltip, Stack } from '@mui/material';
 import { useState } from 'react';
 import { Check, Close, Delete } from '@mui/icons-material';
 
@@ -23,6 +23,7 @@ function DeleteModal({ onDelete, deleteText }: DeleteModalProps) {
     margin: 'auto',
   };
 
+  // to add confirmation for deleting script
   return (
     <div>
       <Tooltip title="Delete Script">

@@ -1,4 +1,4 @@
-import { Button, Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, Menu, IconButton, InputAdornment, Slide } from '@mui/material';
+import { Grid, Grow, Paper, TextField, Typography, Snackbar, Alert, Fab, Tooltip, Box, Stack, Card, CardContent, Switch, FormGroup, FormControlLabel, MenuItem, IconButton, Slide } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import axios from 'axios';
@@ -7,9 +7,8 @@ import AudioRecorder from '../../components/AudioRecorder';
 import CollaboratorModal from '../../components/CollaboratorModal';
 import DeleteModal from '../../components/DeleteModal';
 import MakeVersionButton from '../../components/MakeVersionButton';
-import { Add, Build, Close, Create, Delete, Done, History, PostAdd, QueueMusic, Remove, Save } from '@mui/icons-material';
+import { Add, Build, Close, Create, Done, History, QueueMusic, Remove, Save } from '@mui/icons-material';
 import OpenAI from "openai";
-import { set } from 'nprogress';
 import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling, textContentStylingItalic } from '../../styles/styles';
 import CircularProgressValue from '../../components/CircularProgressValue';
 
@@ -19,15 +18,24 @@ export default function EditingPage() {
     const title = useMemo(() => searchParams.get('title'), [searchParams]);
     const scriptid = useMemo(() => searchParams.get('scriptid'), [searchParams]);
 
-    const [scriptContent, setScriptContent] = useState<string>('');
+    
+    // for plagiarism
     const [plagiarismScore, setPlagiarismScore] = useState<number>();
     const [isCalculatingPlagiarism, setIsCalculatingPlagiarism] = useState<boolean>(false);
+    
+    
+    const [scriptContent, setScriptContent] = useState<string>('');
     const [isSavingScript, setIsSavingScript] = useState<boolean>(false);
     const [generatedText, setGeneratedText] = useState<string | null>('');
     const [promptText, setPromptText] = useState<string>('');
+    
+    // for notifications
     const [notificationText, setNotificationText] = useState<string>();
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
     const [notificationSeverity, setNotificationSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    
+    // for the right side of the editing page that allows for highlighting text to be replaced by presets
+    // or custom prompting
     const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
     const [customPromptingEnabled, setCustomPromptingEnabled] = useState<boolean>(false);
     const [selectorType, setSelectorType] = useState<string>('Tone');
@@ -37,13 +45,14 @@ export default function EditingPage() {
     const [synonym, setSynonym] = useState<string>('Alternative Synonym');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
-
     // for editing textfield text sizing
     const [fontSize, setFontSize] = useState<number>(15);
 
+    
     const [fetchScriptComments, { data, refetch: refetchComments }] = useGetAllScriptCommentsLazyQuery();
     const [deleteCommentMutation] = useDeleteCommentMutation();
     const [deleteScriptMutation] = useDeleteScriptMutation();
+
     const { data: scriptRecordingsData } = useGetScriptRecordingsQuery({
         variables: {
             userid: localStorage.getItem('userid') || '',
@@ -61,11 +70,13 @@ export default function EditingPage() {
         pointerEvents: 'none' as React.CSSProperties["pointerEvents"]
     };
 
+    // for ChatGPT access
     const openai = new OpenAI({
         apiKey: process.env.REACT_APP_API_KEY,
         dangerouslyAllowBrowser: true
     });
 
+    // get highlighted text
     const selectedText = useMemo(() => {
         if (selectedTextPosition) {
           const selectionStart = selectedTextPosition[0];
@@ -86,12 +97,6 @@ export default function EditingPage() {
             }
         });
     }, []);
-
-    // useEffect(() => {
-    //     if(scriptContent && plagiarismScore === undefined) {
-    //         getPlagiarismScore();
-    //     }
-    // }, [plagiarismScore, scriptContent])
 
     // Add ctrl+s shortcut to save script
     useEffect(() => {
@@ -114,6 +119,7 @@ export default function EditingPage() {
             setIsSavingScript(true);
             const userid = localStorage.getItem('userid');
             const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/"+title+".txt";
+            // store the script in S3
             Storage.put(fileName, scriptContent || '', {
                 contentType: 'text/plain'
             }).then(() => {
@@ -136,6 +142,7 @@ export default function EditingPage() {
         const userid = localStorage.getItem('userid');
         const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/"+title+".txt";
 
+        // get the latest version of the script from s3
         Storage.get(fileName, { download: true })
             .then(fileContent => {
                 return fileContent.Body?.text();
@@ -150,17 +157,20 @@ export default function EditingPage() {
 
     const deleteScript = async () => {
         if(scriptVersionsData) {
+            // need to remove all versions of the script
             scriptVersionsData.getScriptVersions?.forEach(async version => {
                 await Storage.remove("userid-"+localStorage.getItem('userid')+"/scriptid-"+scriptid+"/versions/"+version?.versionid+".txt");
             });
         }
 
         if(scriptRecordingsData) {
+            // need to remove all recordings of the script
             scriptRecordingsData.getScriptRecordings?.forEach(async recording => {
                 await Storage.remove("userid-"+localStorage.getItem('userid')+"/scriptid-"+scriptid+"/recordings/"+recording?.recordingid+".wav");
             });
         }
 
+        // this script won't be accessible anymore, remove id to not have empty scriptids
         await Storage.remove("userid-"+localStorage.getItem('userid')+"/scriptid-"+scriptid+"/"+title+".txt");
 
         deleteScriptMutation({
@@ -174,6 +184,8 @@ export default function EditingPage() {
         });
     }
 
+    // to store the selected text and the starting and ending indices of the selected text
+    // to replace later.
     const selectText = () => {
         const textField = document.getElementById('outlined-multiline-static') as HTMLInputElement;
       
@@ -202,6 +214,8 @@ export default function EditingPage() {
         }
     }
 
+    // after generating new text and replace is clicked, then adjust the whole script by adding
+    // the generated text in the right location properly
     const handleReplaceText = async () => {      
         if (selectedTextPosition) {
           const selectionStart = selectedTextPosition[0];
@@ -217,6 +231,7 @@ export default function EditingPage() {
         }
     }
 
+    // prompting text for ChatGPT based on presets or custom prompting by user
     const getPromptText = (selectedText: string) : string => {
         if(customPromptingEnabled) {
             return promptText+". "+selectedText;
@@ -244,6 +259,7 @@ export default function EditingPage() {
         return '';
     }
     
+    // function to call ChatGPT and generate new text
     const generateText = async () => {
         if(selectedTextPosition) {            
             if(selectedText) {
@@ -268,6 +284,8 @@ export default function EditingPage() {
     }
 
     const deleteComment = async (commentid: string) => {
+        // when x is clicked for each comment on editing page, this is called to
+        // delete the comment
         await deleteCommentMutation({
             variables: {
                 commentid: commentid
@@ -277,6 +295,7 @@ export default function EditingPage() {
         refetchComments();
     }
 
+    // to switch between custom prompting and presets to save space on UI
     const handleSwitchChange = (event: any) => {
         setCustomPromptingEnabled(event.target.checked);
     };
@@ -295,11 +314,12 @@ export default function EditingPage() {
         alignItems: 'center',
     };
     
-
+    // all recordings are stored in /Recordings file to show all the recordings for this script
     const goToRecordings = () => { 
         window.location.href = '/Recordings?title=' + title + '&scriptid=' + scriptid;
     }   
 
+    // call plagiarism API to get score
     const getPlagiarismScore = async () => {
         const apiKey = '7be95795bdeca695de83eb8434ea72b9';
         const apiUrl = 'https://www.prepostseo.com/apis/checkPlag';
@@ -310,6 +330,8 @@ export default function EditingPage() {
     
         try {
             setIsCalculatingPlagiarism(true);
+
+            // wait for response and set score
             const response = await axios.post(apiUrl, params, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -319,8 +341,10 @@ export default function EditingPage() {
             if(response.data.error) {
                 showNotification('error', 'API Error: '+response.data.error);
             }
-            console.log(response.data);
+            // console.log(response.data);
             setPlagiarismScore(response.data.plagPercent);
+            // used to make sure user is not able to click when the api is calculating
+            // after the score is set, then set to false, to enable button
             setIsCalculatingPlagiarism(false);
         } catch (error) {
             console.error('Error calling plagiarism API:', error);
@@ -340,6 +364,7 @@ export default function EditingPage() {
         );
     };
 
+    // helper functions for increasing and decreasing font size
     const handleIncreaseFontSize = () => {
         setFontSize((prevSize) => Math.min(prevSize + 2, 30));
     };
@@ -348,6 +373,9 @@ export default function EditingPage() {
         setFontSize((prevSize) => Math.max(prevSize - 2, 15)); 
     };
 
+    
+    // Give the right options for each preset, each dropdown (textfield selector) is generated for each preset
+    // each preset's relative function to set the value of that preset is done within the textfield select
     const getSelector = () => {
         if(selectorType === 'Length') {
             return (
@@ -419,6 +447,7 @@ export default function EditingPage() {
         }
     }
 
+    // helper function to display the preset selections
     const getSelections = () => {
         return (
             <>
@@ -441,12 +470,15 @@ export default function EditingPage() {
         );
     }
 
+    // helper function for the custom prompting switch on the UI
     const displayPromptOrSelections = () => {
         return customPromptingEnabled ? getCustomPrompting() : getSelections();
     }
 
+    // helper function to display comments for this script
     const displayComments = () => {
         if(data?.getAllScriptComments?.length) {
+            // make backend call to retrive all comments and map each one to a card display
             return data.getAllScriptComments.map((comment, index) => {
                 if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
                     return (
@@ -471,6 +503,7 @@ export default function EditingPage() {
             })
         }
         else {
+            // If no comments exist yet
             return (
                 <>
                     <Card sx={commentsStyling}>
@@ -486,8 +519,7 @@ export default function EditingPage() {
     }
     
     if(scriptid && title && scriptContent !== undefined) {
-        // console.log(window.innerHeight);
-        // console.log(Math.ceil(window.innerHeight * 0.9 / 24));
+
         return (
             <>
                 <div>
@@ -512,12 +544,11 @@ export default function EditingPage() {
                             {notificationText}
                         </Alert>
                     </Snackbar>
-                    {/* <br></br> */}
-                    {/* <Typography variant="h4" sx={{backgroundColor: '#f1efee'}}></Typography> */}
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
                         <Grid sx={{ flexGrow: 1, minHeight: '100vh'}} container justifyContent="center" spacing={2}>
+                            {/* Left side of the page with quality of life features */}
                             <Grow in key='RecordingPane' timeout={1000}>
                                 <Grid item>
                                     <Paper
@@ -615,9 +646,10 @@ export default function EditingPage() {
                                     </Paper>
                                 </Grid>
                             </Grow>
-
+                            
+                            {/* Main editing section */}
                             <Grow in key="EditingPane" timeout={1500}>
-                                {/** make sure this textfield is not chaning size vertically */}
+                                {/** make sure this textfield is not changing size vertically */}
                                 <Grid item>
                                     <TextField
                                         id="outlined-multiline-static"
@@ -654,10 +686,10 @@ export default function EditingPage() {
                                 </Grid>
                             </Grow>
 
-
-                                <Grow in key='LLMPane' timeout={2000}>
-                                    <Grid item>
-                                        <Paper
+                            {/* Custom presets and prompting text generating pane on right side */}
+                            <Grow in key='LLMPane' timeout={2000}>
+                                <Grid item>
+                                    <Paper
                                         sx={{
                                             height: `${window.innerHeight * 0.9}px`,
                                             width: `${window.innerWidth * 0.2}px`,

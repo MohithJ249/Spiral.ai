@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCreateUserMutation } from '../../generated/graphql';
-import { Button, FormControl, Input, InputLabel, Alert, Fab, Stack } from '@mui/material';
+import { Alert, Fab, Stack } from '@mui/material';
 import {  TextField, Container, Typography, Box } from '@mui/material';
 import { Create, ExitToApp, Lock as LockIcon } from '@mui/icons-material';
 import { ApolloError } from '@apollo/client';
@@ -14,6 +14,7 @@ export default function CreateAccountPage() {
         variables: { username, email, password },
     });
 
+    // if user is already logged in or comes back in a new session, redirect to MyScripts page
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
         window.location.href = '/MyScripts';
 
@@ -23,6 +24,7 @@ export default function CreateAccountPage() {
             const { data } = await createUser();
             if (data?.createUser) {
                 setErrorText(null);
+                // set local storage to store user id and username to avoid logging in again
                 localStorage.setItem('userid', data.createUser.userid);
                 localStorage.setItem('username', data.createUser.username);
                 console.log(data.createUser.userid);

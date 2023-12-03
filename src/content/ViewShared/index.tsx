@@ -1,18 +1,19 @@
-import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box, TextField, Paper, Fab, Stack, IconButton } from '@mui/material';
+import { Grid, Grow,  Typography, Card, CardContent, Box, TextField, Paper, Fab, Stack, IconButton } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { Storage } from 'aws-amplify';
 import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../../generated/graphql';
-import { Close, Create, Done, PlaylistAddCheck } from '@mui/icons-material';
-import Scrollbar from '../../components/scrollbar';
+import { Close, Create, Done } from '@mui/icons-material';
 import { commentsStyling, cardContentStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, textContentStylingItalic } from '../../styles/styles';
 
 export default function ViewShared() {
+    // for retrival purposes
     const url = window.location.search;
     const searchParams = new URLSearchParams(url);
     const title = searchParams.get('title');
     const scriptid = searchParams.get('scriptid');
     const ownerid = searchParams.get('ownerid');
 
+    // for comments
     const [commentText, setCommentText] = useState<string>('');
     const [scriptContent, setScriptContent] = useState<string>();
     const [selectedTextPosition, setSelectedTextPosition] = useState<[number, number] | undefined>(undefined);
@@ -27,12 +28,14 @@ export default function ViewShared() {
 
     useEffect(() => {
         if(scriptid) {
+            // make backend call to get this script's comments
             fetchScriptComments({
                 variables: {
                     scriptid: scriptid || ''
                 }
             });
             const fileName = "userid-"+ownerid+ "/scriptid-" + scriptid + "/"+title+".txt";
+            // get from S3 and populate
             Storage.get(fileName, { download: true })
             .then(fileContent => {
                 return fileContent.Body?.text();
@@ -46,6 +49,7 @@ export default function ViewShared() {
         }
     }, [scriptid]);
 
+    // follow similar highlighting text logic from editing page
     const selectedText = useMemo(() => {
         if (selectedTextPosition) {
           const selectionStart = selectedTextPosition[0];
@@ -71,6 +75,8 @@ export default function ViewShared() {
 
     const postComment = async () => {
         if(commentText) {
+            // make backend call to post comment, so it shows up for both this user and the owner of the script
+            // whenever they login
             await postCommentMutation({
                 variables: {
                     scriptid: scriptid || '',
@@ -79,20 +85,25 @@ export default function ViewShared() {
                     textRef: selectedText
                 }
             });
+            // clear comment and refresh comments
             setCommentText('');
             refetchComments();
         }
     }
 
+    // to delete comment so it doesn't show up
     const deleteComment = async (commentid: string) => {
+        // backend call to delete comment
         await deleteCommentMutation({
             variables: {
                 commentid: commentid
             }
         });
+        // refresh comments
         refetchComments();
     }
 
+    // store the selected text position
     const selectText = () => {
         const textField = document.getElementById('outlined-multiline-static') as HTMLInputElement;
       
@@ -125,7 +136,6 @@ export default function ViewShared() {
         return (
             <>
                 <div>
-                    {/* <Typography variant="h3">{title}</Typography> */}
                     <Typography variant="h4" sx={{marginTop: '1%', marginBottom: '1%', backgroundColor: '#f1efee', fontFamily: 'MuseoSlab'}}>{title}</Typography>
 
                     <div style={{ flexGrow: 1, backgroundColor: '#f1efee' }}>
@@ -209,16 +219,16 @@ export default function ViewShared() {
                                             width: '0.5rem', 
                                             },
                                             '&::-webkit-scrollbar-thumb': {
-                                            background: '#aaa', // Color of the scrollbar thumb
-                                            borderRadius: '2px', // Adjust as needed
+                                            background: '#aaa', 
+                                            borderRadius: '2px', 
                                             },
                                             '&::-webkit-scrollbar-thumb:hover': {
-                                            background: '#aaa', // Color on hover, adjust as needed
+                                            background: '#aaa', 
                                             },
                                         }}
                                         component="ul"
                                         >
-
+                                            {/* map each comment to a new card on ui in this scrollable list */}
                                             {data?.getAllScriptComments?.map((comment, index) => {
                                                 if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved && comment?.text_ref) {
                                                     return (
