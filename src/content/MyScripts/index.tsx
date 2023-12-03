@@ -1,19 +1,13 @@
 import {
-    Button,
     Card,
     Grid,
     Box,
     CardContent,
     Typography,
-    Avatar,
-    alpha,
-    Tooltip,
     CardActionArea,
     Grow,
-    styled
   } from '@mui/material';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { useGetAllUserScriptsQuery } from '../../generated/graphql';
 import CircularLabelWithProgress from '../../components/loadingAnimation';
 
@@ -25,7 +19,6 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   
   function CustomCard({title, scriptid, lastModified}: CustomCardProps) {
     const location = useLocation();
-    const currentPath = location.pathname;
 
     const CardStyle = {
       borderRadius: '30px',
@@ -38,8 +31,6 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
 
     return (
       <Card sx={CardStyle}>
-        {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
-        of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/Editing`,search: `?title=${title}&scriptid=${scriptid}`,}}>
           <CardContent sx = {{color: 'black'}}>
             <Typography variant="h5" noWrap sx={{ fontFamily: "TimesNewRoman"}}>

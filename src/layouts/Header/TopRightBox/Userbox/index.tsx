@@ -1,28 +1,21 @@
 import { useRef, useState } from 'react';
 
-import { NavLink } from 'react-router-dom';
-
 import {
   Avatar,
   Box,
   Button,
   Divider,
   Hidden,
-  lighten,
   List,
-  ListItem,
-  ListItemText,
   Popover,
   Typography
 } from '@mui/material';
 
-import InboxTwoToneIcon from '@mui/icons-material/InboxTwoTone';
 import { styled } from '@mui/material/styles';
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
-import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
-import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 
+// helper styled components to try the third way of styling MUI components
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
         padding-left: ${theme.spacing(1)};
@@ -41,14 +34,6 @@ const UserBoxText = styled(Box)(
   ({ theme }) => `
         text-align: left;
         padding-left: ${theme.spacing(1)};
-`
-);
-
-const UserBoxLabel = styled(Typography)(
-  ({ theme }) => `
-        font-weight: ${theme.typography.fontWeightBold};
-        color: white;
-        display: block;
 `
 );
 
@@ -74,6 +59,7 @@ function HeaderUserbox() {
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
 
+  // helper functions to open, close, and signout user
   const handleOpen = (): void => {
     setOpen(true);
   };

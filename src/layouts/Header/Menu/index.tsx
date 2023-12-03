@@ -2,14 +2,10 @@ import {
   Box,
   List,
   ListItem,
-  ListItemButton,
   ListItemText,
-  Typography,
-  Stack,
   Fab
 } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
 
 function HeaderMenu() {
 
@@ -20,7 +16,7 @@ function HeaderMenu() {
           display: 'flex',
           alignItems: 'center', 
           minHeight: '80px', // for header
-          px: 2, // Padding on the sides
+          px: 2, 
         }}
       >
         <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
@@ -33,23 +29,20 @@ function HeaderMenu() {
           >
             + New Script
           </Fab>
-        </Box>
-        {/* Spacer to push the menu items to the center */}
-        
+        </Box>        
 
 
-        {/* Centered list items */}
-        <List sx={{ display: 'flex', justifyContent: 'center', flex: 1 }}> {/* Adjusted for centering */}
+        <List sx={{ display: 'flex', justifyContent: 'center', flex: 1 }}> 
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
             button
             component={NavLink}
             to="/MyScripts"
-            sx={{ justifyContent: 'center' }} // Center the list item
+            sx={{ justifyContent: 'center' }} 
           >
             <ListItemText
               primary="My Scripts"
-              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
+              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} 
             />
           </ListItem>
           <ListItem
@@ -57,15 +50,15 @@ function HeaderMenu() {
             button
             component={NavLink}
             to="/Shared"
-            sx={{ justifyContent: 'center' }} // Center the list item
+            sx={{ justifyContent: 'center' }} 
           >
             <ListItemText
               primary="Shared Scripts"
-              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }} // Center the text
+              primaryTypographyProps={{ noWrap: true, textAlign: 'center' }}
             />
           </ListItem>
         </List>
-        {/* Spacer to balance the layout */}
+        {/* spacer to balance the layout */}
         <Box sx={{ flexGrow: 1 }} />
       </Box>
     </>

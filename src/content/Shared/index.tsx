@@ -1,19 +1,13 @@
 import {
-    Button,
     Card,
     Grid,
     Box,
     CardContent,
     Typography,
-    Avatar,
-    alpha,
-    Tooltip,
     CardActionArea,
     Grow,
-    styled
   } from '@mui/material';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { useGetAllSharedScriptsQuery } from '../../generated/graphql';
 import CircularLabelWithProgress from '../../components/loadingAnimation';
 
@@ -25,9 +19,9 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
     scriptid?: string;
   }
   
+  // to display shared scripts in the same style as MyScripts page
   function CustomCard({title, scriptid, userid, owner_username, last_modified}: CustomCardProps) {
     const location = useLocation();
-    const currentPath = location.pathname;
 
     const CardStyle = {
       borderRadius: '30px',
@@ -37,10 +31,9 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
       }
     }
 
+    // similar card style to one from MyScripts file
     return (
       <Card sx={CardStyle}>
-        {/* Maybe have the first 4 lines of each script displayed and then a small bar below showing name
-        of the script and last modified date*/}
         <CardActionArea component={NavLink}   to={{pathname: `/ViewShared`,search: `?title=${title}&scriptid=${scriptid}&ownerid=${userid}`,}}>
           <CardContent>
             <Typography variant="h5" noWrap sx={{ fontFamily: "TimesNewRoman"}}>
@@ -59,6 +52,7 @@ import CircularLabelWithProgress from '../../components/loadingAnimation';
   }
 
 export default function SharedPage() {
+    // query backend to get all shared scripts
     const { data } = useGetAllSharedScriptsQuery({variables: { userid: localStorage.getItem('userid') || '' }});
 
     if(data?.getAllSharedScripts?.length===0) {
@@ -81,6 +75,7 @@ export default function SharedPage() {
               justifyContent='flex-start'
               padding={4}
               >
+                {/* map each shared script to a card */}
                 { data.getAllSharedScripts.map((item, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <Grow in key={index} timeout={1000 + index * 150}>

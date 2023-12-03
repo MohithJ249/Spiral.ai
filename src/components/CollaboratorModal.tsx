@@ -1,9 +1,9 @@
-import { Button, Typography, Modal, Box, Input, Grow, Fab, Tooltip, TableContainer, Paper, Table, TableBody, TableRow, TableCell, Card, CardContent, IconButton, Stack } from '@mui/material';
+import { Typography, Modal, Box, Input, Grow, Fab, Tooltip, Paper, Card, CardContent, IconButton, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import {useAddCollaboratorMutation, useRemoveCollaboratorMutation, useGetAllScriptCollaboratorsLazyQuery } from '../generated/graphql';
 import { ApolloError } from '@apollo/client';
 import { Check, Close, Share } from '@mui/icons-material';
-import { cardContentStyling, commentsStyling, deleteButtonCommentsStyling, textContentCommentsStyling, timeSavedCommentsStyling, usernameCommentsStyling } from '../styles/styles';
+import { cardContentStyling, commentsStyling, deleteButtonCommentsStyling, textContentCommentsStyling, usernameCommentsStyling } from '../styles/styles';
 
 interface CollaboratorModalProps {
   scriptid: string;
@@ -31,6 +31,7 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
         margin:'auto'
     };
 
+    // any change to the popup should trigger a refetch
     useEffect(() => {
         fetchScriptCollaborators({
             variables: {
@@ -41,6 +42,7 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
 
     const addCollaborator = async () => {
         try {
+            // make backend call to add collaborator
             await addCollaboratorMutation({
                 variables: {
                     scriptid: scriptid || '',
@@ -64,6 +66,7 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
 
     const removeCollaborator = async (email: string) => {
         try {
+            // make backend call to remove collaborator
             await removeCollaboratorMutation({
                 variables: {
                     scriptid: scriptid || '',
@@ -83,12 +86,14 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
         }
     }
 
+    // each collaborator is shown in a card
     const displayCollaborators = () => {
         const headerStyling = {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
         };
+        // get all collaborators through getAllScriptCollaborators and map each one to a new card to show on frontend
         return <>{data?.getAllScriptCollaborators?.map(collaborator => {
                         if(collaborator?.email && collaborator?.username) {
                             return (
@@ -96,9 +101,6 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
                                     <CardContent sx={cardContentStyling}>
                                         <Box sx={headerStyling}>
                                             <Typography variant="subtitle1" sx={usernameCommentsStyling}>{collaborator.username}</Typography>
-                                            {/* <IconButton onClick={()=>removeCollaborator(collaborator.email)} sx={{ marginTop: '-2%', ...deleteButtonCommentsStyling }}>
-                                                <Close />
-                                            </IconButton> */}
                                             <Fab variant='extended' onClick={()=>removeCollaborator(collaborator.email)} sx={{ backgroundColor: 'red', alignItems: 'center', '&:hover': { backgroundColor: '#ff7276' } }}>Remove</Fab>
                                         </Box>
                                         <Typography variant="body2" sx={textContentCommentsStyling}>{collaborator.email}</Typography>
@@ -158,11 +160,11 @@ function CollaboratorModal({ scriptid, onShowNotification }: CollaboratorModalPr
                             width: '0.5rem', 
                             },
                             '&::-webkit-scrollbar-thumb': {
-                            background: '#aaa', // Color of the scrollbar thumb
-                            borderRadius: '2px', // Adjust as needed
+                            background: '#aaa', 
+                            borderRadius: '2px', 
                             },
                             '&::-webkit-scrollbar-thumb:hover': {
-                            background: '#aaa', // Color on hover, adjust as needed
+                            background: '#aaa', 
                             },
                         }}
                         component="ul"

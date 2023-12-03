@@ -48,7 +48,6 @@ function MakeVersionButton({ scriptContent, scriptid, onShowNotification }: Make
             <Tooltip title="Make Version">
                 <Fab size='small' onClick={makeVersion} disabled={isMakingVersion}>
                 <PostAdd />
-                {/* Make Version */}
                 </Fab>
             </Tooltip>
         </div>

@@ -1,10 +1,9 @@
-import { Button, Grid, Grow,  Typography, Card, CardActionArea, CardContent, Box, TextField, Paper, Fab, Stack } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
+import { Grid, Grow,  Typography, Card, CardActionArea, CardContent, TextField, Paper, Fab, Stack } from '@mui/material';
+import { useState } from 'react';
 import { Storage } from 'aws-amplify';
 import { useGetScriptVersionsQuery, useCreateScriptVersionMutation } from '../../generated/graphql';
-import { Create, KeyboardReturn, PlaylistAddCheck } from '@mui/icons-material';
-import Scrollbar from '../../components/scrollbar';
-import { commentsStyling, cardContentStyling, usernameCommentsStyling, timeSavedCommentsStyling } from '../../styles/styles';
+import { KeyboardReturn, PlaylistAddCheck } from '@mui/icons-material';
+import { commentsStyling, cardContentStyling, usernameCommentsStyling } from '../../styles/styles';
 
 interface VersionProps {
     time_saved?: string;
@@ -18,6 +17,8 @@ function Version({time_saved, versionid, scriptid, onSetScriptContent}: VersionP
     const populateScriptContent = () => {
         const userid = localStorage.getItem('userid');
         const fileName = "userid-"+userid+ "/scriptid-" + scriptid + "/versions/"+versionid+".txt";
+        
+        // get the version of the script selected by user, each version has its own id
         Storage.get(fileName, {
             download: true,
             contentType: 'text/plain'
@@ -48,13 +49,16 @@ function Version({time_saved, versionid, scriptid, onSetScriptContent}: VersionP
 }
 
 export default function VersionHistory() {
+    // to retrieve the right versions for this script
     const url = window.location.search;
     const searchParams = new URLSearchParams(url);
     const title = searchParams.get('title');
     const scriptid = searchParams.get('scriptid');
 
+    // setters for script content and data
     const [scriptContent, setScriptContent] = useState<string>();
     const { data } = useGetScriptVersionsQuery({variables: { scriptid: scriptid || '' }, skip: !scriptid});
+    // create new version if user recovers another version
     const [createScriptVersion] = useCreateScriptVersionMutation();
 
     const textStyle = {
@@ -83,6 +87,7 @@ export default function VersionHistory() {
             }).then((data) => {
                 const newVersionid = data.data?.createScriptVersion?.versionid;
                 const newVersionFileName = "userid-"+userid+ "/scriptid-" + scriptid + "/versions/"+newVersionid+".txt";
+
                 Storage.put(newVersionFileName, textContent || '', {
                     contentType: 'text/plain'
                 }).then(() => {
@@ -96,6 +101,7 @@ export default function VersionHistory() {
         });
     }
 
+    // make sure versions exist before selecting one
     if(scriptid && data?.getScriptVersions) {
         
         return (

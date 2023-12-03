@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
-import { Box, Button, Card, CardContent, CardMedia, Fab, IconButton, Input, LinearProgress, Paper, Slider, Stack, Tooltip, Typography, styled  } from '@mui/material';
-import { Pause, PlayArrow, NotStarted, RecordVoiceOver, StopCircle, Save, VolumeUp, VolumeDown, Waves, RadioButtonChecked } from '@mui/icons-material';
+import { Box, IconButton, Input, Paper, Slider, Stack, Tooltip, Typography, styled  } from '@mui/material';
+import { Pause, PlayArrow, Save, VolumeUp, VolumeDown, RadioButtonChecked } from '@mui/icons-material';
 import { useSaveRecordingMutation } from '../generated/graphql';
-import { time } from 'console';
 
 interface AudioRecorderProps {
   scriptid: string;
   scriptTitle?: string;
   onShowNotification: (severity: 'success' | 'info' | 'warning' | 'error', text: string) => void;
-  mode: 'Editing' | 'Viewing';
+  mode: 'Editing' | 'Viewing'; // because this component can be used to make new recordings or view existing recordings. 
   recordingTitle?: string;
-  viewingAudioUrl?: string;
+  viewingAudioUrl?: string;   // when in viewing mode, just need to retrieve urls to replay; no need to save new recordings
 }
   // styling audio player 
 interface sliderProps {
@@ -19,6 +18,7 @@ interface sliderProps {
   thumbless?: boolean;
 }
 
+// styling for slider must stay outside the function to have the slider change smoothly
 const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
   color: 'black',
   height: 2,
@@ -37,6 +37,7 @@ const PlayBar = styled(Slider)<sliderProps>(({ theme, ...otherProps }) => ({
 }))
 
 function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, recordingTitle, viewingAudioUrl }: AudioRecorderProps) {
+  // for audio player
   const [stream, setStream] = useState<MediaStream>();
   const [recording, setRecording] = useState(false);
   const [recordingName, setRecordingName] = useState<string>('');
@@ -44,16 +45,17 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
   const mediaRecorderRef = useRef<MediaRecorder>();
   const audioChunks = useRef<Blob[]>([]);
   const [saveRecordingInDatabase, { loading, error }] = useSaveRecordingMutation();
-  
-  // for audio player
   const audioRef = useRef<HTMLAudioElement>(null);
-  
+
+  // for recorder component
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsed, setElapsed] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState(70);
 
 
+  // when recorder is in viewing mode, set the audio url of the selected recording
+  // to play back the right recording
   useEffect(() => {
     if (mode==='Viewing' && viewingAudioUrl !== undefined && viewingAudioUrl !== '') {
       setAudioUrl(viewingAudioUrl);
@@ -69,6 +71,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     }
   }, [viewingAudioUrl]);
   
+  // to start and stop the recording
   useEffect(() => {
     if (recording) {
       startRecording();
@@ -77,6 +80,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     }
   }, [recording]);
 
+  // to get the duration of the recording
   var getDuration = function (url: any, next: any) {
     var _player = new Audio(url);
     _player.addEventListener("durationchange", function (e) {
@@ -91,12 +95,14 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     _player.volume = 0;
 };
 
+  // whenever the audio url changes, then the recording changed, so update duration
   useEffect(() => {
     getDuration (audioUrl, function (duration: any) {
       setDuration(duration)
   });
   }, [audioUrl]);
 
+  // to format the elapsed and duration times in minutes and seconds properly on the recorder component
   const formatTime = (time: number) => {
     if(time && !isNaN(time) && isFinite(time)) {
       const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
@@ -120,6 +126,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
             }
         };
 
+        // when done recording, set the blob and url created, so the recording can be accessed
         mediaRecorderRef.current.onstop = () => {
             const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
             const newURL = URL.createObjectURL(audioBlob);
@@ -176,12 +183,12 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     }
   }
 
+  // for error handling and to avoid saving an empty recording or a recording with an empty name
   const saveRecordingDisabled = () => {
     return !audioUrl || recordingName === undefined || recordingName === '' || loading;
   }
 
-
-
+  // to control the volume of the recording
   const handleVolume = (e: Event, newValue: number | number[]): void => {
     // const { value } = e.target;
     let currVolume = Number(newValue);
@@ -191,6 +198,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     }
   }
   
+  // allows to play and pause the audio as needed
   const togglePlay = () => {
     if(!isPlaying && audioUrl) {
       audioRef.current?.play();
@@ -221,6 +229,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     borderRadius: '15px',
   };
 
+  // want to include the record button only for editing page. When in viewing mode, do not include anything
   const getRecordButton = () => {
     if(mode==='Editing') {
       return (
@@ -238,6 +247,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
     }
 
 
+    // want to include the save button only for editing page. When in viewing mode, do not include anything
     const getSaveButton = () => {
       if(mode === 'Editing') {
         return (
@@ -261,6 +271,7 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
       }
   }
 
+  // change the icon as the audio is playing or paused
   const getPlayButton = () => {
     return (
         <Tooltip title="Play/Pause">

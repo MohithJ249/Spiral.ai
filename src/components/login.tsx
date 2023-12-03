@@ -12,7 +12,6 @@ const LoginPage: React.FC<LoginProps> = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
   };
 
   return (

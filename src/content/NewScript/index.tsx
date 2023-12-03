@@ -1,5 +1,5 @@
 import { Alert, TextField, Container, Box, MenuItem, Fab } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCreateScriptMutation } from '../../generated/graphql';
 import { Storage } from 'aws-amplify';
 import { ApolloError } from '@apollo/client';
@@ -18,11 +18,13 @@ export default function NewScriptPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorText, setErrorText] = useState<string | null>(null);
 
+    // access ChatGPT API to generate initial script based on prompt and additional info
     const openai = new OpenAI({
         apiKey: process.env.REACT_APP_API_KEY,
         dangerouslyAllowBrowser: true
     });
       
+    // helper function to call ChatGPT API only when appropriate.
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -31,7 +33,7 @@ export default function NewScriptPage() {
             setErrorText(null);
 
             const content = prompt + ". Make the script "+speechTime+" seconds long with a "+tone+" tone. Make sure to include this information: " + additionalInfo + ".";
-            console.log(content);
+            // console.log(content);
             
             openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
@@ -40,6 +42,7 @@ export default function NewScriptPage() {
             .then(response => {
                 if (response.choices)
                 {
+                    // create new script for this user
                     createScript({
                         variables: {
                             userid: localStorage.getItem('userid') || '',
@@ -52,6 +55,7 @@ export default function NewScriptPage() {
                         const fileName = "userid-"+userid + "/scriptid-" + scriptid + "/"+title+".txt";
                         const generatedScript = response.choices[0].message.content;
 
+                        // store in s3 and then redirect to editing page to let user start editing
                         Storage.put(fileName, generatedScript, {
                             contentType: 'text/plain',
                         }).then(() => {
@@ -81,6 +85,8 @@ export default function NewScriptPage() {
         }
     };
     
+
+    // helper functions for setting additional info
     const handleExtractedText = (text: string) => {
         setAdditionalInfo(text);
     }

@@ -9,9 +9,11 @@ export default function LoginPage() {
     const [errorText, setErrorText] = useState<string | null>(null);
     const [login, { data, loading, error }] = useLoginLazyQuery();
 
+    // if user is already logged in, redirect to MyScripts page
     if(localStorage.getItem('userid') && localStorage.getItem('username'))
         window.location.href = '/MyScripts';
 
+    // query backend to confirm existence of user
     const handleSubmit = async () => {
         login({
             variables: { email, password },
@@ -21,6 +23,7 @@ export default function LoginPage() {
     useEffect(() => {
         if (!error && data?.login?.userid) {
             setErrorText(null);
+            // reset local storage to store user id and username for new login
             localStorage.setItem('userid', data.login.userid);
             localStorage.setItem('username', data.login.username);
             window.location.href = '/MyScripts';

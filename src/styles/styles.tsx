@@ -1,4 +1,4 @@
-import { createTheme, styled } from '@mui/material';
+import { createTheme } from '@mui/material';
 
 export const commentsStyling = {
   backgroundColor: '#edf2fa',
@@ -26,33 +26,33 @@ export const deleteButtonCommentsStyling = {
   position: 'absolute',
   top: '8px',
   right: '8px',
-  color: 'black', // Adjust if needed
+  color: 'black', 
 };
 
 export const timeSavedCommentsStyling = {
   fontSize: '0.75rem',
-  color: 'black', // Adjust if needed
-  marginBottom: '8px', // Spacing between time and content
+  color: 'black', 
+  marginBottom: '8px', // spacing between time and content
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
 };
 
 export const textContentCommentsStyling = {
-  color: 'black', // Adjust if needed
-  wordBreak: 'break-word', // To prevent overflow
+  color: 'black', 
+  wordBreak: 'break-word', // to prevent overflow
 };
 
 export const textContentStylingItalic = {
-  color: 'black', // Adjust if needed
-  wordBreak: 'break-word', // To prevent overflow
+  color: 'black', 
+  wordBreak: 'break-word', // to prevent overflow
   fontStyle: 'italic',
   marginBottom: '8px',
 };
 
 export const usernameCommentsStyling = {
   fontWeight: 'bold',
-  color: 'black', // or any other color you prefer
+  color: 'black', 
 };
 
 export const StyledTheme = createTheme({
@@ -62,68 +62,6 @@ export const StyledTheme = createTheme({
       }
     },
     components: {
-      // MuiCard: {
-      //   styleOverrides: {
-      //     root: {
-      //       background: 'white',          
-      //     }
-      //   }
-      // },
-      // MuiInputBase: {
-      //   styleOverrides: {
-      //     root: {
-      //       borderRadius: 10,
-      //       // background: "#ebb412",
-      //     }
-      //   }
-      // },
-      // MuiGrid: {
-      //   styleOverrides: {
-      //     root: {
-      //       color: "grey",
-      //       // border: "2px solid",
-      //       textDecoration: "italic",
-      //       padding: 20,
-      //       backgroundColor: 'f1efee',
-      //     },
-      //   },
-      // },
-      // MuiButton: {
-      //   styleOverrides: {
-      //     root: {
-      //       color: "black",
-      //       alignContent: "center",
-      //       borderRadius: "5px",
-      //       height: 55,
-      //       textAlignLast: "center",
-      //       size: "large",
-      //       "&:hover": {
-      //         backgroundColor: '#ddd',
-      //       },
-      //       display: "inline-block",
-      //       marginTop: "20px",
-      //       padding: "10px 20px",
-      //       border: "none",
-      //       fontFamily: 'Copperplate',
-      //       fontSize: '1.5rem',
-      //       cursor: 'pointer',
-      //       transition: "background-color 0.3s",
-      //       animation: "fadeIn 1s forwards 4s", 
-      //     }
-      //   },
-      // },
-
-      
-      // MuiTypography: {
-      //   styleOverrides: {
-      //     root: {},
-      //     h1: {
-      //       fontSize: 30,
-      //       textAlignLast: "center",
-            
-      //     },
-      //   },
-      // },
       MuiTextField: {
         styleOverrides: {
           root: {
