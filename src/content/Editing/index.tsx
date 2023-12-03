@@ -478,6 +478,8 @@ export default function EditingPage() {
     // helper function to display comments for this script
     const displayComments = () => {
         if(data?.getAllScriptComments?.length) {
+            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            console.log(data)
             // make backend call to retrive all comments and map each one to a card display
             return data.getAllScriptComments.map((comment, index) => {
                 if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {
@@ -753,7 +755,7 @@ export default function EditingPage() {
                                                     onChange={(e) => setGeneratedText(e.target.value)}
                                                     placeholder='Generated text will appear here.'
                                                     rows={window.innerHeight * 0.2 / 24}
-                                                    data-testid='generatedTextField'
+                                                    inputProps={{ "data-testid": "generatedTextField" }}
                                                 />
                                             </Grow>
                                         </Stack>

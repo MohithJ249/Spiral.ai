@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing'; 
 import EditingPage from '../content/Editing';
 import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, useGetAllScriptCommentsLazyQuery, useDeleteCommentMutation, useSaveRecordingMutation, useCreateScriptVersionMutation, useAddCollaboratorMutation, useRemoveCollaboratorMutation, useGetAllScriptCollaboratorsLazyQuery } from '../generated/graphql';
@@ -7,7 +7,20 @@ import axios from 'axios';
 import { Storage } from 'aws-amplify';
 
 jest.mock('../generated/graphql', () => ({
-  useGetAllScriptCommentsLazyQuery: () => [jest.fn(), { data: mockData, refetch: jest.fn() }],
+  useGetAllScriptCommentsLazyQuery: () => {
+    return [jest.fn(),{
+                        data: {
+                            getAllScriptComments: [{
+                                commentid: 'testVersionId',
+                                text_content: 'testTextContent',
+                                username: 'testUsername',
+                                time_saved: '300000',
+                                text_ref: 'testTextRef'
+                            }]
+                        },
+                        refetch: jest.fn()
+                    }];
+  },
   useDeleteCommentMutation: () => [jest.fn()],
   useDeleteScriptMutation: () => [jest.fn()],
   useGetScriptRecordingsQuery: () => { return {data: {}};},
@@ -22,10 +35,6 @@ jest.mock('../generated/graphql', () => ({
 jest.mock('axios', () => ({
   post: jest.fn(() => ({ data: {} })),
 }));
-
-const mockData = {
-  // Your mock data goes here
-};
 
 describe('Editing component', () => {
   it('renders the Editing component with mock data', async () => {
@@ -64,5 +73,47 @@ describe('Editing component', () => {
 
     const generatedTextField = screen.getByTestId('generatedTextField');
     expect(generatedTextField).toBeInTheDocument();
+  });
+
+  it('disables replace button when generated text is empty', async () => {
+    jest.spyOn(URLSearchParams.prototype, "get").mockReturnValue("MockSearchParam");
+    jest.spyOn(Storage, "get").mockResolvedValue("aaa");
+
+    render(
+      <MockedProvider addTypename={false}>
+        <EditingPage />
+      </MockedProvider>
+    );
+
+    const replaceButton = screen.getByText('Replace', { selector: 'button' });
+    expect(replaceButton).toBeInTheDocument();
+    expect(replaceButton).toBeDisabled();
+
+    const generatedTextField = screen.getByTestId('generatedTextField');
+    fireEvent.change(generatedTextField, { target: { value: 'newly generated text' } });
+    expect(replaceButton).toBeEnabled();
+  });
+
+  it('shows comments on the page', async () => {
+    jest.spyOn(URLSearchParams.prototype, "get").mockReturnValue("MockSearchParam");
+    jest.spyOn(Storage, "get").mockResolvedValue("aaa");
+
+    render(
+      <MockedProvider addTypename={false}>
+        <EditingPage />
+      </MockedProvider>
+    );
+
+    const textRef = screen.getByText('testTextRef');
+    expect(textRef).toBeInTheDocument();
+
+    const textContent = screen.getByText('testTextContent');
+    expect(textContent).toBeInTheDocument();
+
+    const username = screen.getByText('testUsername');
+    expect(username).toBeInTheDocument();
+
+    const timeSaved = screen.getByText('300000');
+    expect(timeSaved).toBeInTheDocument();
   });
 });
