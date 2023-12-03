@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import CreateAccount from '../content/CreateAccount'; // Import your LoginPage component
-import { useCreateUserMutation } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import CreateAccount from '../content/CreateAccount';
+import { useCreateUserMutation } from '../generated/graphql';
 
 jest.mock('../generated/graphql', () => ({
     useCreateUserMutation: () => [jest.fn(), { loading: false }],

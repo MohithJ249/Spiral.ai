@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import AudioRecorder from '../components/AudioRecorder'; // Import your LoginPage component
-import { useSaveRecordingMutation } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import AudioRecorder from '../components/AudioRecorder';
+import { useSaveRecordingMutation } from '../generated/graphql';
 
 jest.mock('../generated/graphql', () => ({
     useSaveRecordingMutation: () => [jest.fn(), { loading: false, error: undefined }],

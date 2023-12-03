@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import EditingPage from '../content/Editing'; // Import your LoginPage component
-import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, useGetAllScriptCommentsLazyQuery, useDeleteCommentMutation, useSaveRecordingMutation, useCreateScriptVersionMutation, useAddCollaboratorMutation, useRemoveCollaboratorMutation, useGetAllScriptCollaboratorsLazyQuery } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing'; 
+import EditingPage from '../content/Editing';
+import { useDeleteScriptMutation, useGetScriptVersionsQuery, useGetScriptRecordingsQuery, useGetAllScriptCommentsLazyQuery, useDeleteCommentMutation, useSaveRecordingMutation, useCreateScriptVersionMutation, useAddCollaboratorMutation, useRemoveCollaboratorMutation, useGetAllScriptCollaboratorsLazyQuery } from '../generated/graphql';
 import axios from 'axios';
 import { Storage } from 'aws-amplify';
 

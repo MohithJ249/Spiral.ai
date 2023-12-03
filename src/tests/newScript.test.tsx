@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import NewScriptPage from '../content/NewScript'; // Import your LoginPage component
-import { useCreateScriptMutation } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import NewScriptPage from '../content/NewScript';
+import { useCreateScriptMutation } from '../generated/graphql';
 import { useLocation } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 

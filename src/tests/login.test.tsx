@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import LoginPage from '../content/Login'; // Import your LoginPage component
-import { useLoginLazyQuery } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import LoginPage from '../content/Login';
+import { useLoginLazyQuery } from '../generated/graphql';
 
 jest.mock('../generated/graphql', () => ({
   useLoginLazyQuery: () => [jest.fn(), { data: mockData, loading: false, error: null }],

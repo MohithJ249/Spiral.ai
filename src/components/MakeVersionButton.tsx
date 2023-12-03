@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Storage } from 'aws-amplify';
 import { Button, Alert, Snackbar, Fab, Tooltip } from '@mui/material';
-import { useSaveRecordingMutation } from '../generated/graphql';
 import { useCreateScriptVersionMutation } from '../generated/graphql';
 import { PostAdd } from '@mui/icons-material';
 

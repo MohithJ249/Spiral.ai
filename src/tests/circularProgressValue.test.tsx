@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import AudioRecorder from '../components/CircularProgressValue'; // Import your LoginPage component
+import { MockedProvider } from '@apollo/client/testing';
+import AudioRecorder from '../components/CircularProgressValue';
 import CircularProgressValue from '../components/CircularProgressValue';
 
 describe('CircularProgressValue component', () => {

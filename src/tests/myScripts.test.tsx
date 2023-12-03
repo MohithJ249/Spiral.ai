@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import MyScripts from '../content/MyScripts'; // Import your LoginPage component
-import { useGetAllUserScriptsQuery } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import MyScripts from '../content/MyScripts';
+import { useGetAllUserScriptsQuery } from '../generated/graphql';
 import { useLocation } from 'react-router-dom';
 
 jest.mock('../generated/graphql', () => ({

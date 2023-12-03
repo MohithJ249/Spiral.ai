@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import RecordingsPage from '../content/Recordings'; // Import your LoginPage component
-import { useGetScriptRecordingsLazyQuery, useDeleteRecordingMutation, useSaveRecordingMutation } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import RecordingsPage from '../content/Recordings';
+import { useGetScriptRecordingsLazyQuery, useDeleteRecordingMutation, useSaveRecordingMutation } from '../generated/graphql';
 import { useLocation } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { Storage } from 'aws-amplify';

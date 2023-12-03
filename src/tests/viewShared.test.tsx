@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
-import ViewShared from '../content/ViewShared'; // Import your LoginPage component
-import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../generated/graphql'; // Import the hook to be mocked
+import { MockedProvider } from '@apollo/client/testing';
+import ViewShared from '../content/ViewShared';
+import { useGetAllScriptCommentsLazyQuery, usePostCommentMutation, useDeleteCommentMutation } from '../generated/graphql';
 import { useLocation } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { Storage } from 'aws-amplify';

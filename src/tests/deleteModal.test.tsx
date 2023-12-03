@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing'; // Use the appropriate testing library
+import { MockedProvider } from '@apollo/client/testing';
 import { Storage } from 'aws-amplify';
 import DeleteModal from '../components/DeleteModal';
 
@@ -20,8 +20,6 @@ describe('Delete Model component', () => {
     
     const deleteText = screen.getByText('TestDeleteText');
     expect(deleteText).toBeInTheDocument();
-
-    screen.debug();
 
     const yesButton = screen.getByText('Yes', { selector: 'button' });
     expect(yesButton).toBeInTheDocument();
