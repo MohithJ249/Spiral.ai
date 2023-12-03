@@ -12,9 +12,8 @@ import {
     Stack,
     TextField,
 } from "@mui/material";
-import { all } from "axios";
 import React, { useState, useEffect } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import { pdfjs } from "react-pdf";
 import JSZip from "jszip";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
