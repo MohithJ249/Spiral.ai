@@ -98,7 +98,6 @@ export default function RecordingsPage() {
             if (audio.Body) {
               const blob = new Blob([audio.Body], { type: "audio/wav" });
               const audioUrl = URL.createObjectURL(blob);
-              console.log("Audio URL:", audioUrl);
               // add recording to table
               fetchedRecordings.push(createRecording(name || '', time_saved || '', audioUrl));
             }

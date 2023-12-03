@@ -165,7 +165,6 @@ function PDFReader({
         // clear fileObjs after extracting all of the previously parsed files
         setFileObjs([]);
         setLocalText("");
-        // console.log(localText)
     };
 
     const FabStyling = {

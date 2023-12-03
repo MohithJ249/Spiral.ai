@@ -27,7 +27,6 @@ export default function CreateAccountPage() {
                 // set local storage to store user id and username to avoid logging in again
                 localStorage.setItem('userid', data.createUser.userid);
                 localStorage.setItem('username', data.createUser.username);
-                console.log(data.createUser.userid);
                 window.location.href = '/MyScripts';
             }
         } 

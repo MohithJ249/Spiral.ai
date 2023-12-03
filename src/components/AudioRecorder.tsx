@@ -213,7 +213,6 @@ function AudioRecorder({ scriptid, scriptTitle, onShowNotification, mode, record
   const onLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
-      // console.log("DDDD " + audioRef.current.duration);
     }
   };
   

@@ -11,7 +11,7 @@ describe('LoginPage component', () => {
       </MockedProvider>
     );
 
-    const errorText = screen.getByText('Add error page here (status 404). Check in content/Error/index.tsx file');
+    const errorText = screen.getByText('Something went wrong. Status 404');
     expect(errorText).toBeInTheDocument();
   });
 });

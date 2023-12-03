@@ -28,7 +28,6 @@ function Version({time_saved, versionid, scriptid, onSetScriptContent}: VersionP
             onSetScriptContent(textContent || '');
         })
         .catch((err) => {
-            console.log(err);
         });
     }
 

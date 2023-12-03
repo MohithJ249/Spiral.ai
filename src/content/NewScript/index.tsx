@@ -33,7 +33,6 @@ export default function NewScriptPage() {
             setErrorText(null);
 
             const content = prompt + ". Make the script "+speechTime+" seconds long with a "+tone+" tone. Make sure to include this information: " + additionalInfo + ".";
-            // console.log(content);
             
             openai.chat.completions.create({
                 model: "gpt-3.5-turbo",

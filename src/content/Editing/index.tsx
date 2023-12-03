@@ -199,8 +199,6 @@ export default function EditingPage() {
                 var start = selectionStart;
                 var end = selectionEnd - 1;
 
-                console.log(scriptContent.charAt(start)+" "+scriptContent.charAt(end));
-
                 while(scriptContent.charAt(start) === ' ') {
                     start++;
                 }
@@ -264,7 +262,6 @@ export default function EditingPage() {
         if(selectedTextPosition) {            
             if(selectedText) {
                 const queryParam = getPromptText(selectedText);
-                console.log(queryParam)
                 setGeneratedText('');
                 
                 try {
@@ -341,7 +338,6 @@ export default function EditingPage() {
             if(response.data.error) {
                 showNotification('error', 'API Error: '+response.data.error);
             }
-            // console.log(response.data);
             setPlagiarismScore(response.data.plagPercent);
             // used to make sure user is not able to click when the api is calculating
             // after the score is set, then set to false, to enable button
@@ -478,8 +474,6 @@ export default function EditingPage() {
     // helper function to display comments for this script
     const displayComments = () => {
         if(data?.getAllScriptComments?.length) {
-            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-            console.log(data)
             // make backend call to retrive all comments and map each one to a card display
             return data.getAllScriptComments.map((comment, index) => {
                 if (comment?.commentid && comment?.text_content && comment?.username && comment?.time_saved) {

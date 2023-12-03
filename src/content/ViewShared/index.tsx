@@ -117,8 +117,6 @@ export default function ViewShared() {
                 var start = selectionStart;
                 var end = selectionEnd - 1;
 
-                console.log(scriptContent.charAt(start)+" "+scriptContent.charAt(end));
-
                 while(scriptContent.charAt(start) === ' ') {
                     start++;
                 }
